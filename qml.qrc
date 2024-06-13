@@ -23,6 +23,7 @@
         <file>pages/Account.qml</file>
         <file>pages/Advanced.qml</file>
         <file>pages/Transfer.qml</file>
+        <file>pages/Staking.qml</file>
         <file>pages/History.qml</file>
         <file>pages/AddressBook.qml</file>
         <file>pages/Mining.qml</file>

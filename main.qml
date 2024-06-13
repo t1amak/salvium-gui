@@ -154,6 +154,7 @@ ApplicationWindow {
         // lock wallet on demand
         if(seq === "Ctrl+L" && !passwordDialog.visible) lock()
         if(seq === "Ctrl+S") middlePanel.state = "Transfer"
+        else if(seq === "Ctrl+K") middlePanel.state = "Staking"
         else if(seq === "Ctrl+R") middlePanel.state = "Receive"
         else if(seq === "Ctrl+H") middlePanel.state = "History"
         else if(seq === "Ctrl+B") middlePanel.state = "AddressBook"
@@ -173,7 +174,8 @@ ApplicationWindow {
             */
             if(middlePanel.state === "Settings") middlePanel.state = "Account"
             else if(middlePanel.state === "Account") middlePanel.state = "Transfer"
-            else if(middlePanel.state === "Transfer") middlePanel.state = "AddressBook"
+            else if(middlePanel.state === "Transfer") middlePanel.state = "Staking"
+            else if(middlePanel.state === "Staking") middlePanel.state = "AddressBook"
             else if(middlePanel.state === "AddressBook") middlePanel.state = "Receive"
             else if(middlePanel.state === "Receive") middlePanel.state = "History"
             else if(middlePanel.state === "History") middlePanel.state = "Advanced"
@@ -193,7 +195,8 @@ ApplicationWindow {
             else if(middlePanel.state === "Advanced") middlePanel.state = "History"
             else if(middlePanel.state === "History") middlePanel.state = "Receive"
             else if(middlePanel.state === "Receive") middlePanel.state = "AddressBook"
-            else if(middlePanel.state === "AddressBook") middlePanel.state = "Transfer"
+            else if(middlePanel.state === "Staking") middlePanel.state = "Transfer"
+            else if(middlePanel.state === "AddressBook") middlePanel.state = "Staking"
             else if(middlePanel.state === "Transfer") middlePanel.state = "Account"
             else if(middlePanel.state === "Account") middlePanel.state = "Settings"
         }
@@ -1135,6 +1138,7 @@ ApplicationWindow {
             middlePanel.transferView.clearFields();
             middlePanel.receiveView.clearFields();
             middlePanel.historyView.clearFields();
+            middlePanel.stakingView.clearFields();
             middlePanel.advancedView.clearFields();
             // disable timers
             userInActivityTimer.running = false;
@@ -1821,6 +1825,12 @@ ApplicationWindow {
 
                 onHistoryClicked: {
                     middlePanel.state = "History";
+                    middlePanel.flickable.contentY = 0;
+                    updateBalance();
+                }
+
+                onStakingClicked: {
+                    middlePanel.state = "Staking";
                     middlePanel.flickable.contentY = 0;
                     updateBalance();
                 }

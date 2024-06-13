@@ -1,4 +1,4 @@
-// Copyright (c) 2014-2024, The Monero Project
+// Copyright (c) 2014-2018, The Monero Project
 // 
 // All rights reserved.
 // 
@@ -57,6 +57,7 @@ Rectangle {
     property Receive receiveView: Receive { }
     property Merchant merchantView: Merchant { }
     property History historyView: History { }
+    property Staking stakingView: Staking { }
     property Advanced advancedView: Advanced { }
     property Settings settingsView: Settings { }
     property AddressBook addressBookView: AddressBook { }
@@ -127,6 +128,10 @@ Rectangle {
                 name: "History"
                 PropertyChanges { target: root; currentView: historyView }
                 PropertyChanges { target: mainFlickable; contentHeight: historyView.contentHeight + 80}
+            }, State {
+                name: "Staking"
+                PropertyChanges { target: root; currentView: stakingView }
+                PropertyChanges { target: mainFlickable; contentHeight: stakingView.stakingHeight + 80 }
             }, State {
                 name: "Transfer"
                 PropertyChanges { target: root; currentView: transferView }

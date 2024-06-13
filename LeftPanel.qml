@@ -1,4 +1,4 @@
-// Copyright (c) 2014-2024, The Monero Project
+// Copyright (c) 2014-2019, The Monero Project
 // 
 // All rights reserved.
 // 
@@ -56,6 +56,7 @@ Rectangle {
     Clipboard { id: clipboard }
 
     signal historyClicked()
+    signal stakingClicked()
     signal transferClicked()
     signal receiveClicked()
     signal advancedClicked()
@@ -66,6 +67,7 @@ Rectangle {
     function selectItem(pos) {
         menuColumn.previousButton.checked = false
         if(pos === "History") menuColumn.previousButton = historyButton
+        else if(pos === "Staking") menuColumn.previousButton = stakingButton
         else if(pos === "Transfer") menuColumn.previousButton = transferButton
         else if(pos === "Receive")  menuColumn.previousButton = receiveButton
         else if(pos === "AddressBook") menuColumn.previousButton = addressBookButton
@@ -436,6 +438,28 @@ Rectangle {
 
             MoneroComponents.MenuButtonDivider {
                 visible: receiveButton.present
+                anchors.left: parent.left
+                anchors.right: parent.right
+                anchors.leftMargin: 20
+            }
+
+            // ------------- Staking tab ---------------
+
+            MoneroComponents.MenuButton {
+                id: stakingButton
+                anchors.left: parent.left
+                anchors.right: parent.right
+                text: qsTr("Staking") + translationManager.emptyString
+                symbol: (isMac ? "⌃" : qsTr("Ctrl+")) + "K" + translationManager.emptyString
+                onClicked: {
+                    parent.previousButton.checked = false
+                    parent.previousButton = stakingButton
+                    panel.stakingClicked()
+                }
+            }
+
+            MoneroComponents.MenuButtonDivider {
+                visible: stakingButton.present
                 anchors.left: parent.left
                 anchors.right: parent.right
                 anchors.leftMargin: 20
