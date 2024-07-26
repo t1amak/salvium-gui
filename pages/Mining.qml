@@ -74,7 +74,7 @@ Rectangle {
 
         MoneroComponents.TextPlain {
             id: soloMainLabel
-            text: qsTr("Mining with your computer helps strengthen the Monero network. The more people mine, the harder it is for the network to be attacked, and every little bit helps.\n\nMining also gives you a small chance to earn some Monero. Your computer will create hashes looking for block solutions. If you find a block, you will get the associated reward. Good luck!") + "\n\n" + qsTr("P2Pool mining is a decentralized way to pool mine that pays out more frequently compared to solo mining, while also supporting the network.") + translationManager.emptyString
+            text: qsTr("Mining with your computer helps strengthen the Salvium network. The more people mine, the harder it is for the network to be attacked, and every little bit helps.\n\nMining also gives you a small chance to earn some SALs. Your computer will create hashes looking for block solutions. If you find a block, you will get the associated reward. Good luck!") + "\n\n" + qsTr("P2Pool mining is a decentralized way to pool mine that pays out more frequently compared to solo mining, while also supporting the network.") + translationManager.emptyString
             wrapMode: Text.Wrap
             Layout.fillWidth: true
             font.family: MoneroComponents.Style.fontRegular.name
@@ -449,7 +449,7 @@ Rectangle {
                     text: "
                     Usage:<br>
                         --wallet             Wallet address to mine to. Subaddresses and integrated addresses are not supported!<br>
-                        --host               IP address of your Monero node, default is 127.0.0.1<br>
+                        --host               IP address of your Salvium node, default is 127.0.0.1<br>
                         --rpc-port           monerod RPC API port number, default is 18081<br>
                         --zmq-port           monerod ZMQ pub port number, default is 18083 (same port as in monerod\'s \"--zmq-pub\" command line parameter)<br>
                         --stratum            Comma-separated list of IP:port for stratum server to listen on<br>
@@ -593,7 +593,7 @@ Rectangle {
         var customDaemonArgsArray = args.split(' ');
         var flag = "";
         var allArgs = [];
-        var p2poolArgs = ["--zmq-pub tcp://127.0.0.1:18083"];
+        var p2poolArgs = ["--zmq-pub tcp://127.0.0.1:19083"];
         //create an array (allArgs) of ['--arg value','--arg2','--arg3']
         for (let i = 0; i < customDaemonArgsArray.length; i++) {
             if(!customDaemonArgsArray[i].startsWith("--")) {

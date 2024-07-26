@@ -63,6 +63,7 @@ Rectangle {
     property var transactionFee: ""
     property var transactionPriority: ""
     property bool sweepUnmixable: false
+    property bool stake: false
     property alias errorText: errorText
     property alias confirmButton: confirmButton
     property alias backButton: backButton
@@ -137,6 +138,7 @@ Rectangle {
         root.transactionFee = "";
         root.transactionPriority = "";
         root.sweepUnmixable = false;
+        root.stake = false;
     }
 
     function showFiatConversion(valueXMR) {
@@ -167,6 +169,8 @@ Rectangle {
                         return qsTr("Create transaction file") + translationManager.emptyString;
                     } else if (root.sweepUnmixable) {
                         return qsTr("Sweep unmixable outputs") + translationManager.emptyString;
+                    } else if (root.stake) {
+                        return qsTr("Confirm stake") + translationManager.emptyString;
                     } else {
                         return qsTr("Confirm send") + translationManager.emptyString;
                     }
@@ -205,7 +209,7 @@ Rectangle {
                     if (root.transactionAmount == "(all)" && currentWallet.isHwBacked() === true) {
                         return qsTr("All unlocked balance") +  translationManager.emptyString;
                     } else {
-                        return root.transactionAmount + " XMR " +  translationManager.emptyString;
+                        return root.transactionAmount + " SAL " +  translationManager.emptyString;
                     }
                 }
             }
@@ -311,7 +315,7 @@ Rectangle {
                                 title = qsTr("Monero address") + translationManager.emptyString;
                             }
                             if (recipients.length > 1) {
-                                title = "%1. %2 - %3 XMR".arg(index + 1).arg(title).arg(recipient.amount);
+                                title = "%1. %2 - %3 SAL".arg(index + 1).arg(title).arg(recipient.amount);
                                 if (persistentSettings.fiatPriceEnabled) {
                                     title += " (%1)".arg(showFiatConversion(recipient.amount));
                                 }
@@ -350,7 +354,7 @@ Rectangle {
                                     return qsTr("Calculating fee") + "..." +  translationManager.emptyString;
                                 }
                             } else {
-                                return root.transactionFee + " XMR" + (maliciousTxFee ? " (HIGH FEE)" : "")
+                                return root.transactionFee + " SAL" + (maliciousTxFee ? " (HIGH FEE)" : "")
                             }
                         } else {
                             return "";

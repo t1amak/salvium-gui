@@ -222,6 +222,11 @@ public:
     Q_INVOKABLE void startRefresh();
     Q_INVOKABLE void pauseRefresh();
 
+    // stake transaction
+    Q_INVOKABLE void createStakeTransactionAsync(const QString &amount,
+        quint32 mixin_count,
+        PendingTransaction::Priority priority);
+  
     //! creates async transaction
     Q_INVOKABLE void createTransactionAsync(
         const QVector<QString> &destinationAddresses,
@@ -375,10 +380,13 @@ signals:
     void deviceButtonRequest(quint64 buttonCode);
     void deviceButtonPressed();
     void walletPassphraseNeeded(bool onDevice);
+    void stakeTransactionCommitted(bool status, PendingTransaction *t, const QStringList& txid);
     void transactionCommitted(bool status, PendingTransaction *t, const QStringList& txid);
     void heightRefreshed(quint64 walletHeight, quint64 daemonHeight, quint64 targetHeight) const;
     void deviceShowAddressShowed();
-
+    
+    void stakeTransactionCreated(PendingTransaction *transaction);
+    
     // emitted when transaction is created async
     void transactionCreated(
         PendingTransaction *transaction,
@@ -416,6 +424,10 @@ private:
         bool isRecoveringFromDevice,
         quint64 restoreHeight,
         const QString& proxyAddress);
+
+    PendingTransaction *createStakeTransaction(const QString &amount,
+        quint32 mixin_count,
+        PendingTransaction::Priority priority);
 
     PendingTransaction *createTransaction(
         const QVector<QString> &destinationAddresses,

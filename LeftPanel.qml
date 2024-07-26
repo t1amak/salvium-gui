@@ -232,7 +232,7 @@ Rectangle {
                         if (persistentSettings.fiatPriceEnabled && persistentSettings.fiatPriceToggle) {
                             return appWindow.fiatApiCurrencySymbol();
                         } else {
-                            return "XMR"
+                            return "SAL"
                         }
                     }
                     color: MoneroComponents.Style.blackTheme ? "white" : "black"

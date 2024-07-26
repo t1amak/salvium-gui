@@ -565,6 +565,36 @@ void Wallet::pauseRefresh()
     m_refreshEnabled = false;
 }
 
+PendingTransaction *Wallet::createStakeTransaction(
+    const QString &amount,
+    quint32 mixin_count,
+    PendingTransaction::Priority priority)
+{
+    std::set<uint32_t> subaddr_indices;
+    Monero::PendingTransaction *ptImpl = m_walletImpl->createStakeTransaction(
+        Monero::Wallet::amountFromString(amount.toStdString()),
+        mixin_count,
+        static_cast<Monero::PendingTransaction::Priority>(priority),
+        currentSubaddressAccount(),
+        subaddr_indices);
+    PendingTransaction *result = new PendingTransaction(ptImpl, 0);
+    return result;
+}
+
+void Wallet::createStakeTransactionAsync(
+    const QString &amount,
+    quint32 mixin_count,
+    PendingTransaction::Priority priority)
+{
+    m_scheduler.run([this, amount, mixin_count, priority] {
+        PendingTransaction *tx = createStakeTransaction(amount, mixin_count, priority);
+        QVector<QString> destinationAddresses;
+        // SRCG: push self subaddress into the list
+        emit transactionCreated(tx, destinationAddresses, "", mixin_count);
+    });
+}
+
+
 PendingTransaction *Wallet::createTransaction(
     const QVector<QString> &destinationAddresses,
     const QString &payment_id,
@@ -582,10 +612,13 @@ PendingTransaction *Wallet::createTransaction(
     }
     std::set<uint32_t> subaddr_indices;
     Monero::PendingTransaction *ptImpl = m_walletImpl->createTransactionMultDest(
+        Monero::transaction_type::TRANSFER,
         destinations,
         payment_id.toStdString(),
         amounts,
         mixin_count,
+        "SAL",
+        false /* is_return */,
         static_cast<Monero::PendingTransaction::Priority>(priority),
         currentSubaddressAccount(),
         subaddr_indices);
@@ -610,9 +643,8 @@ PendingTransaction *Wallet::createTransactionAll(const QString &dst_addr, const 
                                                  quint32 mixin_count, PendingTransaction::Priority priority)
 {
     std::set<uint32_t> subaddr_indices;
-    Monero::PendingTransaction * ptImpl = m_walletImpl->createTransaction(
-                dst_addr.toStdString(), payment_id.toStdString(), Monero::optional<uint64_t>(), mixin_count,
-                static_cast<Monero::PendingTransaction::Priority>(priority), currentSubaddressAccount(), subaddr_indices);
+    Monero::PendingTransaction * ptImpl = m_walletImpl->createTransaction(dst_addr.toStdString(), payment_id.toStdString(), Monero::optional<uint64_t>(), mixin_count, "SAL", false /* is_return */,
+                                                                          static_cast<Monero::PendingTransaction::Priority>(priority), currentSubaddressAccount(), subaddr_indices);
     PendingTransaction * result = new PendingTransaction(ptImpl, this);
     return result;
 }

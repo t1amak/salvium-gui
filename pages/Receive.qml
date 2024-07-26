@@ -294,7 +294,7 @@ Rectangle {
                     verticalAlignment: TextInput.AlignVCenter
                     selectByMouse: true
                     color: MoneroComponents.Style.defaultFontColor
-                    placeholderText: "0.000000000000"
+                    placeholderText: "0.00000000"
 
                     background: Rectangle {
                         color: MoneroComponents.Style.blackTheme ? "transparent" : "white"
@@ -329,7 +329,7 @@ Rectangle {
                 MoneroComponents.Label {
                     Layout.bottomMargin: 3
                     fontSize: 14
-                    text: "XMR"
+                    text: "SAL"
                 }
 
                 MoneroComponents.Label {

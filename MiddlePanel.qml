@@ -57,7 +57,9 @@ Rectangle {
     property Receive receiveView: Receive { }
     property Merchant merchantView: Merchant { }
     property History historyView: History { }
-    property Staking stakingView: Staking { }
+    property Staking stakingView: Staking {
+        onStakeClicked: root.stakeClicked(amount, paymentId, mixinCount, priority, description)
+    }
     property Advanced advancedView: Advanced { }
     property Settings settingsView: Settings { }
     property AddressBook addressBookView: AddressBook { }
@@ -65,6 +67,7 @@ Rectangle {
     property Account accountView: Account { }
 
     signal paymentClicked(var recipients, string paymentId, int mixinCount, int priority, string description)
+    signal stakeClicked(string amount, string paymentId, int mixinCount, int priority, string description)
     signal sweepUnmixableClicked()
     signal generatePaymentIdInvoked()
     signal getProofClicked(string txid, string address, string message, string amount);

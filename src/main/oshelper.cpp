@@ -305,9 +305,9 @@ std::pair<quint8, QString> OSHelper::getNetworkTypeAndAddressFromFile(const QStr
         QString _address = QString(file.readAll());
         if(!_address.isEmpty()){
             address = _address;
-            if(address.startsWith("5") || address.startsWith("7")){
+            if(address.startsWith("SaLvS")){
                 networkType = NetworkType::STAGENET;
-            } else if(address.startsWith("9") || address.startsWith("B")){
+            } else if(address.startsWith("SaLvT")){
                 networkType = NetworkType::TESTNET;
             }
         }

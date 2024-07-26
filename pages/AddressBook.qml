@@ -90,7 +90,7 @@ Rectangle {
                 wrapMode: Text.WordWrap;
                 leftPadding: 0
                 topPadding: 0
-                text: qsTr("This makes it easier to send or receive Monero and reduces errors when typing in addresses manually.") + translationManager.emptyString
+                text: qsTr("This makes it easier to send or receive SALs and reduces errors when typing in addresses manually.") + translationManager.emptyString
                 width: parent.width
             }
 
@@ -323,11 +323,11 @@ Rectangle {
                     .arg(qsTr("Address")) + translationManager.emptyString
                 placeholderText: {
                     if(persistentSettings.nettype == NetworkType.MAINNET){
-                        return "4.. / 8.. / monero:.. / OpenAlias";
+                        return "SaLv / salvium:.. / OpenAlias";
                     } else if (persistentSettings.nettype == NetworkType.STAGENET){
-                        return "5.. / 7.. / monero:..";
+                        return "SaLvS / salvium:..";
                     } else if(persistentSettings.nettype == NetworkType.TESTNET){
-                        return "9.. / B.. / monero:..";
+                        return "SaLvT.. / salvium:..";
                     }
                 }
                 wrapMode: Text.WrapAnywhere

@@ -55,7 +55,7 @@ import "version.js" as Version
 
 ApplicationWindow {
     id: appWindow
-    title: "Monero" +
+    title: "Salvium" +
         (persistentSettings.displayWalletNameInTitleBar && walletName
         ? " - " + walletName
         : "")
@@ -296,12 +296,14 @@ ApplicationWindow {
         currentWallet.moneyReceived.disconnect(onWalletMoneyReceived)
         currentWallet.unconfirmedMoneyReceived.disconnect(onWalletUnconfirmedMoneyReceived)
         currentWallet.transactionCreated.disconnect(onTransactionCreated)
+        currentWallet.stakeTransactionCreated.disconnect(onStakeTransactionCreated)
         currentWallet.connectionStatusChanged.disconnect(onWalletConnectionStatusChanged)
         currentWallet.deviceButtonRequest.disconnect(onDeviceButtonRequest);
         currentWallet.deviceButtonPressed.disconnect(onDeviceButtonPressed);
         currentWallet.walletPassphraseNeeded.disconnect(onWalletPassphraseNeededWallet);
         currentWallet.transactionCommitted.disconnect(onTransactionCommitted);
         middlePanel.paymentClicked.disconnect(handlePayment);
+        middlePanel.stakeClicked.disconnect(handleStake);
         middlePanel.sweepUnmixableClicked.disconnect(handleSweepUnmixable);
         middlePanel.getProofClicked.disconnect(handleGetProof);
         middlePanel.checkProofClicked.disconnect(handleCheckProof);
@@ -343,13 +345,16 @@ ApplicationWindow {
         currentWallet.moneyReceived.connect(onWalletMoneyReceived)
         currentWallet.unconfirmedMoneyReceived.connect(onWalletUnconfirmedMoneyReceived)
         currentWallet.transactionCreated.connect(onTransactionCreated)
+        currentWallet.stakeTransactionCreated.connect(onStakeTransactionCreated)
         currentWallet.connectionStatusChanged.connect(onWalletConnectionStatusChanged)
         currentWallet.deviceButtonRequest.connect(onDeviceButtonRequest);
         currentWallet.deviceButtonPressed.connect(onDeviceButtonPressed);
         currentWallet.walletPassphraseNeeded.connect(onWalletPassphraseNeededWallet);
         currentWallet.transactionCommitted.connect(onTransactionCommitted);
+        //currentWallet.stakeTransactionCommitted.connect(onStakeTransactionCommitted);
         currentWallet.proxyAddress = Qt.binding(persistentSettings.getWalletProxyAddress);
         middlePanel.paymentClicked.connect(handlePayment);
+        middlePanel.stakeClicked.connect(handleStake);
         middlePanel.sweepUnmixableClicked.connect(handleSweepUnmixable);
         middlePanel.getProofClicked.connect(handleGetProof);
         middlePanel.checkProofClicked.connect(handleCheckProof);
@@ -418,14 +423,14 @@ ApplicationWindow {
         leftPanel.balanceString = balance
         leftPanel.balanceUnlockedString = balanceU
         if (middlePanel.state === "Account") {
-            middlePanel.accountView.balanceAllText = walletManager.displayAmount(appWindow.currentWallet.balanceAll()) + " XMR";
-            middlePanel.accountView.unlockedBalanceAllText = walletManager.displayAmount(appWindow.currentWallet.unlockedBalanceAll()) + " XMR";
+            middlePanel.accountView.balanceAllText = walletManager.displayAmount(appWindow.currentWallet.balanceAll()) + " SAL";
+            middlePanel.accountView.unlockedBalanceAllText = walletManager.displayAmount(appWindow.currentWallet.unlockedBalanceAll()) + " SAL";
         }
     }
 
     function onUriHandler(uri){
-        if(uri.startsWith("monero://")){
-            var address = uri.substring("monero://".length);
+        if(uri.startsWith("salvium://")){
+            var address = uri.substring("salvium://".length);
 
             var params = {}
             if(address.length === 0) return;
@@ -765,7 +770,7 @@ ApplicationWindow {
             walletManager.stopMining()
             p2poolManager.exit()
             middlePanel.advancedView.miningView.update()
-            informationPopup.text += qsTr("\n\nExiting p2pool. Please check that port 18083 is available.") + translationManager.emptyString;
+            informationPopup.text += qsTr("\n\nExiting p2pool. Please check that port 19083 is available.") + translationManager.emptyString;
         }
         informationPopup.icon  = StandardIcon.Critical
         informationPopup.onCloseCallback = null
@@ -824,6 +829,38 @@ ApplicationWindow {
                 return walletManager.walletExists(persistentSettings.wallet_path);
         }
         return false;
+    }
+
+    function onStakeTransactionCreated(pendingTransaction) {
+        console.log("Transaction created");
+        txConfirmationPopup.bottomText.text = "";
+        transaction = pendingTransaction;
+        // validate address;
+        if (transaction.status !== PendingTransaction.Status_Ok) {
+            console.error("Can't create transaction: ", transaction.errorString);
+            if (currentWallet.connected() == Wallet.ConnectionStatus_WrongVersion) {
+                txConfirmationPopup.errorText.text  = qsTr("Can't create transaction: Wrong daemon version: ") + transaction.errorString
+            } else {
+                txConfirmationPopup.errorText.text  = qsTr("Can't create transaction: ") + transaction.errorString
+            }
+            // deleting transaction object, we don't want memleaks
+            currentWallet.disposeTransaction(transaction);
+
+        } else if (transaction.txCount == 0) {
+            console.error("Can't create transaction: ", transaction.errorString);
+            txConfirmationPopup.errorText.text   = qsTr("No unmixable outputs to sweep") + translationManager.emptyString
+            // deleting transaction object, we don't want memleaks
+            currentWallet.disposeTransaction(transaction);
+        } else {
+            console.log("Transaction created, amount: " + walletManager.displayAmount(transaction.amount)
+                    + ", fee: " + walletManager.displayAmount(transaction.fee));
+
+            // here we update txConfirmationPopup
+            txConfirmationPopup.transactionAmount = Utils.removeTrailingZeros(walletManager.displayAmount(transaction.amount));
+            txConfirmationPopup.transactionFee = Utils.removeTrailingZeros(walletManager.displayAmount(transaction.fee));
+            txConfirmationPopup.confirmButton.text = viewOnly ? qsTr("Save as file") : qsTr("Confirm") + translationManager.emptyString;
+            txConfirmationPopup.confirmButton.rightIcon = viewOnly ? "" : "qrc:///images/rightArrow.png"
+        }
     }
 
     function onTransactionCreated(pendingTransaction, addresses, paymentId, mixinCount) {
@@ -901,6 +938,20 @@ ApplicationWindow {
             });
             currentWallet.createTransactionAsync(addresses, paymentId, amountsxmr, mixinCount, priority);
         }
+    }
+
+    // called on "stake"
+    function handleStake(amount, paymentId, mixinCount, priority, description, createFile) {
+        console.log("Creating STAKE transaction: ")
+        console.log("\tamount: ", amount);
+
+        txConfirmationPopup.stake = true;
+        txConfirmationPopup.bottomTextAnimation.running = false;
+        txConfirmationPopup.bottomText.text  = qsTr("Creating STAKE transaction...") + translationManager.emptyString;
+        txConfirmationPopup.transactionAmount = amount;
+        txConfirmationPopup.open();
+
+        currentWallet.createStakeTransactionAsync(amount, mixinCount, priority);
     }
 
     //Choose where to save transaction
@@ -1364,7 +1415,7 @@ ApplicationWindow {
                 oshelper.createDesktopEntry();
             } else if (isLinux) {
                 confirmationDialog.title = qsTr("Desktop entry") + translationManager.emptyString;
-                confirmationDialog.text  = qsTr("Would you like to register Monero GUI Desktop entry?") + translationManager.emptyString;
+                confirmationDialog.text  = qsTr("Would you like to register Salvium GUI Desktop entry?") + translationManager.emptyString;
                 confirmationDialog.icon = StandardIcon.Question;
                 confirmationDialog.cancelText = qsTr("No") + translationManager.emptyString;
                 confirmationDialog.okText = qsTr("Yes") + translationManager.emptyString;
@@ -1383,7 +1434,7 @@ ApplicationWindow {
         id: persistentSettings
         fileName: {
             if(isTails && tailsUsePersistence)
-                return homePath + "/Persistent/Monero/monero-core.conf";
+                return homePath + "/Persistent/Salvium/salvium-core.conf";
             return "";
         }
 
@@ -2293,11 +2344,11 @@ ApplicationWindow {
     function getDefaultDaemonRpcPort(networkType) {
         switch (parseInt(networkType)) {
             case NetworkType.STAGENET:
-                return 38081;
+                return 39081;
             case NetworkType.TESTNET:
-                return 28081;
+                return 29081;
             default:
-                return 18081;
+                return 19081;
         }
     }
 
