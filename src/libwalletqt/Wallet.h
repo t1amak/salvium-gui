@@ -40,6 +40,7 @@
 
 #include "wallet/api/wallet2_api.h" // we need to have an access to the Monero::Wallet::Status enum here;
 #include "qt/FutureScheduler.h"
+#include "YieldInfo.h"
 #include "PendingTransaction.h" // we need to have an access to the PendingTransaction::Priority enum here;
 #include "UnsignedTransaction.h"
 #include "NetworkType.h"
@@ -360,6 +361,8 @@ public:
     Q_INVOKABLE void onPassphraseEntered(const QString &passphrase, bool enter_on_device, bool entry_abort=false);
     virtual void onWalletPassphraseNeeded(bool on_device) override;
 
+    Q_INVOKABLE YieldInfo * getYieldInfo();
+
     // TODO: setListenter() when it implemented in API
 signals:
     // emitted on every event happened with wallet
@@ -443,7 +446,7 @@ private:
     QString getProxyAddress() const;
     void setProxyAddress(QString address);
     void startRefreshThread();
-
+  
 private:
     friend class WalletManager;
     friend class WalletListenerImpl;

@@ -39,6 +39,7 @@ import FontAwesome 1.0
 import moneroComponents.Network 1.0
 import moneroComponents.Wallet 1.0
 import moneroComponents.WalletManager 1.0
+import moneroComponents.YieldInfo 1.0
 import moneroComponents.PendingTransaction 1.0
 import moneroComponents.NetworkType 1.0
 import moneroComponents.Settings 1.0

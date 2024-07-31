@@ -34,6 +34,7 @@
 #include <thread>
 #include <vector>
 
+#include "YieldInfo.h"
 #include "PendingTransaction.h"
 #include "UnsignedTransaction.h"
 #include "TransactionHistory.h"
@@ -1125,6 +1126,13 @@ void Wallet::onPassphraseEntered(const QString &passphrase, bool enter_on_device
     {
         m_walletListener->onPassphraseEntered(passphrase, enter_on_device, entry_abort);
     }
+}
+
+YieldInfo * Wallet::getYieldInfo()
+{
+  Monero::YieldInfo * yiImpl = m_walletImpl->getYieldInfo();
+  YieldInfo * result = new YieldInfo(yiImpl, this);
+  return result;
 }
 
 Wallet::Wallet(Monero::Wallet *w, QObject *parent)

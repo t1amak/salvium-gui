@@ -32,6 +32,7 @@ import QtQuick.Controls 1.4
 import QtQuick.Layouts 1.1
 import QtQuick.Dialogs 1.2
 import moneroComponents.Clipboard 1.0
+import moneroComponents.YieldInfo 1.0
 import moneroComponents.PendingTransaction 1.0
 import moneroComponents.Wallet 1.0
 import moneroComponents.NetworkType 1.0
@@ -52,7 +53,7 @@ Rectangle {
     color: "transparent"
     property alias stakingHeight: pageRoot.height
     property int mixin: 15  // (ring size 16)
-    property string amount: "0.00"
+    property string amount: ""
     property string warningContent: ""
     property string stakeButtonWarning: {
         // Currently opened wallet is not view-only
@@ -253,6 +254,84 @@ Rectangle {
                     id: newstakeLayout
                     spacing: 0
 
+                    MoneroComponents.LabelSubheader {
+                        Layout.fillWidth: true
+                        fontSize: 24
+                        textFormat: Text.RichText
+                        text: qsTr("Yield Info") + translationManager.emptyString
+                    }
+
+                    RowLayout {
+                        Layout.topMargin: 10
+    
+                        MoneroComponents.TextPlain {
+                            text: qsTr("Supply coins burnt in last 30 days (21,600 blocks): ") + translationManager.emptyString
+                            Layout.fillWidth: true
+                            color: MoneroComponents.Style.defaultFontColor
+                                font.pixelSize: 16
+                            font.family: MoneroComponents.Style.fontRegular.name
+                            themeTransition: false
+                        }
+
+                        MoneroComponents.TextPlain {
+                            id: coinsBurnt
+                            Layout.rightMargin: 87
+                            font.family: MoneroComponents.Style.fontMonoRegular.name;
+                            font.pixelSize: 16
+                            color: MoneroComponents.Style.defaultFontColor
+                        }
+                    }
+
+                    RowLayout {
+                        Layout.topMargin: 10
+    
+                        MoneroComponents.TextPlain {
+                            text: qsTr("Total coins locked: ") + translationManager.emptyString
+                            Layout.fillWidth: true
+                            color: MoneroComponents.Style.defaultFontColor
+                                font.pixelSize: 16
+                            font.family: MoneroComponents.Style.fontRegular.name
+                            themeTransition: false
+                        }
+
+                        MoneroComponents.TextPlain {
+                            id: coinsLocked
+                            Layout.rightMargin: 87
+                            font.family: MoneroComponents.Style.fontMonoRegular.name;
+                            font.pixelSize: 16
+                            color: MoneroComponents.Style.defaultFontColor
+                        }
+                    }
+
+                    RowLayout {
+                        Layout.topMargin: 10
+    
+                        MoneroComponents.TextPlain {
+                            text: qsTr("Yield accrued in last 30 days (21,600 blocks): ") + translationManager.emptyString
+                            Layout.fillWidth: true
+                            color: MoneroComponents.Style.defaultFontColor
+                                font.pixelSize: 16
+                            font.family: MoneroComponents.Style.fontRegular.name
+                            themeTransition: false
+                        }
+
+                        MoneroComponents.TextPlain {
+                            id: coinsAccrued
+                            Layout.rightMargin: 87
+                            font.family: MoneroComponents.Style.fontMonoRegular.name;
+                            font.pixelSize: 16
+                            color: MoneroComponents.Style.defaultFontColor
+                        }
+                    }
+
+                    MoneroComponents.LabelSubheader {
+                        Layout.fillWidth: true
+                        Layout.topMargin: 24
+                        fontSize: 24
+                        textFormat: Text.RichText
+                        text: qsTr("Staking") + translationManager.emptyString
+                    }
+
                     RowLayout {
                         Layout.topMargin: 10
     
@@ -260,7 +339,7 @@ Rectangle {
                             text: qsTr("Total unlocked balance: ") + translationManager.emptyString
                             Layout.fillWidth: true
                             color: MoneroComponents.Style.defaultFontColor
-                                font.pixelSize: 16
+                            font.pixelSize: 16
                             font.family: MoneroComponents.Style.fontRegular.name
                             themeTransition: false
                         }
@@ -289,6 +368,8 @@ Rectangle {
     
                         MoneroComponents.TextPlain {
                             id: newstakeLabel
+                            font.pixelSize: 16
+                            font.family: MoneroComponents.Style.fontRegular.name
                             textFormat: Text.RichText
                             text: qsTr("Stake new amount") + translationManager.emptyString
                         }
@@ -303,13 +384,13 @@ Rectangle {
                             Layout.maximumWidth: 125
                             borderDisabled: true
                             fontFamily: MoneroComponents.Style.fontMonoRegular.name
-                            fontSize: 14
+                            fontSize: 16
                             inputPaddingLeft: 0
                             inputPaddingRight: 0
                             inputPaddingTop: 0
                             inputPaddingBottom: 0
                             placeholderFontFamily: MoneroComponents.Style.fontMonoRegular.name
-                            placeholderFontSize: 14
+                            placeholderFontSize: 16
                             placeholderLeftMargin: 0
                             placeholderText: "0.00"
                             text: amount
@@ -326,7 +407,7 @@ Rectangle {
                                         cursorPosition = 1;
                                     }
                                 }
-                                error = (walletManager.amountFromString(text) == 0) || (walletManager.amountFromString(text) > appWindow.getUnlockedBalance());
+                                error = (text == "") || (walletManager.amountFromString(text) == 0) || (walletManager.amountFromString(text) > appWindow.getUnlockedBalance());
                                 stakeButton.enabled = !error;
                                 amount = text;
                             }
@@ -345,6 +426,7 @@ Rectangle {
                         StandardButton {
                             id: stakeButton
                             rightIcon: "qrc:///images/rightArrow.png"
+                            Layout.rightMargin: 4
                             Layout.topMargin: 4
                             text: qsTr("Stake") + translationManager.emptyString
                             enabled: !stakeButtonWarningBox.visible && !warningContent
@@ -385,7 +467,11 @@ Rectangle {
     function onPageCompleted() {
         console.log("staking page loaded")
         updateStatus();
-        unlockedBalanceAll.text = walletManager.displayAmount(appWindow.currentWallet.unlockedBalanceAll()) + " SAL"
+        unlockedBalanceAll.text = walletManager.displayAmount(appWindow.currentWallet.unlockedBalanceAll()) + " SAL"    
+        var yield_info = currentWallet.getYieldInfo();
+        coinsBurnt.text = yield_info.burnt;
+        coinsLocked.text = yield_info.locked;
+        coinsAccrued.text = yield_info.yield;
     }
 
     //TODO: Add daemon sync status

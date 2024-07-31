@@ -47,6 +47,7 @@
 #include "WalletManager.h"
 #include "Wallet.h"
 #include "QRCodeImageProvider.h"
+#include "YieldInfo.h"
 #include "PendingTransaction.h"
 #include "UnsignedTransaction.h"
 #include "TranslationManager.h"
@@ -388,6 +389,8 @@ Verify update binary using 'shasum'-compatible (SHA256 algo) output signed by tw
 
     qmlRegisterUncreatableType<Wallet>("moneroComponents.Wallet", 1, 0, "Wallet", "Wallet can't be instantiated directly");
 
+    qmlRegisterUncreatableType<YieldInfo>("moneroComponents.YieldInfo", 1, 0, "YieldInfo",
+                                                   "YieldInfo can't be instantiated directly");
 
     qmlRegisterUncreatableType<PendingTransaction>("moneroComponents.PendingTransaction", 1, 0, "PendingTransaction",
                                                    "PendingTransaction can't be instantiated directly");
