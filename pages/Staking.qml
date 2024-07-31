@@ -63,20 +63,13 @@ Rectangle {
         }
 
         // There are sufficient unlocked funds available
-        if (recipientModel.getAmountTotal() > appWindow.getUnlockedBalance()) {
+        if (walletManager.amountFromString(amountInput.text) > appWindow.getUnlockedBalance()) {
             return qsTr("Amount is more than unlocked balance.") + translationManager.emptyString;
         }
 
-        if (!recipientModel.hasEmptyAddress()) {
-            // Address is valid
-            if (recipientModel.hasInvalidAddress()) {
-                return qsTr("Address is invalid.") + translationManager.emptyString;
-            }
-
-            // Amount is nonzero
-            if (recipientModel.hasEmptyAmount()) {
-                return qsTr("Enter an amount.") + translationManager.emptyString;
-            }
+        // Amount is nonzero
+        if (amountInput.isEmpty()) {
+            return qsTr("Enter an amount.") + translationManager.emptyString;
         }
 
         return "";
@@ -91,40 +84,6 @@ Rectangle {
       oaPopup.icon = StandardIcon.Information
       oaPopup.onCloseCallback = null
       oaPopup.open()
-    }
-
-    function fillPaymentDetails(address, payment_id, amount, tx_description, recipient_name) {
-        if (recipientModel.count > 0) {
-            const last = recipientModel.count - 1;
-            if (recipientModel.get(recipientModel.count - 1).address == "") {
-                recipientModel.remove(last);
-            }
-        }
-
-        recipientModel.newRecipient(address, Utils.removeTrailingZeros(amount || ""));
-        setPaymentId(payment_id || "");
-        setDescription((recipient_name ? recipient_name + (tx_description ? " (" + tx_description + ")" : "") : (tx_description || "")));
-    }
-
-    function updateFromQrCode(address, payment_id, amount, tx_description, recipient_name) {
-        console.log("updateFromQrCode")
-        fillPaymentDetails(address, payment_id, amount, tx_description, recipient_name);
-        cameraUi.qrcode_decoded.disconnect(updateFromQrCode)
-    }
-
-    function setDescription(value) {
-        descriptionLine.text = value;
-        descriptionCheckbox.checked = descriptionLine.text != "";
-    }
-
-    function setPaymentId(value) {
-        paymentIdLine.text = value;
-        paymentIdCheckbox.checked = paymentIdLine.text != "";
-    }
-
-    function clearFields() {
-        recipientModel.clear();
-        fillPaymentDetails("", "", "", "", "");
     }
 
     // Information dialog
@@ -170,76 +129,6 @@ Rectangle {
           }
       }
 
-        ListModel {
-            id: recipientModel
-
-            readonly property int maxRecipients: 16
-
-            ListElement {
-                address: ""
-                amount: ""
-            }
-
-            function newRecipient(address, amount) {
-                if (recipientModel.count < maxRecipients) {
-                    recipientModel.append({address: address, amount: amount});
-                    return true;
-                }
-                return false;
-            }
-
-            function getRecipients() {
-                var recipients = [];
-                for (var index = 0; index < recipientModel.count; ++index) {
-                    const recipient = recipientModel.get(index);
-                    recipients.push({
-                        address: recipient.address,
-                        amount: recipient.amount,
-                    });
-                }
-                return recipients;
-            }
-
-            function getAmountTotal() {
-                var sum = [];
-                for (var index = 0; index < recipientModel.count; ++index) {
-                    const amount = recipientModel.get(index).amount;
-                    if (amount == "(all)") {
-                        return appWindow.getUnlockedBalance();
-                    }
-                    sum.push(amount || "0");
-                }
-                return walletManager.amountsSumFromStrings(sum);
-            }
-
-            function hasEmptyAmount() {
-                for (var index = 0; index < recipientModel.count; ++index) {
-                    if (recipientModel.get(index).amount === "") {
-                        return true;
-                    }
-                }
-                return false;
-            }
-
-            function hasEmptyAddress() {
-                for (var index = 0; index < recipientModel.count; ++index) {
-                    if (recipientModel.get(index).address === "") {
-                        return true;
-                    }
-                }
-                return false;
-            }
-
-            function hasInvalidAddress() {
-                for (var index = 0; index < recipientModel.count; ++index) {
-                    if (!TxUtils.checkAddress(recipientModel.get(index).address, appWindow.persistentSettings.nettype)) {
-                        return true;
-                    }
-                }
-                return false;
-            }
-        }
-
         Item {
             Layout.fillWidth: true
             implicitHeight: stakingLayout.height
@@ -275,7 +164,7 @@ Rectangle {
 
                         MoneroComponents.TextPlain {
                             id: coinsBurnt
-                            Layout.rightMargin: 87
+                            Layout.rightMargin: 20
                             font.family: MoneroComponents.Style.fontMonoRegular.name;
                             font.pixelSize: 16
                             color: MoneroComponents.Style.defaultFontColor
@@ -296,7 +185,7 @@ Rectangle {
 
                         MoneroComponents.TextPlain {
                             id: coinsLocked
-                            Layout.rightMargin: 87
+                            Layout.rightMargin: 20
                             font.family: MoneroComponents.Style.fontMonoRegular.name;
                             font.pixelSize: 16
                             color: MoneroComponents.Style.defaultFontColor
@@ -317,7 +206,7 @@ Rectangle {
 
                         MoneroComponents.TextPlain {
                             id: coinsAccrued
-                            Layout.rightMargin: 87
+                            Layout.rightMargin: 20
                             font.family: MoneroComponents.Style.fontMonoRegular.name;
                             font.pixelSize: 16
                             color: MoneroComponents.Style.defaultFontColor
@@ -346,7 +235,7 @@ Rectangle {
 
                         MoneroComponents.TextPlain {
                             id: unlockedBalanceAll
-                            Layout.rightMargin: 87
+                            Layout.rightMargin: 20
                             font.family: MoneroComponents.Style.fontMonoRegular.name;
                             font.pixelSize: 16
                             color: MoneroComponents.Style.defaultFontColor
@@ -375,6 +264,7 @@ Rectangle {
                         }
 
                         MoneroComponents.LineEdit {
+                            id: amountInput
                             KeyNavigation.backtab: parent.children[0]
                             KeyNavigation.tab: stakeButton
                             Layout.alignment: Qt.AlignVCenter
@@ -420,7 +310,7 @@ Rectangle {
                             horizontalAlignment: Text.AlignHCenter
                             font.family: MoneroComponents.Style.fontRegular.name
                             text: "SAL"
-                            visible: recipientModel.count == 1
+                            visible: true
                         }
 
                         StandardButton {
@@ -437,21 +327,20 @@ Rectangle {
                         }
                         }
                     }
-                }
+                
     
                 RowLayout {
-                }
-            }
-        
-            MoneroComponents.WarningBox {
-                id: stakeButtonWarningBox
-                text: root.stakeButtonWarning
-                visible: root.stakeButtonWarning !== ""
-            }
 
-            function checkInformation() {
-                return !recipientModel.hasEmptyAmount() &&
-                    recipientModel.getAmountTotal() <= appWindow.getUnlockedBalance();
+                    Layout.topMargin: 60
+    
+                    MoneroComponents.WarningBox {
+                        id: stakeButtonWarningBox
+                        text: root.stakeButtonWarning
+                        visible: root.stakeButtonWarning !== ""
+                    }
+                }
+
+    }
             }
         }   
     }
@@ -469,9 +358,9 @@ Rectangle {
         updateStatus();
         unlockedBalanceAll.text = walletManager.displayAmount(appWindow.currentWallet.unlockedBalanceAll()) + " SAL"    
         var yield_info = currentWallet.getYieldInfo();
-        coinsBurnt.text = yield_info.burnt;
-        coinsLocked.text = yield_info.locked;
-        coinsAccrued.text = yield_info.yield;
+        coinsBurnt.text = walletManager.displayAmount(yield_info.burnt) + " SAL";
+        coinsLocked.text = walletManager.displayAmount(yield_info.locked) + " SAL";
+        coinsAccrued.text = walletManager.displayAmount(yield_info.yield) + " SAL";
     }
 
     //TODO: Add daemon sync status
