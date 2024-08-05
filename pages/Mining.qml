@@ -295,7 +295,7 @@ Rectangle {
                                 if (persistentSettings.allow_p2pool_mining) {
                                     if (p2poolManager.isInstalled()) {
                                         args = daemonManager.getArgs(persistentSettings.blockchainDataDir) //updates arguments
-                                        if (persistentSettings.allowRemoteNodeMining || (args.includes("--zmq-pub tcp://127.0.0.1:18083") || args.includes("--zmq-pub=tcp://127.0.0.1:18083")) && !args.includes("--no-zmq")) {
+                                        if (persistentSettings.allowRemoteNodeMining || (args.includes("--zmq-pub tcp://127.0.0.1:19083") || args.includes("--zmq-pub=tcp://127.0.0.1:19083")) && !args.includes("--no-zmq")) {
                                             startP2Pool()
                                         }
                                         else {
@@ -450,8 +450,8 @@ Rectangle {
                     Usage:<br>
                         --wallet             Wallet address to mine to. Subaddresses and integrated addresses are not supported!<br>
                         --host               IP address of your Salvium node, default is 127.0.0.1<br>
-                        --rpc-port           monerod RPC API port number, default is 18081<br>
-                        --zmq-port           monerod ZMQ pub port number, default is 18083 (same port as in monerod\'s \"--zmq-pub\" command line parameter)<br>
+                        --rpc-port           salviumd RPC API port number, default is 19081<br>
+                        --zmq-port           salviumd ZMQ pub port number, default is 19083 (same port as in salviumd\'s \"--zmq-pub\" command line parameter)<br>
                         --stratum            Comma-separated list of IP:port for stratum server to listen on<br>
                         --p2p                Comma-separated list of IP:port for p2p server to listen on<br>
                         --addpeers           Comma-separated list of IP:port of other p2pool nodes to connect to<br>
@@ -463,7 +463,7 @@ Rectangle {
                         --stratum-api        An alias for --local-api<br>
                         --no-cache           Disable p2pool.cache<br>
                         --no-color           Disable colors in console output<br>
-                        --no-randomx         Disable internal RandomX hasher: p2pool will use RPC calls to monerod to check PoW hashes<br>
+                        --no-randomx         Disable internal RandomX hasher: p2pool will use RPC calls to salviumd to check PoW hashes<br>
                         --out-peers N        Maximum number of outgoing connections for p2p server (any value between 10 and 1000)<br>
                         --in-peers N         Maximum number of incoming connections for p2p server (any value between 10 and 1000)<br>
                         --start-mining N     Start built-in miner using N threads (any value between 1 and 64)<br>
@@ -589,7 +589,7 @@ Rectangle {
         var noSync = false;
         //these args will be deleted because DaemonManager::start will re-add them later.
         //--no-zmq must be deleted. removing '--zmq-pub=tcp...' lets us blindly add '--zmq-pub tcp...' later without risking duplication.
-        var defaultArgs = ["--detach","--data-dir","--bootstrap-daemon-address","--prune-blockchain","--no-sync","--check-updates","--non-interactive","--max-concurrency","--no-zmq","--zmq-pub=tcp://127.0.0.1:18083"]
+        var defaultArgs = ["--detach","--data-dir","--bootstrap-daemon-address","--prune-blockchain","--no-sync","--check-updates","--non-interactive","--max-concurrency","--no-zmq","--zmq-pub=tcp://127.0.0.1:19083"]
         var customDaemonArgsArray = args.split(' ');
         var flag = "";
         var allArgs = [];
