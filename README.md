@@ -1,6 +1,7 @@
-# Monero GUI
+# Salvium GUI
 
-Copyright (c) 2014-2024, The Monero Project
+Copyright (c) 2024, Salvium
+Portions Copyright (c) 2014-2024, The Monero Project
 
 ## Table of Contents
   * [Development resources](#development-resources)
@@ -10,8 +11,8 @@ Copyright (c) 2014-2024, The Monero Project
   * [Supporting the project](#supporting-the-project)
   * [License](#license)
   * [Translations](#translations)
-  * [Installing the Monero GUI from a package](#installing-the-monero-gui-from-a-package)
-  * [Compiling the Monero GUI from source](#compiling-the-monero-gui-from-source)
+  * [Installing the Salvium GUI from a package](#installing-the-salvium-gui-from-a-package)
+  * [Compiling the Salvium GUI from source](#compiling-the-salvium-gui-from-source)
     + [Building Reproducible Windows static binaries with Docker (any OS)](#building-reproducible-windows-static-binaries-with-docker-any-os)
     + [Building Reproducible Linux static binaries with Docker (any OS)](#building-reproducible-linux-static-binaries-with-docker-any-os)
     + [Building Android APK with Docker (any OS) *Experimental*](#building-android-apk-with-docker-any-os-experimental)
@@ -35,37 +36,19 @@ Copyright (c) 2014-2024, The Monero Project
 
 ## Introduction
 
-Monero is a private, secure, untraceable, decentralised digital currency. You are your bank, you control your funds, and nobody can trace your transfers unless you allow them to do so.
+Salvium is a private, secure, untraceable, decentralised digital currency. You are your bank, you control your funds, and nobody can trace your transfers unless you allow them to do so.
 
-**Privacy:** Monero uses a cryptographically sound system to allow you to send and receive funds without your transactions being easily revealed on the blockchain (the ledger of transactions that everyone has). This ensures that your purchases, receipts, and all transfers remain absolutely private by default.
+**Privacy:** Salvium uses a cryptographically sound system to allow you to send and receive funds without your transactions being easily revealed on the blockchain (the ledger of transactions that everyone has). This ensures that your purchases, receipts, and all transfers remain absolutely private by default.
 
 **Security:** Using the power of a distributed peer-to-peer consensus network, every transaction on the network is cryptographically secured. Individual wallets have a 25 word mnemonic seed that is only displayed once, and can be written down to backup the wallet. Wallet files are encrypted with a passphrase to ensure they are useless if stolen.
 
-**Untraceability:** By taking advantage of ring signatures, a special property of a certain type of cryptography, Monero is able to ensure that transactions are not only untraceable, but have an optional measure of ambiguity that ensures that transactions cannot easily be tied back to an individual user or computer.
+**Untraceability:** By taking advantage of ring signatures, a special property of a certain type of cryptography, Salvium is able to ensure that transactions are not only untraceable, but have an optional measure of ambiguity that ensures that transactions cannot easily be tied back to an individual user or computer.
 
 ## About this project
 
-This is the GUI for the [core Monero implementation](https://github.com/monero-project/monero). It is open source and completely free to use without restrictions, except for those specified in the license agreement below. There are no restrictions on anyone creating an alternative implementation of Monero that uses the protocol and network in a compatible manner.
+This is the GUI for the [core Salvium implementation](https://github.com/salvium/salvium). It is open source and completely free to use without restrictions, except for those specified in the license agreement below. There are no restrictions on anyone creating an alternative implementation of Salvium that uses the protocol and network in a compatible manner.
 
 As with many development projects, the repository on Github is considered to be the "staging" area for the latest changes. Before changes are merged into that branch on the main repository, they are tested by individual developers in their own branches, submitted as a pull request, and then subsequently tested by contributors who focus on testing and code reviews. That having been said, the repository should be carefully considered before using it in a production environment, unless there is a patch in the repository for a particular show-stopping issue you are experiencing. It is generally a better idea to use a tagged release for stability.
-
-## Supporting the project
-
-Monero is a 100% community-sponsored endeavor. If you want to join our efforts, the easiest thing you can do is support the project financially. Both Monero and Bitcoin donations can be made to **donate.getmonero.org** if using a client that supports the [OpenAlias](https://openalias.org) standard.
-
-The Monero donation address is: `888tNkZrPN6JsEgekjMnABU4TBzc2Dt29EPAvkRxbANsAnjyPbb3iQ1YBRk1UXcdRsiKc9dhwMVgN5S9cQUiyoogDavup3H` (viewkey: `f359631075708155cc3d92a32b75a7d02a5dcf27756707b47a2b31b21c389501`)
-
-The Bitcoin donation address is: `1KTexdemPdxSBcG55heUuTjDRYqbC5ZL8H`
-
-GUI development funding and/or some supporting services are also graciously provided by [sponsors](https://www.getmonero.org/community/sponsorships/):
-
-[<img width="150" src="https://www.getmonero.org/img/sponsors/tarilabs.png"/>](https://tarilabs.com/)
-[<img width="150" src="https://www.getmonero.org/img/sponsors/globee.png"/>](https://globee.com/)
-[<img width="150" src="https://www.getmonero.org/img/sponsors/symas.png"/>](https://symas.com/)
-[<img width="150" src="https://www.getmonero.org/img/sponsors/forked_logo.png"/>](http://www.forked.net/)
-[<img width="150" src="https://www.getmonero.org/img/sponsors/macstadium.png"/>](https://www.macstadium.com/)
-
-There are also several mining pools that kindly donate a portion of their fees, [a list of them can be found on our Bitcointalk post](https://bitcointalk.org/index.php?topic=583449.0).
 
 ## License
 
@@ -73,7 +56,7 @@ See [LICENSE](LICENSE).
 
 ## Translations
 
-Do you speak a second language and would like to help translate the Monero GUI? Check out Weblate, our localization platform, at [translate.getmonero.org](https://translate.getmonero.org/). Choose the language and suggest a translation for a string or review an existing one. The Localization Workgroup made [a guide with step-by-step instructions](https://github.com/monero-ecosystem/monero-translations/blob/master/weblate.md) for Weblate.
+Do you speak a second language and would like to help translate the Salvium GUI? Check out Weblate, our localization platform, at [translate.getmonero.org](https://translate.getmonero.org/). Choose the language and suggest a translation for a string or review an existing one. The Localization Workgroup made [a guide with step-by-step instructions](https://github.com/monero-ecosystem/monero-translations/blob/master/weblate.md) for Weblate.
 
 If you need help/support or any info you can contact the localization workgroup on the IRC channel #monero-translations (relayed on [Matrix](https://matrix.to/#/!BKMbQLMDzHKzmtrBfg:matrix.org?via=monero.social&via=matrix.org&via=libera.chat)) or by email at translate[at]getmonero[dot]org. For more info about the Localization workgroup: [github.com/monero-ecosystem/monero-translations](https://github.com/monero-ecosystem/monero-translations)
 
@@ -83,73 +66,62 @@ Status of the translations:
 <img src="https://translate.getmonero.org/widgets/monero/-/gui-wallet/horizontal-auto.svg" alt="Translation status" />
 </a>
 
-## Installing the Monero GUI from a package
-
-Packages are available for
-* Arch Linux: [monero-gui](https://archlinux.org/packages/extra/x86_64/monero-gui/)
-* NixOS: `nix-shell -p monero-gui`
-* Flatpak: [Monero GUI](https://flathub.org/apps/details/org.getmonero.Monero)
-* GuixSD: `guix package -i monero-gui`
-* macOS (homebrew): `brew install --cask monero-wallet`
-
-Packaging for your favorite distribution would be a welcome contribution!
-
-## Compiling the Monero GUI from source
+## Compiling the Salvium GUI from source
 
 *Note*: Qt 5.9.7 is the minimum version required to build the GUI.
 
-*Note*: Official GUI releases use salvium-wallet-gui from this process alongside the supporting binaries (monerod, etc) from the [CLI deterministic builds](https://github.com/monero-project/monero/blob/master/contrib/gitian/README.md).
+*Note*: Official GUI releases use salvium-wallet-gui from this process alongside the supporting binaries (salviumd, etc) from the [CLI deterministic builds](https://github.com/salvium/salvium/blob/main/contrib/gitian/README.md).
 
 ### Building Reproducible Windows static binaries with Docker (any OS)
 
 1. Install Docker [https://docs.docker.com/engine/install/](https://docs.docker.com/engine/install/)
 2. Clone the repository
    ```
-   git clone --branch master --recursive https://github.com/monero-project/monero-gui.git
+   git clone --branch main --recursive https://github.com/salvium/salvium-gui.git
    ```
-   \* `master` - replace with the desired version tag (e.g. `v0.18.3.3`) to build the release binaries.
+   \* `main` - replace with the desired version tag (e.g. `v0.4.2`) to build the release binaries.
 3. Prepare build environment
    ```
-   cd monero-gui
+   cd salvium-gui
    docker build --tag monero:build-env-windows --build-arg THREADS=4 --file Dockerfile.windows .
    ```
    \* `4` - number of CPU threads to use
 
 4. Build
    ```
-   docker run --rm -it -v <MONERO_GUI_DIR_FULL_PATH>:/monero-gui -w /monero-gui monero:build-env-windows sh -c 'make depends root=/depends target=x86_64-w64-mingw32 tag=win-x64 -j4'
+   docker run --rm -it -v <SALVIUM_GUI_DIR_FULL_PATH>:/salvium-gui -w /salvium-gui monero:build-env-windows sh -c 'make depends root=/depends target=x86_64-w64-mingw32 tag=win-x64 -j4'
    ```
-   \* `<MONERO_GUI_DIR_FULL_PATH>` - absolute path to `monero-gui` directory  
+   \* `<SALVIUM_GUI_DIR_FULL_PATH>` - absolute path to `salvium-gui` directory  
    \* `4` - number of CPU threads to use
-5. Monero GUI Windows static binaries will be placed in  `monero-gui/build/x86_64-w64-mingw32/release/bin` directory
+5. Salvium GUI Windows static binaries will be placed in  `salvium-gui/build/x86_64-w64-mingw32/release/bin` directory
 
 ### Building Reproducible Linux static binaries with Docker (any OS)
 
 1. Install Docker [https://docs.docker.com/engine/install/](https://docs.docker.com/engine/install/)
 2. Clone the repository
    ```
-   git clone --branch master --recursive https://github.com/monero-project/monero-gui.git
+   git clone --branch main --recursive https://github.com/salvium/salvium-gui.git
    ```
-   \* `master` - replace with the desired version tag (e.g. `v0.18.3.3`) to build the release binaries.
+   \* `main` - replace with the desired version tag (e.g. `v0.4.2`) to build the release binaries.
 3. Prepare build environment
    ```
-   cd monero-gui
+   cd salvium-gui
    docker build --tag monero:build-env-linux --build-arg THREADS=4 --file Dockerfile.linux .
    ```
    \* `4` - number of CPU threads to use
 
 4. Build
    ```
-   docker run --rm -it -v <MONERO_GUI_DIR_FULL_PATH>:/monero-gui -w /monero-gui monero:build-env-linux sh -c 'make release-static -j4'
+   docker run --rm -it -v <SALVIUM_GUI_DIR_FULL_PATH>:/salvium-gui -w /salvium-gui monero:build-env-linux sh -c 'make release-static -j4'
    ```
-   \* `<MONERO_GUI_DIR_FULL_PATH>` - absolute path to `monero-gui` directory  
+   \* `<SALVIUM_GUI_DIR_FULL_PATH>` - absolute path to `salvium-gui` directory  
    \* `4` - number of CPU threads to use
-5. Monero GUI Linux static binaries will be placed in  `monero-gui/build/release/bin` directory
+5. Salvium GUI Linux static binaries will be placed in  `salvium-gui/build/release/bin` directory
 6. (*Optional*) Compare `salvium-wallet-gui` SHA-256 hash to the one obtained from a trusted source
    ```
-   docker run --rm -it -v <MONERO_GUI_DIR_FULL_PATH>:/monero-gui -w /monero-gui monero:build-env-linux sh -c 'shasum -a 256 /monero-gui/build/release/bin/salvium-wallet-gui'
+   docker run --rm -it -v <SALVIUM_GUI_DIR_FULL_PATH>:/salvium-gui -w /salvium-gui monero:build-env-linux sh -c 'shasum -a 256 /salvium-gui/build/release/bin/salvium-wallet-gui'
    ```
-   \* `<MONERO_GUI_DIR_FULL_PATH>` - absolute path to `monero-gui` directory  
+   \* `<SALVIUM_GUI_DIR_FULL_PATH>` - absolute path to `salvium-gui` directory  
 
 ### Building Android APK with Docker (any OS) *Experimental*
  - Minimum Android 9 Pie (API 28)
@@ -157,28 +129,28 @@ Packaging for your favorite distribution would be a welcome contribution!
 1. Install Docker [https://docs.docker.com/engine/install/](https://docs.docker.com/engine/install/)
 2. Clone the repository
    ```
-   git clone --recursive https://github.com/monero-project/monero-gui.git
+   git clone --recursive https://github.com/salvium/salvium-gui.git
    ```
 3. Prepare build environment
    ```
-   cd monero-gui
+   cd salvium-gui
    docker build --tag monero:build-env-android --build-arg THREADS=4 --file Dockerfile.android .
    ```
    \* `4` - number of CPU threads to use
 
 4. Build
    ```
-   docker run --rm -it -v <MONERO_GUI_DIR_FULL_PATH>:/monero-gui -e THREADS=4 monero:build-env-android
+   docker run --rm -it -v <SALVIUM_GUI_DIR_FULL_PATH>:/salvium-gui -e THREADS=4 monero:build-env-android
    ```
-   \* `<MONERO_GUI_DIR_FULL_PATH>` - absolute path to `monero-gui` directory  
+   \* `<SALVIUM_GUI_DIR_FULL_PATH>` - absolute path to `salvium-gui` directory  
    \* `4` - number of CPU threads to use
-5. Monero GUI APK will be placed in  `monero-gui/build/Android/release/android-build` directory
+5. Salvium GUI APK will be placed in  `salvium-gui/build/Android/release/android-build` directory
 6. Deploy
    * Using ADB (Android debugger bridge)
      - [Enable adb debugging on your device](https://developer.android.com/studio/command-line/adb.html#Enabling)
-      * Connect your device with USB and install Monero GUI APK with adb:
+      * Connect your device with USB and install Salvium GUI APK with adb:
       ```
-      adb install build/Android/release/android-build/monero-gui.apk
+      adb install build/Android/release/android-build/salvium-gui.apk
       ```
       * Troubleshooting:
       ```
@@ -192,7 +164,7 @@ Packaging for your favorite distribution would be a welcome contribution!
    * Using a web server
       ```
       mkdir /usr/tmp
-      cp build/Android/release/android-build/monero-gui.apk /usr/tmp
+      cp build/Android/release/android-build/salvium-gui.apk /usr/tmp
       docker run -d -v /usr/tmp:/usr/share/nginx/html:ro -p 8080:80 nginx
       ```
       Now it should be accessible through a web browser at
@@ -204,7 +176,7 @@ Packaging for your favorite distribution would be a welcome contribution!
 
 (Tested on Ubuntu 17.10 x64, Ubuntu 18.04 x64 and Gentoo x64)
 
-1. Install Monero dependencies
+1. Install Salvium dependencies
 
   - For Debian distributions (Debian, Ubuntu, Mint, Tails...)
 
@@ -251,8 +223,8 @@ The following instructions will fetch Qt from your distribution's repositories i
 3. Clone repository
 
     ```
-    git clone --recursive https://github.com/monero-project/monero-gui.git
-    cd monero-gui
+    git clone --recursive https://github.com/salvium/salvium-gui.git
+    cd salvium-gui
     ```
 
 4. Build
@@ -272,7 +244,7 @@ The executable can be found in the build/release/bin folder.
 
 2. Install [homebrew](http://brew.sh/)
 
-3. Install [monero](https://github.com/monero-project/monero) dependencies:
+3. Install [salvium](https://github.com/salvium/salvium) dependencies:
 
   `brew install cmake pkg-config openssl boost unbound hidapi zmq libpgm libsodium miniupnpc expat libunwind-headers protobuf libgcrypt`
 
@@ -280,11 +252,11 @@ The executable can be found in the build/release/bin folder.
 
   `brew install qt5`  (or download QT 5.9.7+ from [qt.io](https://www.qt.io/download-open-source/))
 
-5. Grab an up-to-date copy of the monero-gui repository
+5. Grab an up-to-date copy of the salvium-gui repository
 
    ```
-   git clone --recursive https://github.com/monero-project/monero-gui.git
-   cd monero-gui
+   git clone --recursive https://github.com/salvium/salvium-gui.git
+   cd salvium-gui
    ```
 
 6. Start the build
@@ -301,19 +273,19 @@ For building an application bundle see `DEPLOY.md`.
 
 ### Building on Windows
 
-The Monero GUI on Windows is 64 bits only; 32-bit Windows GUI builds are not officially supported anymore.
+The Salvium GUI on Windows is 64 bits only; 32-bit Windows GUI builds are not officially supported anymore.
 
 1. Install [MSYS2](https://www.msys2.org/), follow the instructions on that page on how to update system and packages to the latest versions
 
 2. Open an 64-bit MSYS2 shell: Use the *MSYS2 MinGW 64-bit* shortcut, or use the `msys2_shell.cmd` batch file with a `-mingw64` parameter
 
-3. Install MSYS2 packages for Monero dependencies; the needed 64-bit packages have `x86_64` in their names
+3. Install MSYS2 packages for Salvium dependencies; the needed 64-bit packages have `x86_64` in their names
 
     ```
     pacman -S mingw-w64-x86_64-toolchain make mingw-w64-x86_64-cmake mingw-w64-x86_64-boost mingw-w64-x86_64-openssl mingw-w64-x86_64-zeromq mingw-w64-x86_64-libsodium mingw-w64-x86_64-hidapi mingw-w64-x86_64-protobuf-c mingw-w64-x86_64-libusb mingw-w64-x86_64-libgcrypt mingw-w64-x86_64-unbound mingw-w64-x86_64-pcre
     ```
 
-    You find more details about those dependencies in the [Monero documentation](https://github.com/monero-project/monero). Note that that there is no more need to compile Boost from source; like everything else, you can install it now with a MSYS2 package.
+    You find more details about those dependencies in the [Salvium documentation](https://github.com/salvium/salvium). Note that that there is no more need to compile Boost from source; like everything else, you can install it now with a MSYS2 package.
 
 4. Install Qt5
 
@@ -332,8 +304,8 @@ The Monero GUI on Windows is 64 bits only; 32-bit Windows GUI builds are not off
 6. Clone repository
 
     ```
-    git clone --recursive https://github.com/monero-project/monero-gui.git
-    cd monero-gui
+    git clone --recursive https://github.com/salvium/salvium-gui.git
+    cd salvium-gui
     ```
 
 7. Build

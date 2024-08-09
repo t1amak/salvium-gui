@@ -260,28 +260,28 @@ Rectangle {
                             font.pixelSize: 16
                             font.family: MoneroComponents.Style.fontRegular.name
                             textFormat: Text.RichText
-                            text: qsTr("Stake new amount") + translationManager.emptyString
+                            text: qsTr("Stake new amount: ") + translationManager.emptyString
                         }
 
                         MoneroComponents.LineEdit {
                             id: amountInput
                             KeyNavigation.backtab: parent.children[0]
                             KeyNavigation.tab: stakeButton
-                            Layout.alignment: Qt.AlignVCenter
+                            Layout.alignment: Qt.AlignVCenter | Qt.AlignRight
                             Layout.topMargin: 2
                             Layout.bottomMargin: 2
                             Layout.preferredWidth: 125
                             Layout.maximumWidth: 125
-                            borderDisabled: true
+                            borderDisabled: false
                             fontFamily: MoneroComponents.Style.fontMonoRegular.name
                             fontSize: 16
-                            inputPaddingLeft: 0
-                            inputPaddingRight: 0
-                            inputPaddingTop: 0
-                            inputPaddingBottom: 0
+                            inputPaddingLeft: 10
+                            inputPaddingRight: 10
+                            inputPaddingTop: 2
+                            inputPaddingBottom: 2
                             placeholderFontFamily: MoneroComponents.Style.fontMonoRegular.name
                             placeholderFontSize: 16
-                            placeholderLeftMargin: 0
+                            placeholderLeftMargin: 10
                             placeholderText: "0.00"
                             text: amount
                             onTextChanged: {

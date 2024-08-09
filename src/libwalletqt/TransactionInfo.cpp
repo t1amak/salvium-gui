@@ -146,6 +146,11 @@ QString TransactionInfo::destinations_formatted() const
     return destinations;
 }
 
+Monero::transaction_type TransactionInfo::type() const
+{
+  return m_type;
+}
+
 TransactionInfo::TransactionInfo(const Monero::TransactionInfo *pimpl, QObject *parent)
     : QObject(parent)
     , m_amount(pimpl->amount())
@@ -163,6 +168,7 @@ TransactionInfo::TransactionInfo(const Monero::TransactionInfo *pimpl, QObject *
     , m_subaddrAccount(pimpl->subaddrAccount())
     , m_timestamp(QDateTime::fromTime_t(pimpl->timestamp()))
     , m_unlockTime(pimpl->unlockTime())
+    , m_type(pimpl->type())
 {
     for (auto const &t: pimpl->transfers())
     {
