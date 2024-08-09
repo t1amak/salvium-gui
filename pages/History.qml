@@ -671,7 +671,19 @@ Rectangle {
                                 MoneroComponents.TextPlain {
                                     font.family: MoneroComponents.Style.fontRegular.name
                                     font.pixelSize: 15
-                                    text: (isout ? qsTr("Sent") : qsTr("Received")) + (isFailed ? " (" + qsTr("Failed") + ")" : (isPending ? " (" + qsTr("Pending") + ")" : "")) + translationManager.emptyString
+                                    text: {
+                                        if (isout) {
+                                            if (tx_type == 6/* Monero::transaction_type::STAKE*/)
+                                                return qsTr("Staked") + (isFailed ? " (" + qsTr("Failed") + ")" : (isPending ? " (" + qsTr("Pending") + ")" : "")) + translationManager.emptyString;
+                                            if (tx_type == 5/*Monero::transaction_type::BURN*/)
+                                                return qsTr("Burnt") + (isFailed ? " (" + qsTr("Failed") + ")" : (isPending ? " (" + qsTr("Pending") + ")" : "")) + translationManager.emptyString;
+                                            return qsTr("Sent") + (isFailed ? " (" + qsTr("Failed") + ")" : (isPending ? " (" + qsTr("Pending") + ")" : "")) + translationManager.emptyString;
+                                        } else {
+                                            if (tx_type == 6/*Monero::transaction_type::STAKE*/)
+                                                return qsTr("Yield") + (isFailed ? " (" + qsTr("Failed") + ")" : (isPending ? " (" + qsTr("Pending") + ")" : "")) + translationManager.emptyString;
+                                            else return qsTr("Received") + (isFailed ? " (" + qsTr("Failed") + ")" : (isPending ? " (" + qsTr("Pending") + ")" : "")) + translationManager.emptyString;
+                                        }
+                                    }
                                     color: MoneroComponents.Style.historyHeaderTextColor
                                     anchors.verticalCenter: parent.verticalCenter
                                     themeTransitionBlackColor: MoneroComponents.Style._b_historyHeaderTextColor
@@ -721,7 +733,7 @@ Rectangle {
                                 MoneroComponents.TextPlain {
                                     font.family: MoneroComponents.Style.fontRegular.name
                                     font.pixelSize: 15
-                                    text: isout ? qsTr("Fee") : confirmationsRequired === 60 ? qsTr("Mined") : qsTr("Fee") + translationManager.emptyString
+                                    text: isout ? qsTr("Fee") : tx_type == 6 ? qsTr("Staked") : confirmationsRequired === 60 ? qsTr("Mined") : qsTr("Fee") + translationManager.emptyString
                                     color: MoneroComponents.Style.historyHeaderTextColor
                                     themeTransitionBlackColor: MoneroComponents.Style._b_historyHeaderTextColor
                                     themeTransitionWhiteColor: MoneroComponents.Style._w_historyHeaderTextColor
@@ -781,6 +793,7 @@ Rectangle {
                                 Layout.preferredHeight: 20
 
                                 MoneroComponents.TextPlain {
+                                    visible: !(isout && tx_type == 6)
                                     font.family: MoneroComponents.Style.fontRegular.name
                                     font.pixelSize: 15
                                     text: (isout ? qsTr("To") : qsTr("In")) + translationManager.emptyString
@@ -797,6 +810,7 @@ Rectangle {
                                 Layout.preferredHeight: 20
 
                                 MoneroComponents.TextPlain {
+                                    visible: !(isout && tx_type == 6)
                                     id: addressField
                                     font.family: MoneroComponents.Style.fontRegular.name
                                     font.pixelSize: 15
@@ -1477,6 +1491,12 @@ Rectangle {
                     txs.push(item);
                 } else if (item.hash.startsWith(root.sortSearchString)){
                     txs.push(item);
+                } else if (root.sortSearchString.toLowerCase() == "yield" && item.tx_type == 6) {
+                    txs.push(item);
+                } else if (root.sortSearchString.toLowerCase() == "burn" && item.tx_type == 5) {
+                    txs.push(item);
+                } else if (root.sortSearchString.toLowerCase() == "miner" && item.tx_type == 1) {
+                    txs.push(item);
                 }
             }
         }
@@ -1568,6 +1588,7 @@ Rectangle {
             var subaddrIndex = model.data(idx, TransactionHistoryModel.TransactionSubaddrIndexRole);
             var timestamp = new Date(date + " " + time).getTime() / 1000;
             var dateHuman = Utils.ago(timestamp);
+            var tx_type = _model.data(idx, TransactionHistoryModel.TransactionTypeRole);
 
             if (amount === 0) {
                 // transactions to the same account have amount === 0, while the 'destinations string'
@@ -1619,7 +1640,8 @@ Rectangle {
                 "receivingAddress": receivingAddress,
                 "receivingAddressLabel": receivingAddressLabel,
                 "subaddrAccount": subaddrAccount,
-                "subaddrIndex": subaddrIndex
+                "subaddrIndex": subaddrIndex,
+                "tx_type": tx_type
             });
         }
 

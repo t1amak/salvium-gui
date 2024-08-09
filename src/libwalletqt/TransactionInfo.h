@@ -60,6 +60,7 @@ class TransactionInfo : public QObject
     Q_PROPERTY(QString paymentId READ paymentId)
     Q_PROPERTY(QString description READ description)
     Q_PROPERTY(QString destinations_formatted READ destinations_formatted)
+    Q_PROPERTY(QString type READ type)
 
 public:
     enum Direction {
@@ -94,6 +95,7 @@ public:
     //! only applicable for output transactions
     //! used in tx details popup
     QString destinations_formatted() const;
+    Monero::transaction_type type() const;
 private:
     explicit TransactionInfo(const Monero::TransactionInfo *pimpl, QObject *parent = 0);
 private:
@@ -115,6 +117,7 @@ private:
     QSet<quint32> m_subaddrIndex;
     QDateTime m_timestamp;
     quint64 m_unlockTime;
+    Monero::transaction_type m_type;
 };
 
 #endif // TRANSACTIONINFO_H

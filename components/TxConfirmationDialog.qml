@@ -275,6 +275,7 @@ Rectangle {
                 font.pixelSize: 15
                 color: MoneroComponents.Style.dimmedFontColor
                 text: qsTr("To") + ":" + translationManager.emptyString
+                visible: !root.stake
             }
 
             Flickable {
@@ -286,6 +287,7 @@ Rectangle {
                     : recipientsArea.contentHeight
                 boundsBehavior: isMac ? Flickable.DragAndOvershootBounds : Flickable.StopAtBounds
                 clip: true
+                visible: !root.stake
 
                 TextArea.flickable: TextArea {
                     id : recipientsArea
