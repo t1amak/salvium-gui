@@ -74,12 +74,10 @@ QPixmap screenshot()
   const QWindowList windows = QGuiApplication::allWindows();
   for (QWindow *window : windows)
   {
-    if (window->isVisible())
-    {
-      hidden.emplace(window);
-      window->hide();
-    }
+    hidden.emplace(window);
+    window->hide();
   }
+
   const auto unhide = sg::make_scope_guard([&hidden]() {
     for (QWindow *window : hidden)
     {
