@@ -69,8 +69,8 @@
     </message>
     <message>
         <location filename="../pages/AddressBook.qml" line="93"/>
-        <source>This makes it easier to send or receive Monero and reduces errors when typing in addresses manually.</source>
-        <translation>Al hacer esto es mas fácil enviar y recibir Monero, reduciendo errores al escribir manualmente la dirección.</translation>
+        <source>This makes it easier to send or receive Salvium and reduces errors when typing in addresses manually.</source>
+        <translation>Al hacer esto es mas fácil enviar y recibir Salvium, reduciendo errores al escribir manualmente la dirección.</translation>
     </message>
     <message>
         <location filename="../pages/AddressBook.qml" line="102"/>
@@ -635,13 +635,13 @@ Es recomendable escribirla en la billetera física para mayor seguridad.</transl
     </message>
     <message>
         <location filename="../pages/Keys.qml" line="62"/>
-        <source>WARNING: Do not reuse your Monero keys on another fork, UNLESS this fork has key reuse mitigations built in. Doing so will harm your privacy.</source>
-        <translation>AVERTENCIA: No reuses tus llaves en otra bifurcación the Monero, A NO SER que esta bifurcación tenga incorporado las mitigaciones para el reuso de las llaves. Hacerlo perjudicará tu privacidad.</translation>
+        <source>WARNING: Do not reuse your Salvium keys on another fork, UNLESS this fork has key reuse mitigations built in. Doing so will harm your privacy.</source>
+        <translation>AVERTENCIA: No reuses tus llaves en otra bifurcación the Salvium, A NO SER que esta bifurcación tenga incorporado las mitigaciones para el reuso de las llaves. Hacerlo perjudicará tu privacidad.</translation>
     </message>
     <message>
         <location filename="../pages/Keys.qml" line="85"/>
-        <source>WARNING: Copying your seed to clipboard can expose you to malicious software, which may record your seed and steal your Monero. Please write down your seed manually.</source>
-        <translation>ADVERTENCIA: Copiar la semilla al portapapeles, puede exponerlo a software malicioso que podría registrar su semilla y robarle sus Monero. Escriba su semilla manualmente.</translation>
+        <source>WARNING: Copying your seed to clipboard can expose you to malicious software, which may record your seed and steal your Salvium. Please write down your seed manually.</source>
+        <translation>ADVERTENCIA: Copiar la semilla al portapapeles, puede exponerlo a software malicioso que podría registrar su semilla y robarle sus Salvium. Escriba su semilla manualmente.</translation>
     </message>
     <message>
         <location filename="../pages/Keys.qml" line="106"/>
@@ -1067,12 +1067,12 @@ Es recomendable escribirla en la billetera física para mayor seguridad.</transl
     </message>
     <message>
         <location filename="../pages/Mining.qml" line="76"/>
-        <source>Mining with your computer helps strengthen the Monero network. The more people mine, the harder it is for the network to be attacked, and every little bit helps.
+        <source>Mining with your computer helps strengthen the Salvium network. The more people mine, the harder it is for the network to be attacked, and every little bit helps.
 
-Mining also gives you a small chance to earn some Monero. Your computer will create hashes looking for block solutions. If you find a block, you will get the associated reward. Good luck!</source>
-        <translation>Minar con tu ordenador ayuda a fortalecer la red de Monero. Cuanta más gente mine, más difícil es que la red sea atacada, y toda pequeña ayuda cuenta.
+Mining also gives you a small chance to earn some Salvium. Your computer will create hashes looking for block solutions. If you find a block, you will get the associated reward. Good luck!</source>
+        <translation>Minar con tu ordenador ayuda a fortalecer la red de Salvium. Cuanta más gente mine, más difícil es que la red sea atacada, y toda pequeña ayuda cuenta.
 
-Minar también te da una posibilidad pequeña de ganar algo de Monero. Tu ordenador creará hashes buscando soluciones de bloques. Si encuentras un bloque, ganarás la recompensa asociada con él. ¡Buena suerte!</translation>
+Minar también te da una posibilidad pequeña de ganar algo de Salvium. Tu ordenador creará hashes buscando soluciones de bloques. Si encuentras un bloque, ganarás la recompensa asociada con él. ¡Buena suerte!</translation>
     </message>
     <message>
         <location filename="../pages/Mining.qml" line="76"/>
@@ -1722,8 +1722,8 @@ Minar también te da una posibilidad pequeña de ganar algo de Monero. Tu ordena
     </message>
     <message>
         <location filename="../pages/settings/SettingsInfo.qml" line="102"/>
-        <source>Embedded Monero version: </source>
-        <translation>Versión embedida de Monero: </translation>
+        <source>Embedded Salvium version: </source>
+        <translation>Versión embedida de Salvium: </translation>
     </message>
     <message>
         <location filename="../pages/settings/SettingsInfo.qml" line="132"/>
@@ -1833,12 +1833,12 @@ El archivo de caché anterior del monedero será renombrado y puede ser posterio
     </message>
     <message>
         <location filename="../pages/settings/SettingsInfo.qml" line="410"/>
-        <source>Donate to Monero</source>
-        <translation>Donar a Monero</translation>
+        <source>Donate to Salvium</source>
+        <translation>Donar a Salvium</translation>
     </message>
     <message>
         <location filename="../pages/settings/SettingsInfo.qml" line="412"/>
-        <source>Donation to Monero Core Team</source>
+        <source>Donation to Salvium Core Team</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -2017,14 +2017,14 @@ El archivo de caché anterior del monedero será renombrado y puede ser posterio
     </message>
     <message>
         <location filename="../pages/settings/SettingsNode.qml" line="224"/>
-        <source>Uses a third-party server to connect to the Monero network. Less secure, but easier on your computer.</source>
+        <source>Uses a third-party server to connect to the Salvium network. Less secure, but easier on your computer.</source>
         <translatorcomment>Easier is &quot;fácil&quot; but it sounds different using the literal translation, so &quot;sencillo&quot; it&apos;s a good synonym to use here.</translatorcomment>
-        <translation>Utiliza un servidor de un tercero para conectarse a la red de Monero. Es menos seguro, pero más sencillo para tu computadora.</translation>
+        <translation>Utiliza un servidor de un tercero para conectarse a la red de Salvium. Es menos seguro, pero más sencillo para tu computadora.</translation>
     </message>
     <message>
         <location filename="../pages/settings/SettingsNode.qml" line="253"/>
-        <source>To find a remote node, type &apos;Monero remote node&apos; into your favorite search engine. Please ensure the node is run by a trusted third-party.</source>
-        <translation>Para encontrar un nodo remoto, escribe &apos;nodo remoto Monero&apos; en tu motor de búsqueda favorito. Por favor asegúrate de que el nodo se ejecute por un tercero confiable.</translation>
+        <source>To find a remote node, type &apos;Salvium remote node&apos; into your favorite search engine. Please ensure the node is run by a trusted third-party.</source>
+        <translation>Para encontrar un nodo remoto, escribe &apos;nodo remoto Salvium&apos; en tu motor de búsqueda favorito. Por favor asegúrate de que el nodo se ejecute por un tercero confiable.</translation>
     </message>
     <message>
         <location filename="../pages/settings/SettingsNode.qml" line="317"/>
@@ -2208,8 +2208,8 @@ Puedes cambiar la contraseña en las opciones del monedero.</translation>
     </message>
     <message>
         <location filename="../pages/settings/SettingsWallet.qml" line="177"/>
-        <source>Receive Monero for your business, easily.</source>
-        <translation>Reciba Monero para su negocio.</translation>
+        <source>Receive Salvium for your business, easily.</source>
+        <translation>Reciba Salvium para su negocio.</translation>
     </message>
     <message>
         <location filename="../pages/settings/SettingsWallet.qml" line="178"/>
@@ -2236,8 +2236,8 @@ Puedes cambiar la contraseña en las opciones del monedero.</translation>
     </message>
     <message>
         <location filename="../pages/SharedRingDB.qml" line="103"/>
-        <source>This page allows you to interact with the shared ring database. This database is meant for use by Monero wallets as well as wallets from Monero clones which reuse the Monero keys.</source>
-        <translation>Esta página permite interactuar con la base de datos de las firmas circulares compartidas. Esta base de datos es para uso de los monederos de Monero como también por los monederos de los clones de Monero que han reusado las claves.</translation>
+        <source>This page allows you to interact with the shared ring database. This database is meant for use by Salvium wallets as well as wallets from Salvium clones which reuse the Salvium keys.</source>
+        <translation>Esta página permite interactuar con la base de datos de las firmas circulares compartidas. Esta base de datos es para uso de los monederos de Salvium como también por los monederos de los clones de Salvium que han reusado las claves.</translation>
     </message>
     <message>
         <location filename="../pages/SharedRingDB.qml" line="115"/>
@@ -2247,8 +2247,8 @@ Puedes cambiar la contraseña en las opciones del monedero.</translation>
     </message>
     <message>
         <location filename="../pages/SharedRingDB.qml" line="116"/>
-        <source>In order to obscure which inputs in a Monero transaction are being spent, a third party should not be able to tell which inputs in a ring are already known to be spent. Being able to do so would weaken the protection afforded by ring signatures. If all but one of the inputs are known to be already spent, then the input being actually spent becomes apparent, thereby nullifying the effect of ring signatures, one of the three main layers of privacy protection Monero uses.&lt;br&gt;To help transactions avoid those inputs, a list of known spent ones can be used to avoid using them in new transactions. Such a list is maintained by the Monero project and is available on the getmonero.org website, and you can import this list here.&lt;br&gt;Alternatively, you can scan the blockchain (and the blockchain of key-reusing Monero clones) yourself using the monero-blockchain-mark-spent-outputs tool to create a list of known spent outputs.&lt;br&gt;</source>
-        <translation>Para poder ofuscar qué entradas han sido gastadas en las transacciones de Monero, un tercero no debería poder determinar de las firmas circulares cuales han sido gastadas en esas entradas. Hacerlo debilitaría la protección que proporcionan las firmas. Si solo una de las entradas pudiera ser determinada en el gasto, entonces esa entrada se vuelve evidente, anulando el efecto de las firmas. Las firmas circulares son una de las capas principales que usa Monero para proteger la privacidad.&lt;br&gt;Para evitar que las transacciones usen estas entradas, puede ser usada una lista de entradas gastadas para evitar usarlas en nuevas transacciones. Esa lista es mantenida por el proyecto Monero y está disponible en la página web getmonero.org y la puedes importar desde aquí.&lt;br&gt;De lo contrario, puede escanear la cadena de bloques (y las cadenas de bloques de los clones de Monero que reusan las claves) usted mismo usando la herramienta de Monero de salidas excluidas para crear una lista conocida de las salidas gastadas.&lt;br&gt;</translation>
+        <source>In order to obscure which inputs in a Salvium transaction are being spent, a third party should not be able to tell which inputs in a ring are already known to be spent. Being able to do so would weaken the protection afforded by ring signatures. If all but one of the inputs are known to be already spent, then the input being actually spent becomes apparent, thereby nullifying the effect of ring signatures, one of the three main layers of privacy protection Salvium uses.&lt;br&gt;To help transactions avoid those inputs, a list of known spent ones can be used to avoid using them in new transactions. Such a list is maintained by the Salvium project and is available on the getmonero.org website, and you can import this list here.&lt;br&gt;Alternatively, you can scan the blockchain (and the blockchain of key-reusing Salvium clones) yourself using the monero-blockchain-mark-spent-outputs tool to create a list of known spent outputs.&lt;br&gt;</source>
+        <translation>Para poder ofuscar qué entradas han sido gastadas en las transacciones de Salvium, un tercero no debería poder determinar de las firmas circulares cuales han sido gastadas en esas entradas. Hacerlo debilitaría la protección que proporcionan las firmas. Si solo una de las entradas pudiera ser determinada en el gasto, entonces esa entrada se vuelve evidente, anulando el efecto de las firmas. Las firmas circulares son una de las capas principales que usa Salvium para proteger la privacidad.&lt;br&gt;Para evitar que las transacciones usen estas entradas, puede ser usada una lista de entradas gastadas para evitar usarlas en nuevas transacciones. Esa lista es mantenida por el proyecto Salvium y está disponible en la página web getmonero.org y la puedes importar desde aquí.&lt;br&gt;De lo contrario, puede escanear la cadena de bloques (y las cadenas de bloques de los clones de Salvium que reusan las claves) usted mismo usando la herramienta de Salvium de salidas excluidas para crear una lista conocida de las salidas gastadas.&lt;br&gt;</translation>
     </message>
     <message>
         <location filename="../pages/SharedRingDB.qml" line="134"/>
@@ -2319,13 +2319,13 @@ Puedes cambiar la contraseña en las opciones del monedero.</translation>
     </message>
     <message>
         <location filename="../pages/SharedRingDB.qml" line="247"/>
-        <source>In order to avoid nullifying the protection afforded by Monero&apos;s ring signatures, an output should not be spent with different rings on different blockchains. While this is normally not a concern, it can become one when a key-reusing Monero clone allows you to spend existing outputs. In this case, you need to ensure this existing outputs uses the same ring on both chains.&lt;br&gt;This will be done automatically by Monero and any key-reusing software which is not trying to actively strip you of your privacy.&lt;br&gt;If you are using a key-reusing Monero clone too, and this clone does not include this protection, you can still ensure your transactions are protected by spending on the clone first, then manually adding the ring on this page, which allows you to then spend your Monero safely.&lt;br&gt;If you do not use a key-reusing Monero clone without these safety features, then you do not need to do anything as it is all automated.&lt;br&gt;</source>
-        <translation>Para evitar anular la protección que brindan las firmas de circulo que ofrece Monero, un output no debe gastarse en diferentes blockchains con diferentes firmas. Aunque esto normalmente no es una preocupación, puede convertirse en una cuando un clon de Monero, que reusa las llaves, permite gastar ese output nuevamente. Si este es el caso, debes asegurar ese output use las mismas firmas de circulo en ambas cadenas.&lt;br&gt;Esto será realizado por Monero y cualquier aplicación de reuso de llaves que no este activamente tratando de estropear tu privacidad.&lt;br&gt;Si estas usando un clon de Monero que reuse las llaves y este clon no incluya esta protección, puedes asegurar la protección de las transacciones si gastas primero en el clon. Luego agrega manualmente la firma de anillo en esta página, que te permitirá gastar tus Monero de manera segura.&lt;br&gt;Si no utilizas un clon de Monero con estas características, entonces no debes hacer nada, ya que esto se hará de manera automática.&lt;br&gt;</translation>
+        <source>In order to avoid nullifying the protection afforded by Salvium&apos;s ring signatures, an output should not be spent with different rings on different blockchains. While this is normally not a concern, it can become one when a key-reusing Salvium clone allows you to spend existing outputs. In this case, you need to ensure this existing outputs uses the same ring on both chains.&lt;br&gt;This will be done automatically by Salvium and any key-reusing software which is not trying to actively strip you of your privacy.&lt;br&gt;If you are using a key-reusing Salvium clone too, and this clone does not include this protection, you can still ensure your transactions are protected by spending on the clone first, then manually adding the ring on this page, which allows you to then spend your Salvium safely.&lt;br&gt;If you do not use a key-reusing Salvium clone without these safety features, then you do not need to do anything as it is all automated.&lt;br&gt;</source>
+        <translation>Para evitar anular la protección que brindan las firmas de circulo que ofrece Salvium, un output no debe gastarse en diferentes blockchains con diferentes firmas. Aunque esto normalmente no es una preocupación, puede convertirse en una cuando un clon de Salvium, que reusa las llaves, permite gastar ese output nuevamente. Si este es el caso, debes asegurar ese output use las mismas firmas de circulo en ambas cadenas.&lt;br&gt;Esto será realizado por Salvium y cualquier aplicación de reuso de llaves que no este activamente tratando de estropear tu privacidad.&lt;br&gt;Si estas usando un clon de Salvium que reuse las llaves y este clon no incluya esta protección, puedes asegurar la protección de las transacciones si gastas primero en el clon. Luego agrega manualmente la firma de anillo en esta página, que te permitirá gastar tus Salvium de manera segura.&lt;br&gt;Si no utilizas un clon de Salvium con estas características, entonces no debes hacer nada, ya que esto se hará de manera automática.&lt;br&gt;</translation>
     </message>
     <message>
         <location filename="../pages/SharedRingDB.qml" line="266"/>
-        <source>This records rings used by outputs spent on Monero on a key reusing chain, so that the same ring may be reused to avoid privacy issues.</source>
-        <translation>Esto registra las firmas salientes en cadenas que reusan las claves de Monero, de manera que la misma firma pueda ser reusada para evitar inconvenientes de privacidad.</translation>
+        <source>This records rings used by outputs spent on Salvium on a key reusing chain, so that the same ring may be reused to avoid privacy issues.</source>
+        <translation>Esto registra las firmas salientes en cadenas que reusan las claves de Salvium, de manera que la misma firma pueda ser reusada para evitar inconvenientes de privacidad.</translation>
     </message>
     <message>
         <location filename="../pages/SharedRingDB.qml" line="277"/>
@@ -2510,8 +2510,8 @@ Puedes cambiar la contraseña en las opciones del monedero.</translation>
     </message>
     <message>
         <location filename="../pages/Sign.qml" line="341"/>
-        <source>Enter the Monero Address (example: 44AFFq5kSiGBoZ...)</source>
-        <translation>Introduzca la dirección Monero (ejemplo: 44AAFFq5kSiGBoZ...)</translation>
+        <source>Enter the Salvium Address (example: 44AFFq5kSiGBoZ...)</source>
+        <translation>Introduzca la dirección Salvium (ejemplo: 44AAFFq5kSiGBoZ...)</translation>
     </message>
     <message>
         <location filename="../pages/Sign.qml" line="351"/>
@@ -3019,8 +3019,8 @@ Confirmation message:
     </message>
     <message>
         <location filename="../pages/Transfer.qml" line="1071"/>
-        <source>Monero sent successfully</source>
-        <translation>Monero enviado con exito</translation>
+        <source>Salvium sent successfully</source>
+        <translation>Salvium enviado con exito</translation>
     </message>
     <message>
         <location filename="../pages/Transfer.qml" line="1090"/>
@@ -3119,8 +3119,8 @@ Actualiza o conectate a otro deamon</translation>
     </message>
     <message>
         <location filename="../components/TxConfirmationDialog.qml" line="311"/>
-        <source>Monero address</source>
-        <translation>Dirección de Monero</translation>
+        <source>Salvium address</source>
+        <translation>Dirección de Salvium</translation>
     </message>
     <message>
         <location filename="../components/TxConfirmationDialog.qml" line="332"/>
@@ -3272,8 +3272,8 @@ Para el caso de pagos salientes, puedes obtener una &quot;Prueba de pago&quot; q
     <name>UpdateDialog</name>
     <message>
         <location filename="../components/UpdateDialog.qml" line="77"/>
-        <source>New Monero version v%1 is available.</source>
-        <translation>La nueva versión de Monero v%1 está disponible.</translation>
+        <source>New Salvium version v%1 is available.</source>
+        <translation>La nueva versión de Salvium v%1 está disponible.</translation>
     </message>
     <message>
         <location filename="../components/UpdateDialog.qml" line="98"/>
@@ -3654,8 +3654,8 @@ su entrada puede ser requerida</translation>
     </message>
     <message>
         <location filename="../wizard/WizardCreateWallet3.qml" line="60"/>
-        <source>To be able to communicate with the Monero network your wallet needs to be connected to a Monero node. For best privacy it&apos;s recommended to run your own node.</source>
-        <translation>Para comunicarse con la red de Monero tu monedero debe estar conectado a un nodo. Para una mejor privacidad se recomienda ejecutar tu propio nodo.</translation>
+        <source>To be able to communicate with the Salvium network your wallet needs to be connected to a Salvium node. For best privacy it&apos;s recommended to run your own node.</source>
+        <translation>Para comunicarse con la red de Salvium tu monedero debe estar conectado a un nodo. Para una mejor privacidad se recomienda ejecutar tu propio nodo.</translation>
     </message>
 </context>
 <context>
@@ -3715,8 +3715,8 @@ su entrada puede ser requerida</translation>
     </message>
     <message>
         <location filename="../wizard/WizardDaemonSettings.qml" line="152"/>
-        <source>Additionally, you may specify a bootstrap node to use Monero immediately.</source>
-        <translation>Adicionalmente puedes especificar el nodo bootstrap para utilizar Monero de manera inmediata.</translation>
+        <source>Additionally, you may specify a bootstrap node to use Salvium immediately.</source>
+        <translation>Adicionalmente puedes especificar el nodo bootstrap para utilizar Salvium de manera inmediata.</translation>
     </message>
     <message>
         <location filename="../wizard/WizardDaemonSettings.qml" line="192"/>
@@ -3728,8 +3728,8 @@ su entrada puede ser requerida</translation>
     <name>WizardHome</name>
     <message>
         <location filename="../wizard/WizardHome.qml" line="66"/>
-        <source>Welcome to Monero</source>
-        <translation>Bienvenido a Monero</translation>
+        <source>Welcome to Salvium</source>
+        <translation>Bienvenido a Salvium</translation>
     </message>
     <message>
         <location filename="../wizard/WizardHome.qml" line="78"/>
@@ -3750,8 +3750,8 @@ su entrada puede ser requerida</translation>
     </message>
     <message>
         <location filename="../wizard/WizardHome.qml" line="82"/>
-        <source>Choose this option if this is your first time using Monero.</source>
-        <translation>Escoge esta opción si es la primera vez que utilizas Monero.</translation>
+        <source>Choose this option if this is your first time using Salvium.</source>
+        <translation>Escoge esta opción si es la primera vez que utilizas Salvium.</translation>
     </message>
     <message>
         <location filename="../wizard/WizardHome.qml" line="104"/>
@@ -3760,8 +3760,8 @@ su entrada puede ser requerida</translation>
     </message>
     <message>
         <location filename="../wizard/WizardHome.qml" line="108"/>
-        <source>Connect your hardware wallet to create a new Monero wallet.</source>
-        <translation>Conecta tu dispositivo hardware para crear un nuevo monedero de Monero.</translation>
+        <source>Connect your hardware wallet to create a new Salvium wallet.</source>
+        <translation>Conecta tu dispositivo hardware para crear un nuevo monedero de Salvium.</translation>
     </message>
     <message>
         <location filename="../wizard/WizardHome.qml" line="127"/>
@@ -3826,8 +3826,8 @@ su entrada puede ser requerida</translation>
     </message>
     <message>
         <location filename="../wizard/WizardModeBootstrap.qml" line="84"/>
-        <source>Temporary use of remote nodes is useful in order to use Monero immediately (hence the name bootstrap), however be aware that when using remote nodes (including with the bootstrap setting), nodes could track your IP address, track your &quot;restore height&quot; and associated block request data, and send you inaccurate information to learn more about transactions you make.</source>
-        <translation>El uso temporal de nodos remotos es útil para usar Monero de inmediato (de ahí el nombre bootstrap), sin embargo, tenga en cuenta que al usar nodos remotos (incluso con la configuración bootstrap), los nodos podrían rastrear su dirección IP, rastrear su &quot;altura de restauración&quot; y datos de solicitud de bloqueo asociados y enviarle información inexacta para obtener más información sobre las transacciones que realiza.</translation>
+        <source>Temporary use of remote nodes is useful in order to use Salvium immediately (hence the name bootstrap), however be aware that when using remote nodes (including with the bootstrap setting), nodes could track your IP address, track your &quot;restore height&quot; and associated block request data, and send you inaccurate information to learn more about transactions you make.</source>
+        <translation>El uso temporal de nodos remotos es útil para usar Salvium de inmediato (de ahí el nombre bootstrap), sin embargo, tenga en cuenta que al usar nodos remotos (incluso con la configuración bootstrap), los nodos podrían rastrear su dirección IP, rastrear su &quot;altura de restauración&quot; y datos de solicitud de bloqueo asociados y enviarle información inexacta para obtener más información sobre las transacciones que realiza.</translation>
     </message>
     <message>
         <location filename="../wizard/WizardModeBootstrap.qml" line="97"/>
@@ -3849,8 +3849,8 @@ su entrada puede ser requerida</translation>
     </message>
     <message>
         <location filename="../wizard/WizardModeRemoteNodeWarning.qml" line="72"/>
-        <source>This mode is ideal for managing small amounts of Monero. You have access to basic features for making and managing transactions. It will automatically connect to the Monero network so you can start using Monero immediately.</source>
-        <translation>Este modo es ideal para manejar pequeñas cantidades de Monero. Tienes acceso a herramientas básicas para hacer y administrar transacciones. Se conectará automáticamente a la red de Monero para que puedas utilizar Monero inmediatamente.</translation>
+        <source>This mode is ideal for managing small amounts of Salvium. You have access to basic features for making and managing transactions. It will automatically connect to the Salvium network so you can start using Salvium immediately.</source>
+        <translation>Este modo es ideal para manejar pequeñas cantidades de Salvium. Tienes acceso a herramientas básicas para hacer y administrar transacciones. Se conectará automáticamente a la red de Salvium para que puedas utilizar Salvium inmediatamente.</translation>
     </message>
     <message>
         <location filename="../wizard/WizardModeRemoteNodeWarning.qml" line="85"/>
@@ -3940,7 +3940,7 @@ su entrada puede ser requerida</translation>
     </message>
     <message>
         <location filename="../wizard/WizardModeSelection.qml" line="166"/>
-        <source>Create portable wallets and use them on any PC. Enable if you installed Monero on a USB stick, an external drive, or any other portable storage medium.</source>
+        <source>Create portable wallets and use them on any PC. Enable if you installed Salvium on a USB stick, an external drive, or any other portable storage medium.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -4112,10 +4112,10 @@ su entrada puede ser requerida</translation>
     </message>
     <message>
         <location filename="../wizard/WizardRestoreWallet3.qml" line="63"/>
-        <source>To be able to communicate with the Monero network your wallet needs to be connected to a Monero node. For best privacy it&apos;s recommended to run your own node.
+        <source>To be able to communicate with the Salvium network your wallet needs to be connected to a Salvium node. For best privacy it&apos;s recommended to run your own node.
 
 If you don&apos;t have the option to run your own node, there&apos;s an option to connect to a remote node.</source>
-        <translation>Para comunicarse con la red de Monero tu monedero debe estar conectado a un nodo. Para una mejor privacidad se recomienda ejecutar tu propio nodo.
+        <translation>Para comunicarse con la red de Salvium tu monedero debe estar conectado a un nodo. Para una mejor privacidad se recomienda ejecutar tu propio nodo.
 
 Si no tienes la opción de ejecutar tu propio nodo, hay una opción de conectarse a nodo remoto.</translation>
     </message>
@@ -4408,8 +4408,8 @@ Si no tienes la opción de ejecutar tu propio nodo, hay una opción de conectars
     </message>
     <message>
         <location filename="../main.qml" line="1345"/>
-        <source>Would you like to register Monero GUI Desktop entry?</source>
-        <translation>¿Le gustaría registrar un acceso directo para Monero GUI?</translation>
+        <source>Would you like to register Salvium GUI Desktop entry?</source>
+        <translation>¿Le gustaría registrar un acceso directo para Salvium GUI?</translation>
     </message>
     <message>
         <location filename="../main.qml" line="1347"/>

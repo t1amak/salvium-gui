@@ -519,7 +519,7 @@ Rectangle {
                         }
                     }
                 }
-
+                /*
                 GridLayout {
                     id: totalLayout
                     Layout.topMargin: recipientLayout.rowSpacing / 2
@@ -545,7 +545,7 @@ Rectangle {
                                 if (recipientModel.count >= recipientModel.maxRecipients) {
                                     return false;
                                 }
-                                return true;
+                                return false;
                             }
                             fontAwesomeIcons: true
                             fontSize: descriptionLine.labelFontSize
@@ -553,6 +553,7 @@ Rectangle {
                             text: qsTr("Add recipient") + translationManager.emptyString
                             toggleOnClick: false
                             uncheckedIcon: FontAwesome.plusCircle
+                            visible: false
                             onClicked: {
                                 recipientModel.newRecipient("", "");
                             }
@@ -631,6 +632,7 @@ Rectangle {
                         visible: persistentSettings.fiatPriceEnabled
                     }
                 }
+                */
             }
 
             Rectangle {

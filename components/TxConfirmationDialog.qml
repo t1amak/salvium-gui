@@ -314,7 +314,7 @@ Rectangle {
                             if (addressBookName) {
                                 title = FontAwesome.addressBook + " " + addressBookName;
                             } else {
-                                title = qsTr("Monero address") + translationManager.emptyString;
+                                title = qsTr("Salvium address") + translationManager.emptyString;
                             }
                             if (recipients.length > 1) {
                                 title = "%1. %2 - %3 SAL".arg(index + 1).arg(title).arg(recipient.amount);
