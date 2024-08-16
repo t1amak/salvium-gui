@@ -105,17 +105,9 @@ ApplicationWindow {
     property real fiatPrice: 0
     property var fiatPriceAPIs: {
         return {
-            "kraken": {
-                "xmrusd": "https://api.kraken.com/0/public/Ticker?pair=XMRUSD",
-                "xmreur": "https://api.kraken.com/0/public/Ticker?pair=XMREUR"
-            },
             "coingecko": {
-                "xmrusd": "https://api.coingecko.com/api/v3/simple/price?ids=monero&vs_currencies=usd",
-                "xmreur": "https://api.coingecko.com/api/v3/simple/price?ids=monero&vs_currencies=eur"
-            },
-            "cryptocompare": {
-                "xmrusd": "https://min-api.cryptocompare.com/data/price?fsym=XMR&tsyms=USD",
-                "xmreur": "https://min-api.cryptocompare.com/data/price?fsym=XMR&tsyms=EUR",
+                "xmrusd": "https://api.coingecko.com/api/v3/simple/price?ids=salvium&vs_currencies=usd",
+                "xmreur": "https://api.coingecko.com/api/v3/simple/price?ids=salvium&vs_currencies=eur"
             }
         }
     }
@@ -155,7 +147,7 @@ ApplicationWindow {
         // lock wallet on demand
         if(seq === "Ctrl+L" && !passwordDialog.visible) lock()
         if(seq === "Ctrl+S") middlePanel.state = "Transfer"
-        else if(seq === "Ctrl+K") middlePanel.state = "Staking"
+        else if(seq === "Ctrl+K" && currentWallet.currentSubaddressAccount == 0) middlePanel.state = "Staking"
         else if(seq === "Ctrl+R") middlePanel.state = "Receive"
         else if(seq === "Ctrl+H") middlePanel.state = "History"
         else if(seq === "Ctrl+B") middlePanel.state = "AddressBook"
@@ -175,9 +167,10 @@ ApplicationWindow {
             */
             if(middlePanel.state === "Settings") middlePanel.state = "Account"
             else if(middlePanel.state === "Account") middlePanel.state = "Transfer"
-            else if(middlePanel.state === "Transfer") middlePanel.state = "Staking"
-            else if(middlePanel.state === "Staking") middlePanel.state = "AddressBook"
+            else if(middlePanel.state === "Transfer") middlePanel.state = "AddressBook"
             else if(middlePanel.state === "AddressBook") middlePanel.state = "Receive"
+            else if(middlePanel.state === "Receive" && currentWallet.currentSubaddressAccount == 0) middlePanel.state = "Staking"
+            else if(middlePanel.state === "Staking") middlePanel.state = "History"
             else if(middlePanel.state === "Receive") middlePanel.state = "History"
             else if(middlePanel.state === "History") middlePanel.state = "Advanced"
             else if(middlePanel.state === "Advanced") middlePanel.state = "Settings"
@@ -194,10 +187,11 @@ ApplicationWindow {
             */
             if(middlePanel.state === "Settings") middlePanel.state = "Advanced"
             else if(middlePanel.state === "Advanced") middlePanel.state = "History"
+            else if(middlePanel.state === "History" && currentWallet.currentSubaddressAccount == 0) middlePanel.state = "Staking"
             else if(middlePanel.state === "History") middlePanel.state = "Receive"
+            else if(middlePanel.state === "Staking") middlePanel.state = "Receive"
             else if(middlePanel.state === "Receive") middlePanel.state = "AddressBook"
-            else if(middlePanel.state === "Staking") middlePanel.state = "Transfer"
-            else if(middlePanel.state === "AddressBook") middlePanel.state = "Staking"
+            else if(middlePanel.state === "AddressBook") middlePanel.state = "Transfer"
             else if(middlePanel.state === "Transfer") middlePanel.state = "Account"
             else if(middlePanel.state === "Account") middlePanel.state = "Settings"
         }
@@ -303,6 +297,7 @@ ApplicationWindow {
         currentWallet.deviceButtonPressed.disconnect(onDeviceButtonPressed);
         currentWallet.walletPassphraseNeeded.disconnect(onWalletPassphraseNeededWallet);
         currentWallet.transactionCommitted.disconnect(onTransactionCommitted);
+        currentWallet.currentSubaddressAccountChanged.disconnect(handleAccountChanged);
         middlePanel.paymentClicked.disconnect(handlePayment);
         middlePanel.stakeClicked.disconnect(handleStake);
         middlePanel.sweepUnmixableClicked.disconnect(handleSweepUnmixable);
@@ -352,6 +347,7 @@ ApplicationWindow {
         currentWallet.deviceButtonPressed.connect(onDeviceButtonPressed);
         currentWallet.walletPassphraseNeeded.connect(onWalletPassphraseNeededWallet);
         currentWallet.transactionCommitted.connect(onTransactionCommitted);
+        currentWallet.currentSubaddressAccountChanged.connect(handleAccountChanged);
         //currentWallet.stakeTransactionCommitted.connect(onStakeTransactionCommitted);
         currentWallet.proxyAddress = Qt.binding(persistentSettings.getWalletProxyAddress);
         middlePanel.paymentClicked.connect(handlePayment);
@@ -597,7 +593,15 @@ ApplicationWindow {
     function onWalletUpdate() {
         if (!currentWallet)
             return;
-
+        /*
+        if (currentWallet.currentSubaddressAccount != 0) {
+            informationPopup.title = qsTr("Staking disabled") + translationManager.emptyString;
+            informationPopup.text  = qsTr("Staking is currently only permitted from the main account in your wallet") + translationManager.emptyString;
+            informationPopup.icon  = StandardIcon.Critical
+            informationPopup.onCloseCallback = null
+            informationPopup.open();
+        }
+        */    
         console.log(">>> wallet updated")
         updateBalance();
         // Update history if new block found since last update
@@ -941,18 +945,34 @@ ApplicationWindow {
         }
     }
 
+    function handleAccountChanged() {
+        if (currentWallet.currentSubaddressAccount != 0) {
+            informationPopup.title = qsTr("Staking disabled") + translationManager.emptyString;
+            informationPopup.text  = qsTr("Staking is currently only permitted from the main account in your wallet") + translationManager.emptyString;
+            informationPopup.icon  = StandardIcon.Critical
+            informationPopup.onCloseCallback = null
+            informationPopup.open();
+        }
+    }
+    
     // called on "stake"
     function handleStake(amount, paymentId, mixinCount, priority, description, createFile) {
         console.log("Creating STAKE transaction: ")
         console.log("\tamount: ", amount);
 
-        txConfirmationPopup.stake = true;
-        txConfirmationPopup.bottomTextAnimation.running = false;
-        txConfirmationPopup.bottomText.text  = qsTr("Creating STAKE transaction...") + translationManager.emptyString;
-        txConfirmationPopup.transactionAmount = amount;
-        txConfirmationPopup.open();
+        if (currentWallet.currentSubaddressAccount == 0) {
+    
+            txConfirmationPopup.stake = true;
+            txConfirmationPopup.bottomTextAnimation.running = false;
+            txConfirmationPopup.bottomText.text  = qsTr("Creating STAKE transaction...") + translationManager.emptyString;
+            txConfirmationPopup.transactionAmount = amount;
+            txConfirmationPopup.open();
 
-        currentWallet.createStakeTransactionAsync(amount, mixinCount, priority);
+            currentWallet.createStakeTransactionAsync(amount, mixinCount, priority);
+        } else {
+
+            console.log("wibble");
+        }
     }
 
     //Choose where to save transaction

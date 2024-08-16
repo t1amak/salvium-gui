@@ -456,10 +456,12 @@ Rectangle {
                     parent.previousButton = stakingButton
                     panel.stakingClicked()
                 }
+                enabled: currentAccountIndex == 0
+                visible: currentAccountIndex == 0
             }
 
             MoneroComponents.MenuButtonDivider {
-                visible: stakingButton.present
+                visible: stakingButton.visible
                 anchors.left: parent.left
                 anchors.right: parent.right
                 anchors.leftMargin: 20

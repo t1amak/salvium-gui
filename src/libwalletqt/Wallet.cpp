@@ -587,6 +587,10 @@ void Wallet::createStakeTransactionAsync(
     quint32 mixin_count,
     PendingTransaction::Priority priority)
 {
+    if (currentSubaddressAccount() != 0) {
+        qWarning() << "Cannot create Staking transactions from secondary accounts";
+        return;
+    }
     m_scheduler.run([this, amount, mixin_count, priority] {
         PendingTransaction *tx = createStakeTransaction(amount, mixin_count, priority);
         QVector<QString> destinationAddresses;

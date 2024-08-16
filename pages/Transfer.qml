@@ -650,6 +650,7 @@ Rectangle {
             }
         }
 
+    /*
         ColumnLayout {
             spacing: 0
             visible: appWindow.walletMode >= 2
@@ -744,6 +745,7 @@ Rectangle {
                 }
             }
         }
+    */
 
       MoneroComponents.WarningBox {
           text: qsTr("Description field contents match long payment ID format. \
