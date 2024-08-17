@@ -719,7 +719,7 @@ Rectangle {
                         currentWallet.estimateTransactionFeeAsync(
                             addresses,
                             amounts,
-                            priorityModelV5.get(priorityDropdown.currentIndex).priority,
+                            0,
                             function (amount) {
                                 if (amount) {
                                     estimatedFee = Utils.removeTrailingZeros(amount);
@@ -841,7 +841,7 @@ Rectangle {
               enabled: !sendButtonWarningBox.visible && !warningContent && !recipientModel.hasEmptyAddress() && !paymentIdWarningBox.visible
               onClicked: {
                   console.log("Transfer: paymentClicked")
-                  var priority = priorityModelV5.get(priorityDropdown.currentIndex).priority
+                  var priority = 0
                   console.log("priority: " + priority)
                   setPaymentId(paymentIdLine.text.trim());
                   root.paymentClicked(recipientModel.getRecipients(), paymentIdLine.text, root.mixin, priority, descriptionLine.text)
@@ -941,7 +941,7 @@ Rectangle {
             button1.enabled: appWindow.viewOnly && pageRoot.checkInformation() && appWindow.daemonSynced
             button1.onClicked: {
                 console.log("Transfer: saveTx Clicked")
-                var priority = priorityModelV5.get(priorityDropdown.currentIndex).priority
+                var priority = 0
                 console.log("priority: " + priority)
                 setPaymentId(paymentIdLine.text.trim());
                 root.paymentClicked(recipientModel.getRecipients(), paymentIdLine.text, root.mixin, priority, descriptionLine.text)
