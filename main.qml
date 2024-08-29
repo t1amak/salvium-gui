@@ -106,8 +106,8 @@ ApplicationWindow {
     property var fiatPriceAPIs: {
         return {
             "coingecko": {
-                "xmrusd": "https://api.coingecko.com/api/v3/simple/price?ids=salvium&vs_currencies=usd",
-                "xmreur": "https://api.coingecko.com/api/v3/simple/price?ids=salvium&vs_currencies=eur"
+                "salusd": "https://api.coingecko.com/api/v3/simple/price?ids=salvium&vs_currencies=usd",
+                "saleur": "https://api.coingecko.com/api/v3/simple/price?ids=salvium&vs_currencies=eur"
             }
         }
     }
@@ -148,6 +148,7 @@ ApplicationWindow {
         if(seq === "Ctrl+L" && !passwordDialog.visible) lock()
         if(seq === "Ctrl+S") middlePanel.state = "Transfer"
         else if(seq === "Ctrl+K" && currentWallet.currentSubaddressAccount == 0) middlePanel.state = "Staking"
+        else if(seq === "Ctrl+Y" && currentWallet.currentSubaddressAccount == 0) middlePanel.state = "Yield"
         else if(seq === "Ctrl+R") middlePanel.state = "Receive"
         else if(seq === "Ctrl+H") middlePanel.state = "History"
         else if(seq === "Ctrl+B") middlePanel.state = "AddressBook"
@@ -170,6 +171,7 @@ ApplicationWindow {
             else if(middlePanel.state === "Transfer") middlePanel.state = "AddressBook"
             else if(middlePanel.state === "AddressBook") middlePanel.state = "Receive"
             else if(middlePanel.state === "Receive" && currentWallet.currentSubaddressAccount == 0) middlePanel.state = "Staking"
+            else if(middlePanel.state === "Staking" && currentWallet.currentSubaddressAccount == 0) middlePanel.state = "Yield"
             else if(middlePanel.state === "Staking") middlePanel.state = "History"
             else if(middlePanel.state === "Receive") middlePanel.state = "History"
             else if(middlePanel.state === "History") middlePanel.state = "Advanced"
@@ -187,7 +189,8 @@ ApplicationWindow {
             */
             if(middlePanel.state === "Settings") middlePanel.state = "Advanced"
             else if(middlePanel.state === "Advanced") middlePanel.state = "History"
-            else if(middlePanel.state === "History" && currentWallet.currentSubaddressAccount == 0) middlePanel.state = "Staking"
+            else if(middlePanel.state === "History" && currentWallet.currentSubaddressAccount == 0) middlePanel.state = "Yield"
+            else if(middlePanel.state === "Yield" && currentWallet.currentSubaddressAccount == 0) middlePanel.state = "Staking"
             else if(middlePanel.state === "History") middlePanel.state = "Receive"
             else if(middlePanel.state === "Staking") middlePanel.state = "Receive"
             else if(middlePanel.state === "Receive") middlePanel.state = "AddressBook"
@@ -1245,18 +1248,18 @@ ApplicationWindow {
                 return;
             }
 
-            var key = currency === "xmreur" ? "XXMRZEUR" : "XXMRZUSD";
+            var key = currency === "saleur" ? "XSALZEUR" : "XSALZUSD";
             var ticker = resp.result[key]["c"][0];
             return ticker;
         } else if(url.startsWith("https://api.coingecko.com/api/v3/")){
-            var key = currency === "xmreur" ? "eur" : "usd";
-            if(!resp.hasOwnProperty("monero") || !resp["monero"].hasOwnProperty(key)){
+            var key = currency === "saleur" ? "eur" : "usd";
+            if(!resp.hasOwnProperty("salvium") || !resp["salvium"].hasOwnProperty(key)){
                 appWindow.fiatApiError("Coingecko API has error(s)");
                 return;
             }
-            return resp["monero"][key];
+            return resp["salvium"][key];
         } else if(url.startsWith("https://min-api.cryptocompare.com/data/")){
-            var key = currency === "xmreur" ? "EUR" : "USD";
+            var key = currency === "saleur" ? "EUR" : "USD";
             if(!resp.hasOwnProperty(key)){
                 appWindow.fiatApiError("cryptocompare API has error(s)");
                 return;
@@ -1336,9 +1339,9 @@ ApplicationWindow {
 
     function fiatApiCurrencySymbol() {
         switch (persistentSettings.fiatPriceCurrency) {
-            case "xmrusd":
+            case "salusd":
                 return "USD";
-            case "xmreur":
+            case "saleur":
                 return "EUR";
             default:
                 console.error("unsupported currency", persistentSettings.fiatPriceCurrency);
@@ -1355,7 +1358,7 @@ ApplicationWindow {
         return (amount * ticker).toFixed(2);
     }
 
-    function fiatApiConvertToXMR(amount) {
+    function fiatApiConvertToSAL(amount) {
         const ticker = appWindow.fiatPrice;
         if(ticker <= 0){
             fiatApiError("Invalid ticker value: " + ticker);
@@ -1521,8 +1524,8 @@ ApplicationWindow {
 
         property bool fiatPriceEnabled: false
         property bool fiatPriceToggle: false
-        property string fiatPriceProvider: "kraken"
-        property string fiatPriceCurrency: "xmrusd"
+        property string fiatPriceProvider: "coingecko"
+        property string fiatPriceCurrency: "salusd"
 
         property string proxyAddress: "127.0.0.1:9050"
         property bool proxyEnabled: isTails
@@ -1903,6 +1906,12 @@ ApplicationWindow {
 
                 onStakingClicked: {
                     middlePanel.state = "Staking";
+                    middlePanel.flickable.contentY = 0;
+                    updateBalance();
+                }
+
+                onYieldClicked: {
+                    middlePanel.state = "Yield";
                     middlePanel.flickable.contentY = 0;
                     updateBalance();
                 }

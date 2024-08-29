@@ -272,6 +272,7 @@ Rectangle {
                         }
 
                         MoneroComponents.InlineButton {
+                            visible: appWindow.qrScannerEnabled && (isAndroid || isIOS)
                             fontFamily: FontAwesome.fontFamilySolid
                             fontStyleName: "Solid"
                             fontPixelSize: 18
@@ -297,7 +298,7 @@ Rectangle {
                             fontFamily: FontAwesome.fontFamilySolid
                             fontStyleName: "Solid"
                             text: FontAwesome.qrcode
-                            visible: appWindow.qrScannerEnabled
+                            visible: appWindow.qrScannerEnabled && (isAndroid || isIOS)
                             tooltip: qsTr("Scan QR code") + translationManager.emptyString
                             onClicked: {
                                 cameraUi.state = "Capture"
@@ -639,7 +640,7 @@ Rectangle {
                 anchors.top: recipientLayout.top
                 anchors.topMargin: addressLabel.height + recipientLayout.rowSpacing / 2
                 anchors.bottom: recipientLayout.bottom
-                anchors.bottomMargin: totalLayout.height + recipientLayout.rowSpacing / 2
+                //anchors.bottomMargin: totalLayout.height + recipientLayout.rowSpacing / 2
                 anchors.left: recipientLayout.left
                 anchors.right: recipientLayout.right
                 anchors.rightMargin: recipientLayout.thirdRowWidth

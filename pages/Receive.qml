@@ -258,7 +258,7 @@ Rectangle {
                         if (amountToReceiveFiat.text == "") {
                             amountToReceiveXMR.text = "";
                         } else {
-                            amountToReceiveXMR.text = fiatApiConvertToXMR(amountToReceiveFiat.text);
+                            amountToReceiveXMR.text = fiatApiConvertToSAL(amountToReceiveFiat.text);
                         }
                     }
                     validator: RegExpValidator {

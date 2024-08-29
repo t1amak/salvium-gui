@@ -31,6 +31,7 @@
 
 #include <QObject>
 #include <QList>
+#include <QString>
 #include <QVariant>
 
 #include <wallet/api/wallet2_api.h>
@@ -46,6 +47,7 @@ class YieldInfo : public QObject
     Q_PROPERTY(quint64 yield READ yield)
     Q_PROPERTY(quint64 yield_per_stake READ yield_per_stake)
     Q_PROPERTY(QString period READ period)
+    Q_PROPERTY(QString payouts READ payouts)
 
 public:
     enum Status {
@@ -63,6 +65,7 @@ public:
     quint64 yield() const;
     quint64 yield_per_stake() const;
     QString period() const;
+    QString payouts() const;
 
 private:
     explicit YieldInfo(Monero::YieldInfo * yi, QObject *parent = 0);

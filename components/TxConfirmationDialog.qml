@@ -344,7 +344,7 @@ Rectangle {
                 spacing: 16
 
                 Text {
-                    property bool maliciousTxFee: parseFloat(root.transactionFee) > 0.01
+                    property bool maliciousTxFee: parseFloat(root.transactionFee) > 0.05
                     color: maliciousTxFee ? "red" : MoneroComponents.Style.defaultFontColor
                     font.pixelSize: maliciousTxFee ? 20 : 15
                     text: {

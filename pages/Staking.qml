@@ -145,76 +145,6 @@ Rectangle {
 
                     MoneroComponents.LabelSubheader {
                         Layout.fillWidth: true
-                        fontSize: 24
-                        textFormat: Text.RichText
-                        text: qsTr("Yield Info") + translationManager.emptyString
-                    }
-
-                    RowLayout {
-                        Layout.topMargin: 10
-    
-                        MoneroComponents.TextPlain {
-                            text: qsTr("Supply coins burnt in last 30 days (21,600 blocks): ") + translationManager.emptyString
-                            Layout.fillWidth: true
-                            color: MoneroComponents.Style.defaultFontColor
-                                font.pixelSize: 16
-                            font.family: MoneroComponents.Style.fontRegular.name
-                            themeTransition: false
-                        }
-
-                        MoneroComponents.TextPlain {
-                            id: coinsBurnt
-                            Layout.rightMargin: 20
-                            font.family: MoneroComponents.Style.fontMonoRegular.name;
-                            font.pixelSize: 16
-                            color: MoneroComponents.Style.defaultFontColor
-                        }
-                    }
-
-                    RowLayout {
-                        Layout.topMargin: 10
-    
-                        MoneroComponents.TextPlain {
-                            text: qsTr("Total coins locked: ") + translationManager.emptyString
-                            Layout.fillWidth: true
-                            color: MoneroComponents.Style.defaultFontColor
-                                font.pixelSize: 16
-                            font.family: MoneroComponents.Style.fontRegular.name
-                            themeTransition: false
-                        }
-
-                        MoneroComponents.TextPlain {
-                            id: coinsLocked
-                            Layout.rightMargin: 20
-                            font.family: MoneroComponents.Style.fontMonoRegular.name;
-                            font.pixelSize: 16
-                            color: MoneroComponents.Style.defaultFontColor
-                        }
-                    }
-
-                    RowLayout {
-                        Layout.topMargin: 10
-    
-                        MoneroComponents.TextPlain {
-                            text: qsTr("Yield accrued in last 30 days (21,600 blocks): ") + translationManager.emptyString
-                            Layout.fillWidth: true
-                            color: MoneroComponents.Style.defaultFontColor
-                                font.pixelSize: 16
-                            font.family: MoneroComponents.Style.fontRegular.name
-                            themeTransition: false
-                        }
-
-                        MoneroComponents.TextPlain {
-                            id: coinsAccrued
-                            Layout.rightMargin: 20
-                            font.family: MoneroComponents.Style.fontMonoRegular.name;
-                            font.pixelSize: 16
-                            color: MoneroComponents.Style.defaultFontColor
-                        }
-                    }
-
-                    MoneroComponents.LabelSubheader {
-                        Layout.fillWidth: true
                         Layout.topMargin: 24
                         fontSize: 24
                         textFormat: Text.RichText
@@ -250,99 +180,103 @@ Rectangle {
                         color: MoneroComponents.Style.inputBorderColorInActive
                         width: 1
 
-                    RowLayout {
+                        RowLayout {
 
-                        Layout.topMargin: 2
-                        Layout.fillWidth: true
-    
-                        MoneroComponents.TextPlain {
-                            id: newstakeLabel
-                            font.pixelSize: 16
-                            font.family: MoneroComponents.Style.fontRegular.name
-                            textFormat: Text.RichText
-                            text: qsTr("Stake new amount: ") + translationManager.emptyString
-                        }
-
-                        MoneroComponents.LineEdit {
-                            id: amountInput
-                            KeyNavigation.backtab: parent.children[0]
-                            KeyNavigation.tab: stakeButton
-                            Layout.alignment: Qt.AlignVCenter | Qt.AlignRight
                             Layout.topMargin: 2
-                            Layout.bottomMargin: 2
-                            Layout.preferredWidth: 125
-                            Layout.maximumWidth: 125
-                            borderDisabled: false
-                            fontFamily: MoneroComponents.Style.fontMonoRegular.name
-                            fontSize: 16
-                            inputPaddingLeft: 10
-                            inputPaddingRight: 10
-                            inputPaddingTop: 2
-                            inputPaddingBottom: 2
-                            placeholderFontFamily: MoneroComponents.Style.fontMonoRegular.name
-                            placeholderFontSize: 16
-                            placeholderLeftMargin: 10
-                            placeholderText: "0.00"
-                            text: amount
-                            onTextChanged: {
-                                text = text.trim().replace(",", ".");
-                                const match = text.match(/^0+(\d.*)/);
-                                if (match) {
-                                    const cursorPosition = cursorPosition;
-                                    text = match[1];
-                                    cursorPosition = Math.max(cursorPosition, 1) - 1;
-                                } else if(text.indexOf('.') === 0){
-                                    text = '0' + text;
-                                    if (text.length > 2) {
-                                        cursorPosition = 1;
+                            Layout.fillWidth: true
+        
+                            MoneroComponents.TextPlain {
+                                id: newstakeLabel
+                                font.pixelSize: 16
+                                font.family: MoneroComponents.Style.fontRegular.name
+                                textFormat: Text.RichText
+                                text: qsTr("Stake new amount: ") + translationManager.emptyString
+                            }
+
+                            MoneroComponents.LineEdit {
+                                id: amountInput
+                                KeyNavigation.backtab: parent.children[0]
+                                KeyNavigation.tab: stakeButton
+                                Layout.alignment: Qt.AlignVCenter | Qt.AlignRight
+                                Layout.topMargin: 2
+                                Layout.bottomMargin: 2
+                                Layout.preferredWidth: 125
+                                Layout.maximumWidth: 125
+                                borderDisabled: false
+                                fontFamily: MoneroComponents.Style.fontMonoRegular.name
+                                fontSize: 16
+                                inputPaddingLeft: 10
+                                inputPaddingRight: 10
+                                inputPaddingTop: 2
+                                inputPaddingBottom: 2
+                                placeholderFontFamily: MoneroComponents.Style.fontMonoRegular.name
+                                placeholderFontSize: 16
+                                placeholderLeftMargin: 10
+                                placeholderText: "0.00"
+                                text: amount
+                                onTextChanged: {
+                                    text = text.trim().replace(",", ".");
+                                    const match = text.match(/^0+(\d.*)/);
+                                    if (match) {
+                                        const cursorPosition = cursorPosition;
+                                        text = match[1];
+                                        cursorPosition = Math.max(cursorPosition, 1) - 1;
+                                    } else if(text.indexOf('.') === 0){
+                                        text = '0' + text;
+                                        if (text.length > 2) {
+                                            cursorPosition = 1;
+                                        }
                                     }
+                                    error = (text == "") || (walletManager.amountFromString(text) == 0) || (walletManager.amountFromString(text) > appWindow.getUnlockedBalance());
+                                    stakeButton.enabled = !error;
+                                    amount = text;
                                 }
-                                error = (text == "") || (walletManager.amountFromString(text) == 0) || (walletManager.amountFromString(text) > appWindow.getUnlockedBalance());
-                                stakeButton.enabled = !error;
-                                amount = text;
+                                validator: RegExpValidator {
+                                    regExp: /^\s*(\d{1,8})?([\.,]\d{1,12})?\s*$/
+                                }
                             }
-                            validator: RegExpValidator {
-                                regExp: /^\s*(\d{1,8})?([\.,]\d{1,12})?\s*$/
+
+                            MoneroComponents.TextPlain {
+                                horizontalAlignment: Text.AlignHCenter
+                                font.family: MoneroComponents.Style.fontRegular.name
+                                text: "SAL"
+                                visible: true
                             }
-                        }
 
-                        MoneroComponents.TextPlain {
-                            horizontalAlignment: Text.AlignHCenter
-                            font.family: MoneroComponents.Style.fontRegular.name
-                            text: "SAL"
-                            visible: true
-                        }
-
-                        StandardButton {
-                            id: stakeButton
-                            rightIcon: "qrc:///images/rightArrow.png"
-                            Layout.rightMargin: 4
-                            Layout.topMargin: 4
-                            text: qsTr("Stake") + translationManager.emptyString
-                            enabled: !stakeButtonWarningBox.visible && !warningContent
-                            onClicked: {
-                                console.log("Staking: stakeClicked")
-                                root.stakeClicked(root.amount, "", root.mixin, 0, "")
+                            StandardButton {
+                                id: stakeButton
+                                rightIcon: "qrc:///images/rightArrow.png"
+                                Layout.rightMargin: 4
+                                Layout.topMargin: 4
+                                text: qsTr("Stake") + translationManager.emptyString
+                                enabled: !stakeButtonWarningBox.visible && !warningContent
+                                onClicked: {
+                                    console.log("Staking: stakeClicked")
+                                    root.stakeClicked(root.amount, "", root.mixin, 0, "")
+                                }
                             }
                         }
-                        }
-                    }
-                
-    
-                RowLayout {
-
-                    Layout.topMargin: 60
-    
-                    MoneroComponents.WarningBox {
-                        id: stakeButtonWarningBox
-                        text: root.stakeButtonWarning
-                        visible: root.stakeButtonWarning !== ""
                     }
                 }
-
-    }
             }
-        }   
+        }
+                    RowLayout {
+                        Layout.topMargin: 30
+                        MoneroComponents.WarningBox {
+                            id: stakeButtonWarningBox
+                            text: root.stakeButtonWarning
+                            visible: root.stakeButtonWarning !== ""
+                        }
+                    }
+    
+                    RowLayout {
+                        Layout.bottomMargin: 10
+                        MoneroComponents.WarningBox {
+                            id: stakeInfoWarningBox
+                            text: "Staking locks your SAL for 21,600 blocks (about 30 days) to earn rewards. This lock is non-reversible. Stakers currently receive 20% of block rewards, shared proportionally. Learn more at <a href='https://salvium.io/staking'>https://salvium.io/staking</a>."
+                            visible: true
+                        }
+                    }
     }
 
      // pageRoot
@@ -356,11 +290,7 @@ Rectangle {
     function onPageCompleted() {
         console.log("staking page loaded")
         updateStatus();
-        unlockedBalanceAll.text = walletManager.displayAmount(appWindow.currentWallet.unlockedBalanceAll()) + " SAL"    
-        var yield_info = currentWallet.getYieldInfo();
-        coinsBurnt.text = walletManager.displayAmount(yield_info.burnt) + " SAL";
-        coinsLocked.text = walletManager.displayAmount(yield_info.locked) + " SAL";
-        coinsAccrued.text = walletManager.displayAmount(yield_info.yield) + " SAL";
+        unlockedBalanceAll.text = walletManager.displayAmount(appWindow.currentWallet.unlockedBalanceAll()) + " SAL"
     }
 
     //TODO: Add daemon sync status

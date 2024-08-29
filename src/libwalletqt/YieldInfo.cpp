@@ -75,6 +75,23 @@ QString YieldInfo::period() const
   return m_pYI->period().c_str();
 }
 
+QString YieldInfo::payouts() const
+{
+  std::vector<std::tuple<size_t, std::string, uint64_t, uint64_t>> raw_payouts = m_pYI->payouts();
+  QStringList result;
+  for (auto &rp : raw_payouts) {
+    size_t height;
+    std::string txid;
+    uint64_t burnt;
+    uint64_t yield;
+    std::tie(height, txid, burnt, yield) = rp;
+    QString qtxid = QString::fromStdString(txid);
+    QString payout = tr("{\"blockheight\":%1,\"hash\":\"%2\",\"burnt\":%3,\"yield\":%4}").arg(height).arg(qtxid).arg(burnt).arg(yield);
+    result.append(payout);
+  }
+  return "[" + result.join(",") + "]";
+}
+
 YieldInfo::YieldInfo(Monero::YieldInfo *pt, QObject *parent)
     : QObject(parent), m_pYI(pt)
 {
