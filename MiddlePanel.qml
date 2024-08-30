@@ -139,7 +139,7 @@ Rectangle {
             }, State {
                 name: "Yield"
                 PropertyChanges { target: root; currentView: yieldView }
-                PropertyChanges { target: mainFlickable; contentHeight: yieldView.yieldHeight + 80 }
+                PropertyChanges { target: mainFlickable; contentHeight: yieldView.contentHeight + 80 }
             }, State {
                 name: "Transfer"
                 PropertyChanges { target: root; currentView: transferView }

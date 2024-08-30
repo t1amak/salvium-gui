@@ -120,7 +120,7 @@ Rectangle {
               }
           }
       }
-
+/*
       RowLayout {
           visible: leftPanel.minutesToUnlock !== ""
 
@@ -128,7 +128,7 @@ Rectangle {
               text: qsTr("Spendable funds: %1 SAL. Please wait ~%2 minutes for your whole balance to become spendable.").arg(leftPanel.balanceUnlockedString).arg(leftPanel.minutesToUnlock)
           }
       }
-
+*/
         Item {
             Layout.fillWidth: true
             implicitHeight: stakingLayout.height
@@ -155,7 +155,7 @@ Rectangle {
                         Layout.topMargin: 10
     
                         MoneroComponents.TextPlain {
-                            text: qsTr("Total unlocked balance: ") + translationManager.emptyString
+                            text: qsTr("Spendable balance: ") + translationManager.emptyString
                             Layout.fillWidth: true
                             color: MoneroComponents.Style.defaultFontColor
                             font.pixelSize: 16
@@ -164,7 +164,7 @@ Rectangle {
                         }
 
                         MoneroComponents.TextPlain {
-                            id: unlockedBalanceAll
+                            text: leftPanel.balanceUnlockedString + " SAL" + translationManager.emptyString;
                             Layout.rightMargin: 20
                             font.family: MoneroComponents.Style.fontMonoRegular.name;
                             font.pixelSize: 16
@@ -273,8 +273,13 @@ Rectangle {
                         Layout.bottomMargin: 10
                         MoneroComponents.WarningBox {
                             id: stakeInfoWarningBox
-                            text: "Staking locks your SAL for 21,600 blocks (about 30 days) to earn rewards. This lock is non-reversible. Stakers currently receive 20% of block rewards, shared proportionally. Learn more at <a href='https://salvium.io/staking'>https://salvium.io/staking</a>."
+                            text: "<style type='text/css'>a {text-decoration: none; color: #FF6C3C; font-size: 14px;}</style>" +
+                                  "Staking locks your SAL for 21,600 blocks (about 30 days) to earn rewards. " +
+                                  "This lock is non-reversible. Stakers currently receive 20% of block rewards, " +
+                                  "shared proportionally. Learn more at " +
+                                  "<a href='https://salvium.io/staking'>https://salvium.io/staking</a>."
                             visible: true
+                            onLinkActivated: Qt.openUrlExternally("https://salvium.io/staking")
                         }
                     }
     }
@@ -290,7 +295,6 @@ Rectangle {
     function onPageCompleted() {
         console.log("staking page loaded")
         updateStatus();
-        unlockedBalanceAll.text = walletManager.displayAmount(appWindow.currentWallet.unlockedBalanceAll()) + " SAL"
     }
 
     //TODO: Add daemon sync status
