@@ -296,8 +296,8 @@ Det rekommenderas att ange lösenfras på hårdvaruplånboken för bättre säke
     </message>
     <message>
         <location filename="pages/History.qml" line="109"/>
-        <source>Sort &amp;amp; filter</source>
-        <translation>Sortera &amp;amp; filtrera</translation>
+        <source>Sort &amp; filter</source>
+        <translation>Sortera &amp; filtrera</translation>
     </message>
     <message>
         <location filename="pages/History.qml" line="159"/>
@@ -670,8 +670,8 @@ Det rekommenderas att ange lösenfras på hårdvaruplånboken för bättre säke
     </message>
     <message>
         <location filename="pages/Keys.qml" line="134"/>
-        <source>Primary address &amp;amp; Keys</source>
-        <translation>Primär adress &amp;amp; Nycklar</translation>
+        <source>Primary address &amp; Keys</source>
+        <translation>Primär adress &amp; Nycklar</translation>
     </message>
     <message>
         <location filename="pages/Keys.qml" line="149"/>
@@ -2255,8 +2255,8 @@ Du kan ändra lösenordet i plånboksinställningarna.</translation>
     </message>
     <message>
         <location filename="pages/settings/SettingsWallet.qml" line="94"/>
-        <source>Show seed &amp;amp; keys</source>
-        <translation>Visa frö &amp;amp; nycklar</translation>
+        <source>Show seed &amp; keys</source>
+        <translation>Visa frö &amp; nycklar</translation>
     </message>
     <message>
         <location filename="pages/settings/SettingsWallet.qml" line="104"/>
@@ -4479,8 +4479,8 @@ Om du inte har möjlighet att köra din egen nod, finns det ett alternativ att a
     </message>
     <message>
         <location filename="pages/Yield.qml" line="184"/>
-        <source>Sort &amp;amp; filter</source>
-        <translation>Sortera &amp;amp; filtrera</translation>
+        <source>Sort &amp; filter</source>
+        <translation>Sortera &amp; filtrera</translation>
     </message>
     <message>
         <location filename="pages/Yield.qml" line="234"/>

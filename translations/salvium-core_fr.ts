@@ -296,7 +296,7 @@ Il est recommandé de saisir la phrase secrète sur le portefeuille matériel po
     </message>
     <message>
         <location filename="pages/History.qml" line="109"/>
-        <source>Sort &amp;amp; filter</source>
+        <source>Sort &amp; filter</source>
         <translation>Trier et amp; filtre</translation>
     </message>
     <message>
@@ -670,7 +670,7 @@ Il est recommandé de saisir la phrase secrète sur le portefeuille matériel po
     </message>
     <message>
         <location filename="pages/Keys.qml" line="134"/>
-        <source>Primary address &amp;amp; Keys</source>
+        <source>Primary address &amp; Keys</source>
         <translation>Adresse principale et adresse principale Clés</translation>
     </message>
     <message>
@@ -2255,7 +2255,7 @@ Vous pouvez modifier le mot de passe dans les paramètres du portefeuille.</tran
     </message>
     <message>
         <location filename="pages/settings/SettingsWallet.qml" line="94"/>
-        <source>Show seed &amp;amp; keys</source>
+        <source>Show seed &amp; keys</source>
         <translation>Afficher les graines et amp; clés</translation>
     </message>
     <message>
@@ -4480,7 +4480,7 @@ Si vous n'avez pas la possibilité d'exécuter votre propre nœud, il existe une
     </message>
     <message>
         <location filename="pages/Yield.qml" line="184"/>
-        <source>Sort &amp;amp; filter</source>
+        <source>Sort &amp; filter</source>
         <translation>Trier et amp; filtre</translation>
     </message>
     <message>

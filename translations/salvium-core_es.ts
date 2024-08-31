@@ -296,7 +296,7 @@ Se recomienda ingresar la frase de contraseña en la billetera de hardware para 
     </message>
     <message>
         <location filename="pages/History.qml" line="109"/>
-        <source>Sort &amp;amp; filter</source>
+        <source>Sort &amp; filter</source>
         <translation>Ordenar y clasificar filtrar</translation>
     </message>
     <message>
@@ -670,7 +670,7 @@ Se recomienda ingresar la frase de contraseña en la billetera de hardware para 
     </message>
     <message>
         <location filename="pages/Keys.qml" line="134"/>
-        <source>Primary address &amp;amp; Keys</source>
+        <source>Primary address &amp; Keys</source>
         <translation>Dirección principal y Llaves</translation>
     </message>
     <message>
@@ -2255,8 +2255,8 @@ Puedes cambiar la contraseña en la configuración de la billetera.</translation
     </message>
     <message>
         <location filename="pages/settings/SettingsWallet.qml" line="94"/>
-        <source>Show seed &amp;amp; keys</source>
-        <translation>Mostrar semilla &amp;amp; llaves</translation>
+        <source>Show seed &amp; keys</source>
+        <translation>Mostrar semilla &amp; llaves</translation>
     </message>
     <message>
         <location filename="pages/settings/SettingsWallet.qml" line="104"/>
@@ -4480,7 +4480,7 @@ Si no tiene la opción de ejecutar su propio nodo, existe la opción de conectar
     </message>
     <message>
         <location filename="pages/Yield.qml" line="184"/>
-        <source>Sort &amp;amp; filter</source>
+        <source>Sort &amp; filter</source>
         <translation>Ordenar y clasificar filtrar</translation>
     </message>
     <message>

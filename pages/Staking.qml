@@ -274,9 +274,9 @@ Rectangle {
                         MoneroComponents.WarningBox {
                             id: stakeInfoWarningBox
                             text: "<style type='text/css'>a {text-decoration: none; color: #FF6C3C; font-size: 14px;}</style>" +
-                                  "Staking locks your SAL for 21,600 blocks (about 30 days) to earn rewards. " +
-                                  "This lock is non-reversible. Stakers currently receive 20% of block rewards, " +
-                                  "shared proportionally. Learn more at " +
+                                  qsTr("Staking locks your SAL for 21,600 blocks (about 30 days) to earn rewards. ") + translationManager.emptyString +
+                                  qsTr("This lock is non-reversible. Stakers currently receive 20% of block rewards, ") + translationManager.emptyString +
+                                  qsTr("shared proportionally. Learn more at ") + translationManager.emptyString +
                                   "<a href='https://salvium.io/staking'>https://salvium.io/staking</a>."
                             visible: true
                             onLinkActivated: Qt.openUrlExternally("https://salvium.io/staking")

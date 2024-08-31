@@ -11,7 +11,7 @@ use XML::LibXML;
 use open qw( :std :encoding(UTF-8) );
 
 #Name of the XML File
-my $xmlfile = "salvium-core_en.ts";
+my $xmlfile = "salvium-core.ts";
 my $lang = $ARGV[0];
 if (length($lang) != 2) {
     die "input language code '$lang' is invalid";

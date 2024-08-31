@@ -296,8 +296,8 @@ It is recommended to enter passphrase on the hardware wallet for better security
     </message>
     <message>
         <location filename="pages/History.qml" line="109"/>
-        <source>Sort &amp;amp; filter</source>
-        <translation>排序&amp;amp;筛选</translation>
+        <source>Sort &amp; filter</source>
+        <translation>排序&amp;筛选</translation>
     </message>
     <message>
         <location filename="pages/History.qml" line="159"/>
@@ -670,7 +670,7 @@ It is recommended to enter passphrase on the hardware wallet for better security
     </message>
     <message>
         <location filename="pages/Keys.qml" line="134"/>
-        <source>Primary address &amp;amp; Keys</source>
+        <source>Primary address &amp; Keys</source>
         <translation>主要地址和地址按键</translation>
     </message>
     <message>
@@ -2255,7 +2255,7 @@ You can change the password in the wallet settings.</source>
     </message>
     <message>
         <location filename="pages/settings/SettingsWallet.qml" line="94"/>
-        <source>Show seed &amp;amp; keys</source>
+        <source>Show seed &amp; keys</source>
         <translation>显示种子和键</translation>
     </message>
     <message>
@@ -4480,8 +4480,8 @@ If you don't have the option to run your own node, there's an option to connect 
     </message>
     <message>
         <location filename="pages/Yield.qml" line="184"/>
-        <source>Sort &amp;amp; filter</source>
-        <translation>排序&amp;amp;筛选</translation>
+        <source>Sort &amp; filter</source>
+        <translation>排序&amp;筛选</translation>
     </message>
     <message>
         <location filename="pages/Yield.qml" line="234"/>

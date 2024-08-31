@@ -533,6 +533,10 @@ Rectangle {
                     color: "transparent"
 
                     MoneroComponents.InlineButton {
+                        buttonColor: {
+                            if (isComplete) return MoneroComponents.Style.blackTheme ? "#00D9CC" : "#00CBC0"
+                            return MoneroComponents.Style.blackTheme ? "#06FFFFFF" : "#04000000"
+                        }
                         fontFamily: FontAwesome.fontFamilySolid
                         fontPixelSize: 18
                         fontStyleName: "Solid"
@@ -540,6 +544,7 @@ Rectangle {
                             if (isComplete) return FontAwesome.checkCircle;
                             return FontAwesome.hourglassHalf;
                         }
+                        textColor: "#00D9CC"
                         visible: true
                         tooltip: {
                             if (isComplete) return qsTr("complete") + translationManager.emptyString;   

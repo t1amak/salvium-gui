@@ -296,7 +296,7 @@ Si consiglia di inserire la passphrase nel portafoglio hardware per una maggiore
     </message>
     <message>
         <location filename="pages/History.qml" line="109"/>
-        <source>Sort &amp;amp; filter</source>
+        <source>Sort &amp; filter</source>
         <translation>Ordina e filtro</translation>
     </message>
     <message>
@@ -670,7 +670,7 @@ Si consiglia di inserire la passphrase nel portafoglio hardware per una maggiore
     </message>
     <message>
         <location filename="pages/Keys.qml" line="134"/>
-        <source>Primary address &amp;amp; Keys</source>
+        <source>Primary address &amp; Keys</source>
         <translation>Indirizzo principale e Chiavi</translation>
     </message>
     <message>
@@ -2254,7 +2254,7 @@ Puoi modificare la password nelle impostazioni del portafoglio.</translation>
     </message>
     <message>
         <location filename="pages/settings/SettingsWallet.qml" line="94"/>
-        <source>Show seed &amp;amp; keys</source>
+        <source>Show seed &amp; keys</source>
         <translation>Mostra seme e amp; chiavi</translation>
     </message>
     <message>
@@ -4479,7 +4479,7 @@ Se non hai la possibilità di eseguire il proprio nodo, c'è un'opzione per conn
     </message>
     <message>
         <location filename="pages/Yield.qml" line="184"/>
-        <source>Sort &amp;amp; filter</source>
+        <source>Sort &amp; filter</source>
         <translation>Ordina e filtro</translation>
     </message>
     <message>

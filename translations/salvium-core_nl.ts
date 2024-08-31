@@ -296,8 +296,8 @@ Het wordt aanbevolen om de wachtwoordzin in te voeren op de hardware wallet voor
     </message>
     <message>
         <location filename="pages/History.qml" line="109"/>
-        <source>Sort &amp;amp; filter</source>
-        <translation>Sorteren &amp;amp; filter</translation>
+        <source>Sort &amp; filter</source>
+        <translation>Sorteren &amp; filter</translation>
     </message>
     <message>
         <location filename="pages/History.qml" line="159"/>
@@ -670,8 +670,8 @@ Het wordt aanbevolen om de wachtwoordzin in te voeren op de hardware wallet voor
     </message>
     <message>
         <location filename="pages/Keys.qml" line="134"/>
-        <source>Primary address &amp;amp; Keys</source>
-        <translation>Primair adres &amp;amp; Sleutels</translation>
+        <source>Primary address &amp; Keys</source>
+        <translation>Primair adres &amp; Sleutels</translation>
     </message>
     <message>
         <location filename="pages/Keys.qml" line="149"/>
@@ -2254,8 +2254,8 @@ U kunt het wachtwoord wijzigen in de portefeuille-instellingen.</translation>
     </message>
     <message>
         <location filename="pages/settings/SettingsWallet.qml" line="94"/>
-        <source>Show seed &amp;amp; keys</source>
-        <translation>Toon zaad &amp;amp; sleutels</translation>
+        <source>Show seed &amp; keys</source>
+        <translation>Toon zaad &amp; sleutels</translation>
     </message>
     <message>
         <location filename="pages/settings/SettingsWallet.qml" line="104"/>
@@ -4479,8 +4479,8 @@ Als u niet de mogelijkheid heeft om uw eigen knooppunt te gebruiken, is er een o
     </message>
     <message>
         <location filename="pages/Yield.qml" line="184"/>
-        <source>Sort &amp;amp; filter</source>
-        <translation>Sorteren &amp;amp; filter</translation>
+        <source>Sort &amp; filter</source>
+        <translation>Sorteren &amp; filter</translation>
     </message>
     <message>
         <location filename="pages/Yield.qml" line="234"/>
