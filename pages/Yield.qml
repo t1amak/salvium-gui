@@ -1191,11 +1191,13 @@ Rectangle {
         // setup date filter scope according to real transactions
         if(appWindow.currentWallet != null){
 
-            var yield_info = currentWallet.getYieldInfo();
-            coinsBurnt.text = walletManager.displayAmount(yield_info.burnt) + " SAL";
-            coinsLocked.text = walletManager.displayAmount(yield_info.locked) + " SAL";
-            coinsAccrued.text = walletManager.displayAmount(yield_info.yield) + " SAL";
-            root.model = yield_info.payouts;
+            if (persistentSettings.useRemoteNode || walletManager.localDaemonSynced()) {
+                var yield_info = currentWallet.getYieldInfo();
+                coinsBurnt.text = walletManager.displayAmount(yield_info.burnt) + " SAL";
+                coinsLocked.text = walletManager.displayAmount(yield_info.locked) + " SAL";
+                coinsAccrued.text = walletManager.displayAmount(yield_info.yield) + " SAL";
+                root.model = yield_info.payouts;
+            }
         }
 
         root.reset();
