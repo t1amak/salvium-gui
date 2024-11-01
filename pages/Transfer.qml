@@ -173,7 +173,7 @@ Rectangle {
         ListModel {
             id: recipientModel
 
-            readonly property int maxRecipients: 16
+            readonly property int maxRecipients: 15
 
             ListElement {
                 address: ""
@@ -520,7 +520,7 @@ Rectangle {
                         }
                     }
                 }
-                /*
+
                 GridLayout {
                     id: totalLayout
                     Layout.topMargin: recipientLayout.rowSpacing / 2
@@ -537,6 +537,7 @@ Rectangle {
                         spacing: 0
 
                         CheckBox {
+                            id: addRecipientCheckBox
                             border: false
                             checked: false
                             enabled: {
@@ -546,7 +547,7 @@ Rectangle {
                                 if (recipientModel.count >= recipientModel.maxRecipients) {
                                     return false;
                                 }
-                                return false;
+                                return true;
                             }
                             fontAwesomeIcons: true
                             fontSize: descriptionLine.labelFontSize
@@ -633,14 +634,14 @@ Rectangle {
                         visible: persistentSettings.fiatPriceEnabled
                     }
                 }
-                */
+
             }
 
             Rectangle {
                 anchors.top: recipientLayout.top
                 anchors.topMargin: addressLabel.height + recipientLayout.rowSpacing / 2
                 anchors.bottom: recipientLayout.bottom
-                //anchors.bottomMargin: totalLayout.height + recipientLayout.rowSpacing / 2
+                anchors.bottomMargin: totalLayout.height + recipientLayout.rowSpacing / 2
                 anchors.left: recipientLayout.left
                 anchors.right: recipientLayout.right
                 anchors.rightMargin: recipientLayout.thirdRowWidth
@@ -1184,6 +1185,13 @@ Rectangle {
                 // Light wallet is always ready
                 pageRoot.enabled = true;
                 root.warningContent = "";
+
+                // Get the HF check done to verify whether we can have multiple recipients
+                if (currentWallet.useForkRules(2, 0)) {
+                    addRecipientCheckBox.visible = true;
+                } else {
+                    addRecipientCheckBox.visible = false;
+                }
             }
         }
     }
