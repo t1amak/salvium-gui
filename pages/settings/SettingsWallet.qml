@@ -184,14 +184,17 @@ Rectangle {
         MoneroComponents.SettingsListItem {
             iconText: FontAwesome.cashRegister
             isLast: true
-            description: qsTr("Receive Monero for your business, easily.") + translationManager.emptyString
-            title: qsTr("Enter merchant mode") + translationManager.emptyString
-
+            //description: qsTr("Receive Salvium for your business, easily.") + translationManager.emptyString
+            //title: qsTr("Enter merchant mode") + translationManager.emptyString
+            description: qsTr("Receive Salvium for your business, easily.\n\nIf you want this feature to be implemented, please contact the team.") + translationManager.emptyString
+            title: qsTr("Merchant mode is disabled") + translationManager.emptyString
+            /*
             onClicked: {
                 middlePanel.state = "Merchant";
                 middlePanel.flickable.contentY = 0;
                 updateBalance();
             }
+            */
         }
     }
 

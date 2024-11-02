@@ -56,6 +56,7 @@ Rectangle {
     Clipboard { id: clipboard }
 
     signal historyClicked()
+    signal yieldClicked()
     signal stakingClicked()
     signal transferClicked()
     signal receiveClicked()
@@ -68,6 +69,7 @@ Rectangle {
         menuColumn.previousButton.checked = false
         if(pos === "History") menuColumn.previousButton = historyButton
         else if(pos === "Staking") menuColumn.previousButton = stakingButton
+        else if(pos === "Yield") menuColumn.previousButton = yieldButton
         else if(pos === "Transfer") menuColumn.previousButton = transferButton
         else if(pos === "Receive")  menuColumn.previousButton = receiveButton
         else if(pos === "AddressBook") menuColumn.previousButton = addressBookButton
@@ -456,10 +458,35 @@ Rectangle {
                     parent.previousButton = stakingButton
                     panel.stakingClicked()
                 }
+                enabled: currentAccountIndex == 0
+                visible: currentAccountIndex == 0
             }
 
             MoneroComponents.MenuButtonDivider {
-                visible: stakingButton.present
+                visible: stakingButton.visible
+                anchors.left: parent.left
+                anchors.right: parent.right
+                anchors.leftMargin: 20
+            }
+
+            // ------------- Yield tab ---------------
+
+            MoneroComponents.MenuButton {
+                id: yieldButton
+                anchors.left: parent.left
+                anchors.right: parent.right
+                text: qsTr("Yield Info") + translationManager.emptyString
+                symbol: (isMac ? "⌃" : qsTr("Ctrl+")) + "Y" + translationManager.emptyString
+                under: stakingButton
+                onClicked: {
+                    parent.previousButton.checked = false
+                    parent.previousButton = yieldButton
+                    panel.yieldClicked()
+                }
+            }
+
+            MoneroComponents.MenuButtonDivider {
+                visible: yieldButton.present
                 anchors.left: parent.left
                 anchors.right: parent.right
                 anchors.leftMargin: 20

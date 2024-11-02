@@ -587,6 +587,10 @@ void Wallet::createStakeTransactionAsync(
     quint32 mixin_count,
     PendingTransaction::Priority priority)
 {
+    if (currentSubaddressAccount() != 0) {
+        qWarning() << "Cannot create Staking transactions from secondary accounts";
+        return;
+    }
     m_scheduler.run([this, amount, mixin_count, priority] {
         PendingTransaction *tx = createStakeTransaction(amount, mixin_count, priority);
         QVector<QString> destinationAddresses;
@@ -1130,9 +1134,8 @@ void Wallet::onPassphraseEntered(const QString &passphrase, bool enter_on_device
 
 YieldInfo * Wallet::getYieldInfo()
 {
-  Monero::YieldInfo * yiImpl = m_walletImpl->getYieldInfo();
-  YieldInfo * result = new YieldInfo(yiImpl, this);
-  return result;
+  YieldInfo * yi = new YieldInfo(m_walletImpl->getYieldInfo(), this);
+  return yi;
 }
 
 Wallet::Wallet(Monero::Wallet *w, QObject *parent)

@@ -389,7 +389,7 @@ signals:
     void deviceShowAddressShowed();
     
     void stakeTransactionCreated(PendingTransaction *transaction);
-    
+  
     // emitted when transaction is created async
     void transactionCreated(
         PendingTransaction *transaction,

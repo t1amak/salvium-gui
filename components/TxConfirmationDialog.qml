@@ -314,7 +314,7 @@ Rectangle {
                             if (addressBookName) {
                                 title = FontAwesome.addressBook + " " + addressBookName;
                             } else {
-                                title = qsTr("Monero address") + translationManager.emptyString;
+                                title = qsTr("Salvium address") + translationManager.emptyString;
                             }
                             if (recipients.length > 1) {
                                 title = "%1. %2 - %3 SAL".arg(index + 1).arg(title).arg(recipient.amount);
@@ -344,7 +344,7 @@ Rectangle {
                 spacing: 16
 
                 Text {
-                    property bool maliciousTxFee: parseFloat(root.transactionFee) > 0.01
+                    property bool maliciousTxFee: parseFloat(root.transactionFee) > 0.05
                     color: maliciousTxFee ? "red" : MoneroComponents.Style.defaultFontColor
                     font.pixelSize: maliciousTxFee ? 20 : 15
                     text: {

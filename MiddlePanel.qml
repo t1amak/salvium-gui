@@ -60,6 +60,7 @@ Rectangle {
     property Staking stakingView: Staking {
         onStakeClicked: root.stakeClicked(amount, paymentId, mixinCount, priority, description)
     }
+    property Yield yieldView: Yield { }
     property Advanced advancedView: Advanced { }
     property Settings settingsView: Settings { }
     property AddressBook addressBookView: AddressBook { }
@@ -135,6 +136,10 @@ Rectangle {
                 name: "Staking"
                 PropertyChanges { target: root; currentView: stakingView }
                 PropertyChanges { target: mainFlickable; contentHeight: stakingView.stakingHeight + 80 }
+            }, State {
+                name: "Yield"
+                PropertyChanges { target: root; currentView: yieldView }
+                PropertyChanges { target: mainFlickable; contentHeight: yieldView.contentHeight + 80 }
             }, State {
                 name: "Transfer"
                 PropertyChanges { target: root; currentView: transferView }

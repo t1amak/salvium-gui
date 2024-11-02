@@ -48,6 +48,8 @@ Object {
     property string folderOpen : "\uf07c"
     property string globe : "\uf0ac"
     property string home : "\uf015"
+    property string hourglass : "\uf254"
+    property string hourglassHalf : "\uf252"
     property string houseUser : "\ue065"
     property string infinity : "\uf534"
     property string info : "\uf129"

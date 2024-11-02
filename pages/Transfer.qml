@@ -173,7 +173,7 @@ Rectangle {
         ListModel {
             id: recipientModel
 
-            readonly property int maxRecipients: 16
+            readonly property int maxRecipients: 15
 
             ListElement {
                 address: ""
@@ -272,6 +272,7 @@ Rectangle {
                         }
 
                         MoneroComponents.InlineButton {
+                            visible: appWindow.qrScannerEnabled && (isAndroid || isIOS)
                             fontFamily: FontAwesome.fontFamilySolid
                             fontStyleName: "Solid"
                             fontPixelSize: 18
@@ -297,7 +298,7 @@ Rectangle {
                             fontFamily: FontAwesome.fontFamilySolid
                             fontStyleName: "Solid"
                             text: FontAwesome.qrcode
-                            visible: appWindow.qrScannerEnabled
+                            visible: appWindow.qrScannerEnabled && (isAndroid || isIOS)
                             tooltip: qsTr("Scan QR code") + translationManager.emptyString
                             onClicked: {
                                 cameraUi.state = "Capture"
@@ -536,6 +537,7 @@ Rectangle {
                         spacing: 0
 
                         CheckBox {
+                            id: addRecipientCheckBox
                             border: false
                             checked: false
                             enabled: {
@@ -553,6 +555,7 @@ Rectangle {
                             text: qsTr("Add recipient") + translationManager.emptyString
                             toggleOnClick: false
                             uncheckedIcon: FontAwesome.plusCircle
+                            visible: false
                             onClicked: {
                                 recipientModel.newRecipient("", "");
                             }
@@ -631,6 +634,7 @@ Rectangle {
                         visible: persistentSettings.fiatPriceEnabled
                     }
                 }
+
             }
 
             Rectangle {
@@ -648,6 +652,7 @@ Rectangle {
             }
         }
 
+    /*
         ColumnLayout {
             spacing: 0
             visible: appWindow.walletMode >= 2
@@ -716,7 +721,7 @@ Rectangle {
                         currentWallet.estimateTransactionFeeAsync(
                             addresses,
                             amounts,
-                            priorityModelV5.get(priorityDropdown.currentIndex).priority,
+                            0,
                             function (amount) {
                                 if (amount) {
                                     estimatedFee = Utils.removeTrailingZeros(amount);
@@ -742,6 +747,7 @@ Rectangle {
                 }
             }
         }
+    */
 
       MoneroComponents.WarningBox {
           text: qsTr("Description field contents match long payment ID format. \
@@ -837,7 +843,7 @@ Rectangle {
               enabled: !sendButtonWarningBox.visible && !warningContent && !recipientModel.hasEmptyAddress() && !paymentIdWarningBox.visible
               onClicked: {
                   console.log("Transfer: paymentClicked")
-                  var priority = priorityModelV5.get(priorityDropdown.currentIndex).priority
+                  var priority = 0
                   console.log("priority: " + priority)
                   setPaymentId(paymentIdLine.text.trim());
                   root.paymentClicked(recipientModel.getRecipients(), paymentIdLine.text, root.mixin, priority, descriptionLine.text)
@@ -937,7 +943,7 @@ Rectangle {
             button1.enabled: appWindow.viewOnly && pageRoot.checkInformation() && appWindow.daemonSynced
             button1.onClicked: {
                 console.log("Transfer: saveTx Clicked")
-                var priority = priorityModelV5.get(priorityDropdown.currentIndex).priority
+                var priority = 0
                 console.log("priority: " + priority)
                 setPaymentId(paymentIdLine.text.trim());
                 root.paymentClicked(recipientModel.getRecipients(), paymentIdLine.text, root.mixin, priority, descriptionLine.text)
@@ -1179,6 +1185,13 @@ Rectangle {
                 // Light wallet is always ready
                 pageRoot.enabled = true;
                 root.warningContent = "";
+
+                // Get the HF check done to verify whether we can have multiple recipients
+                if (currentWallet.useForkRules(2, 0)) {
+                    addRecipientCheckBox.visible = true;
+                } else {
+                    addRecipientCheckBox.visible = false;
+                }
             }
         }
     }
