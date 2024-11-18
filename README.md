@@ -20,20 +20,6 @@ Portions Copyright (c) 2014-2024, The Monero Project
     + [Building on OS X](#building-on-os-x)
     + [Building on Windows](#building-on-windows)
 
-## Development resources
-
-- Web: [getmonero.org](https://getmonero.org)
-- Mail: [dev@getmonero.org](mailto:dev@getmonero.org)
-- Github: [https://github.com/monero-project/monero-gui](https://github.com/monero-project/monero-gui)
-- IRC: [#monero-gui on Libera](irc://irc.libera.chat/#monero-gui)
-- Translation platform (Weblate): [translate.getmonero.org](https://translate.getmonero.org)
-- UI Design: [Monero-GUI on Figma](https://www.figma.com/file/DplJ2DDQfIKiuRvolHX2hN/Monero-GUI)
-
-## Vulnerability response
-
-- Our [Vulnerability Response Process](https://github.com/monero-project/meta/blob/master/VULNERABILITY_RESPONSE_PROCESS.md) encourages responsible disclosure
-- We are also available via [HackerOne](https://hackerone.com/monero)
-
 ## Introduction
 
 Salvium is a private, secure, untraceable, decentralised digital currency. You are your bank, you control your funds, and nobody can trace your transfers unless you allow them to do so.
@@ -56,15 +42,7 @@ See [LICENSE](LICENSE).
 
 ## Translations
 
-Do you speak a second language and would like to help translate the Salvium GUI? Check out Weblate, our localization platform, at [translate.getmonero.org](https://translate.getmonero.org/). Choose the language and suggest a translation for a string or review an existing one. The Localization Workgroup made [a guide with step-by-step instructions](https://github.com/monero-ecosystem/monero-translations/blob/master/weblate.md) for Weblate.
-
-If you need help/support or any info you can contact the localization workgroup on the IRC channel #monero-translations (relayed on [Matrix](https://matrix.to/#/!BKMbQLMDzHKzmtrBfg:matrix.org?via=monero.social&via=matrix.org&via=libera.chat)) or by email at translate[at]getmonero[dot]org. For more info about the Localization workgroup: [github.com/monero-ecosystem/monero-translations](https://github.com/monero-ecosystem/monero-translations)
-
-Status of the translations:  
-
-<a href="https://translate.getmonero.org/engage/monero/?utm_source=widget">
-<img src="https://translate.getmonero.org/widgets/monero/-/gui-wallet/horizontal-auto.svg" alt="Translation status" />
-</a>
+Do you speak a second language and would like to help translate the Salvium GUI? Please reach out to the team on discord!
 
 ## Compiling the Salvium GUI from source
 
