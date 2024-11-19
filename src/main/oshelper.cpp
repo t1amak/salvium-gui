@@ -70,28 +70,24 @@ namespace
 
 QPixmap screenshot()
 {
-#ifdef Q_OS_MAC
-    return MacOSHelper::screenshot();
-#else
-    std::unordered_set<QWindow *> hidden;
-    const QWindowList windows = QGuiApplication::allWindows();
-    for (QWindow *window : windows)
+  std::unordered_set<QWindow *> hidden;
+  const QWindowList windows = QGuiApplication::allWindows();
+  for (QWindow *window : windows)
+  {
+    if (window->isVisible())
     {
-        if (window->isVisible())
-        {
-            hidden.emplace(window);
-            window->hide();
-        }
+      hidden.emplace(window);
+      window->hide();
     }
-    const auto unhide = sg::make_scope_guard([&hidden]() {
-        for (QWindow *window : hidden)
-        {
-            window->show();
-        }
-    });
+  }
+  const auto unhide = sg::make_scope_guard([&hidden]() {
+    for (QWindow *window : hidden)
+    {
+      window->show();
+    }
+  });
 
-    return QGuiApplication::primaryScreen()->grabWindow(0);
-#endif
+  return QGuiApplication::primaryScreen()->grabWindow(0);
 }
 
 } // namespace

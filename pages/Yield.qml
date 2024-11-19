@@ -1197,6 +1197,8 @@ Rectangle {
                 coinsLocked.text = walletManager.displayAmount(yield_info.locked) + " SAL";
                 coinsAccrued.text = walletManager.displayAmount(yield_info.yield) + " SAL";
                 root.model = yield_info.payouts;
+            } else {
+                root.model = "[]";
             }
         }
 
