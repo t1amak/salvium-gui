@@ -59,6 +59,7 @@ Rectangle {
     signal yieldClicked()
     signal stakingClicked()
     signal transferClicked()
+    signal auditClicked()
     signal receiveClicked()
     signal advancedClicked()
     signal settingsClicked()
@@ -487,6 +488,28 @@ Rectangle {
 
             MoneroComponents.MenuButtonDivider {
                 visible: yieldButton.present
+                anchors.left: parent.left
+                anchors.right: parent.right
+                anchors.leftMargin: 20
+            }
+
+            // ------------- Audit tab ---------------
+
+            MoneroComponents.MenuButton {
+                id: auditButton
+                anchors.left: parent.left
+                anchors.right: parent.right
+                text: qsTr("Audit") + translationManager.emptyString
+                symbol: (isMac ? "⌃" : qsTr("Ctrl+")) + "K" + translationManager.emptyString
+                onClicked: {
+                    parent.previousButton.checked = false
+                    parent.previousButton = auditButton
+                    panel.auditClicked()
+                }
+            }
+
+            MoneroComponents.MenuButtonDivider {
+                visible: auditButton.visible
                 anchors.left: parent.left
                 anchors.right: parent.right
                 anchors.leftMargin: 20

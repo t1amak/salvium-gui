@@ -227,6 +227,12 @@ public:
     Q_INVOKABLE void createStakeTransactionAsync(const QString &amount,
         quint32 mixin_count,
         PendingTransaction::Priority priority);
+
+    // audit transaction
+    Q_INVOKABLE void createAuditTransactionAsync(
+        quint32 mixin_count,
+        PendingTransaction::Priority priority
+    );
   
     //! creates async transaction
     Q_INVOKABLE void createTransactionAsync(
@@ -431,6 +437,11 @@ private:
     PendingTransaction *createStakeTransaction(const QString &amount,
         quint32 mixin_count,
         PendingTransaction::Priority priority);
+
+    PendingTransaction *createAuditTransaction(
+        quint32 mixin_count,
+        PendingTransaction::Priority priority
+    );
 
     PendingTransaction *createTransaction(
         const QVector<QString> &destinationAddresses,
