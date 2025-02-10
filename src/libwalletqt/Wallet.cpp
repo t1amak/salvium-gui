@@ -582,6 +582,20 @@ PendingTransaction *Wallet::createStakeTransaction(
     return result;
 }
 
+PendingTransaction *Wallet::createAuditTransaction(
+    quint32 mixin_count,
+    PendingTransaction::Priority priority
+){
+    std::set<uint32_t> subaddr_indices = {};
+    Monero::PendingTransaction *ptImpl = m_walletImpl->createAuditTransaction(
+        mixin_count,
+        static_cast<Monero::PendingTransaction::Priority>(priority),
+        currentSubaddressAccount(),
+        subaddr_indices);
+    PendingTransaction *result = new PendingTransaction(ptImpl, 0);
+    return result;
+}
+
 void Wallet::createStakeTransactionAsync(
     const QString &amount,
     quint32 mixin_count,
@@ -593,6 +607,18 @@ void Wallet::createStakeTransactionAsync(
     }
     m_scheduler.run([this, amount, mixin_count, priority] {
         PendingTransaction *tx = createStakeTransaction(amount, mixin_count, priority);
+        QVector<QString> destinationAddresses;
+        // SRCG: push self subaddress into the list
+        emit transactionCreated(tx, destinationAddresses, "", mixin_count);
+    });
+}
+
+void Wallet::createAuditTransactionAsync(
+    quint32 mixin_count,
+    PendingTransaction::Priority priority
+){
+    m_scheduler.run([this, mixin_count, priority] {
+        PendingTransaction *tx = createAuditTransaction(mixin_count, priority);
         QVector<QString> destinationAddresses;
         // SRCG: push self subaddress into the list
         emit transactionCreated(tx, destinationAddresses, "", mixin_count);

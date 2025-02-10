@@ -24,6 +24,7 @@
         <file>pages/Advanced.qml</file>
         <file>pages/Transfer.qml</file>
         <file>pages/Staking.qml</file>
+        <file>pages/Audit.qml</file>
         <file>pages/Yield.qml</file>
         <file>pages/History.qml</file>
         <file>pages/AddressBook.qml</file>
