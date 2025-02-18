@@ -1194,9 +1194,9 @@ Rectangle {
 
             if (persistentSettings.useRemoteNode || walletManager.localDaemonSynced()) {
                 var yield_info = currentWallet.getYieldInfo();
-                coinsBurnt.text = walletManager.displayAmount(yield_info.burnt) + " SAL";
-                coinsLocked.text = walletManager.displayAmount(yield_info.locked) + " SAL";
-                coinsAccrued.text = walletManager.displayAmount(yield_info.yield) + " SAL";
+                coinsBurnt.text = walletManager.displayAmount(yield_info.burnt) + " SAL1";
+                coinsLocked.text = walletManager.displayAmount(yield_info.locked) + " SAL1";
+                coinsAccrued.text = walletManager.displayAmount(yield_info.yield) + " SAL1";
                 root.model = yield_info.payouts;
             } else {
                 root.model = "[]";

@@ -106,7 +106,7 @@ Rectangle {
           visible: leftPanel.minutesToUnlock !== ""
 
           MoneroComponents.WarningBox {
-              text: qsTr("Spendable funds: %1 SAL. Please wait ~%2 minutes for your whole balance to become spendable.").arg(leftPanel.balanceUnlockedString).arg(leftPanel.minutesToUnlock)
+              text: qsTr("Spendable funds: %1 SAL1. Please wait ~%2 minutes for your whole balance to become spendable.").arg(leftPanel.balanceUnlockedString).arg(leftPanel.minutesToUnlock)
           }
       }
 
@@ -128,12 +128,6 @@ Rectangle {
                   root.auditClicked(root.mixin, 0)
               }
           }
-      }
-
-      function checkInformation() {
-        return !recipientModel.hasEmptyAmount() &&
-            recipientModel.getAmountTotal() <= appWindow.getUnlockedBalance() &&
-            !recipientModel.hasInvalidAddress();
       }
 
     } // pageRoot

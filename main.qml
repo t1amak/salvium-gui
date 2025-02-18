@@ -403,7 +403,7 @@ ApplicationWindow {
         if(!currentWallet){
             return 0
         }
-        return currentWallet.unlockedBalance()
+        return currentWallet.unlockedBalance("SAL1")
     }
 
     function updateBalance() {
@@ -413,8 +413,8 @@ ApplicationWindow {
         var balance = "?.??";
         var balanceU = "?.??";
         if(!hideBalanceForced && !persistentSettings.hideBalance){
-            balance = walletManager.displayAmount(currentWallet.balance()["SAL1"]);
-            balanceU = walletManager.displayAmount(currentWallet.unlockedBalance()["SAL1"]);
+            balance = walletManager.displayAmount(currentWallet.balance("SAL1"));
+            balanceU = walletManager.displayAmount(currentWallet.unlockedBalance("SAL1"));
         }
 
         if (persistentSettings.fiatPriceEnabled) {
@@ -424,10 +424,6 @@ ApplicationWindow {
         leftPanel.minutesToUnlock = (balance !== balanceU) ? currentWallet.history.minutesToUnlock : "";
         leftPanel.balanceString = balance
         leftPanel.balanceUnlockedString = balanceU
-        if (middlePanel.state === "Account") {
-            middlePanel.accountView.balanceAllText = walletManager.displayAmount(appWindow.currentWallet.balanceAll()) + " SAL";
-            middlePanel.accountView.unlockedBalanceAllText = walletManager.displayAmount(appWindow.currentWallet.unlockedBalanceAll()) + " SAL";
-        }
     }
 
     function onUriHandler(uri){

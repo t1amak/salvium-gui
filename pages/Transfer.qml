@@ -166,7 +166,7 @@ Rectangle {
           visible: leftPanel.minutesToUnlock !== ""
 
           MoneroComponents.WarningBox {
-              text: qsTr("Spendable funds: %1 SAL. Please wait ~%2 minutes for your whole balance to become spendable.").arg(leftPanel.balanceUnlockedString).arg(leftPanel.minutesToUnlock)
+              text: qsTr("Spendable funds: %1 SAL1. Please wait ~%2 minutes for your whole balance to become spendable.").arg(leftPanel.balanceUnlockedString).arg(leftPanel.minutesToUnlock)
           }
       }
 
@@ -514,7 +514,7 @@ Rectangle {
                                 Layout.preferredWidth: recipientLayout.thirdRowWidth
                                 horizontalAlignment: Text.AlignHCenter
                                 font.family: MoneroComponents.Style.fontRegular.name
-                                text: "SAL"
+                                text: "SAL1"
                                 visible: recipientModel.count == 1
                             }
                         }
@@ -597,7 +597,7 @@ Rectangle {
                         Layout.maximumWidth: recipientLayout.thirdRowWidth
                         horizontalAlignment: Text.AlignHCenter
                         font.family: MoneroComponents.Style.fontRegular.name
-                        text: "SAL"
+                        text: "SAL1"
                         visible: recipientModel.count > 1
                     }
 
@@ -965,7 +965,7 @@ Rectangle {
                 if (appWindow.viewOnly && !pageRoot.checkInformation()) {
                     errorMessage = "<p class='orange'>" + qsTr("* To create a transaction file, please enter address and amount above") + "</p>";
                 }
-                var header = qsTr("Spend SAL from a cold (offline) wallet") + translationManager.emptyString;
+                var header = qsTr("Spend SAL1 from a cold (offline) wallet") + translationManager.emptyString;
                 return "<style type='text/css'>.header{ font-size: 13px; } p{line-height:20px; margin-top:0px; margin-bottom:0px; " +
                        ";} p.orange{color:#ff9323;}</style>" +
                        "<div class='header'>" + header + "</div>" +

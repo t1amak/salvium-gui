@@ -235,7 +235,7 @@ Rectangle {
                         if (persistentSettings.fiatPriceEnabled && persistentSettings.fiatPriceToggle) {
                             return appWindow.fiatApiCurrencySymbol();
                         } else {
-                            return "SAL"
+                            return "SAL1 "
                         }
                     }
                     color: MoneroComponents.Style.blackTheme ? "white" : "black"
