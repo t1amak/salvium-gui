@@ -3,9 +3,9 @@ project(salvium-gui)
 
 message(STATUS "Initiating compile using CMake ${CMAKE_VERSION}")
 
-set(VERSION_MAJOR "7")
-set(VERSION_MINOR "2")
-set(VERSION_REVISION "0")
+set(VERSION_MAJOR "9")
+set(VERSION_MINOR "4")
+set(VERSION_REVISION "1")
 set(VERSION "0.${VERSION_MAJOR}.${VERSION_MINOR}.${VERSION_REVISION}")
 
 set(CMAKE_C_STANDARD 11)
@@ -214,6 +214,9 @@ list(APPEND QT5_LIBRARIES
 )
 
 if(STATIC)
+
+  set(QT5_PKG_CONFIG_Qt5Qml_PREFIX $ENV{QT5_PKG_CONFIG_Qt5Qml_PREFIX})
+    
   set(QT5_EXTRA_PATHS ${QT5_PKG_CONFIG_Qt5Qml_PREFIX}/qml/Qt/labs/folderlistmodel)
   list(APPEND QT5_EXTRA_PATHS ${QT5_PKG_CONFIG_Qt5Qml_PREFIX}/qml/Qt/labs/settings)
   list(APPEND QT5_EXTRA_PATHS ${QT5_PKG_CONFIG_Qt5Qml_PREFIX}/qml/Qt/labs/platform)
@@ -233,6 +236,8 @@ if(STATIC)
   list(APPEND QT5_EXTRA_PATHS ${QT5_PKG_CONFIG_Qt5Qml_PREFIX}/qml/QtQuick/Window.2)
   list(APPEND QT5_EXTRA_PATHS ${QT5_PKG_CONFIG_Qt5Qml_PREFIX}/qml/QtQuick/XmlListModel)
 
+  message(STATUS "Using QT5_EXTRA_PATHS: '${QT5_EXTRA_PATHS}'")
+    
   set(QT5_EXTRA_LIBRARIES_LIST
     qtquicktemplates2plugin
     Qt5QuickTemplates2
