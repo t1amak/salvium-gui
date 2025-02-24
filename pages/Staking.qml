@@ -164,7 +164,7 @@ Rectangle {
                         }
 
                         MoneroComponents.TextPlain {
-                            text: leftPanel.balanceUnlockedString + " SAL" + translationManager.emptyString;
+                            text: leftPanel.balanceUnlockedString + " SAL1" + translationManager.emptyString;
                             Layout.rightMargin: 20
                             font.family: MoneroComponents.Style.fontMonoRegular.name;
                             font.pixelSize: 16
@@ -239,7 +239,7 @@ Rectangle {
                             MoneroComponents.TextPlain {
                                 horizontalAlignment: Text.AlignHCenter
                                 font.family: MoneroComponents.Style.fontRegular.name
-                                text: "SAL"
+                                text: "SAL1"
                                 visible: true
                             }
 
@@ -274,7 +274,7 @@ Rectangle {
                         MoneroComponents.WarningBox {
                             id: stakeInfoWarningBox
                             text: "<style type='text/css'>a {text-decoration: none; color: #FF6C3C; font-size: 14px;}</style>" +
-                                  qsTr("Staking locks your SAL for 21,600 blocks (about 30 days) to earn rewards. ") + translationManager.emptyString +
+                                  qsTr("Staking locks your SAL1 for 21,600 blocks (about 30 days) to earn rewards. ") + translationManager.emptyString +
                                   qsTr("This lock is non-reversible. Stakers currently receive 20% of block rewards, ") + translationManager.emptyString +
                                   qsTr("shared proportionally. Learn more at ") + translationManager.emptyString +
                                   "<a href='https://salvium.io/staking'>https://salvium.io/staking</a>."

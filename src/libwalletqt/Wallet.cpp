@@ -357,34 +357,34 @@ bool Wallet::viewOnly() const
     return m_walletImpl->watchOnly();
 }
 
-quint64 Wallet::balance() const
+quint64 Wallet::balance(const QString &asset) const
 {
-    return balance(m_currentSubaddressAccount);
+    return balance(asset, m_currentSubaddressAccount);
 }
 
-quint64 Wallet::balance(quint32 accountIndex) const
+quint64 Wallet::balance(const QString &asset, quint32 accountIndex) const
 {
-    return m_walletImpl->balance(accountIndex);
+    return m_walletImpl->balance(asset.toStdString(), accountIndex);
 }
 
-quint64 Wallet::balanceAll() const
+quint64 Wallet::balanceAll(const QString &asset) const
 {
-    return m_walletImpl->balanceAll();
+    return m_walletImpl->balanceAll(asset.toStdString());
 }
 
-quint64 Wallet::unlockedBalance() const
+quint64 Wallet::unlockedBalance(const QString &asset) const
 {
-    return unlockedBalance(m_currentSubaddressAccount);
+    return unlockedBalance(asset, m_currentSubaddressAccount);
 }
 
-quint64 Wallet::unlockedBalance(quint32 accountIndex) const
+quint64 Wallet::unlockedBalance(const QString &asset, quint32 accountIndex) const
 {
-    return m_walletImpl->unlockedBalance(accountIndex);
+    return m_walletImpl->unlockedBalance(asset.toStdString(), accountIndex);
 }
 
-quint64 Wallet::unlockedBalanceAll() const
+quint64 Wallet::unlockedBalanceAll(const QString &asset) const
 {
-    return m_walletImpl->unlockedBalanceAll();
+    return m_walletImpl->unlockedBalanceAll(asset.toStdString());
 }
 
 quint32 Wallet::currentSubaddressAccount() const
@@ -648,7 +648,7 @@ PendingTransaction *Wallet::createTransaction(
         payment_id.toStdString(),
         amounts,
         mixin_count,
-        "SAL",
+        "SAL1",
         false /* is_return */,
         static_cast<Monero::PendingTransaction::Priority>(priority),
         currentSubaddressAccount(),
