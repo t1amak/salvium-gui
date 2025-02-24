@@ -64,6 +64,7 @@ Rectangle {
     property var transactionPriority: ""
     property bool sweepUnmixable: false
     property bool stake: false
+    property bool audit: false
     property alias errorText: errorText
     property alias confirmButton: confirmButton
     property alias backButton: backButton
@@ -139,6 +140,7 @@ Rectangle {
         root.transactionPriority = "";
         root.sweepUnmixable = false;
         root.stake = false;
+        root.audit = false;
     }
 
     function showFiatConversion(valueXMR) {
@@ -171,6 +173,8 @@ Rectangle {
                         return qsTr("Sweep unmixable outputs") + translationManager.emptyString;
                     } else if (root.stake) {
                         return qsTr("Confirm stake") + translationManager.emptyString;
+                    } else if (root.audit) {
+                        return qsTr("Confirm Audit") + translationManager.emptyString;
                     } else {
                         return qsTr("Confirm send") + translationManager.emptyString;
                     }
@@ -209,7 +213,7 @@ Rectangle {
                     if (root.transactionAmount == "(all)" && currentWallet.isHwBacked() === true) {
                         return qsTr("All unlocked balance") +  translationManager.emptyString;
                     } else {
-                        return root.transactionAmount + " SAL " +  translationManager.emptyString;
+                        return root.transactionAmount + (root.audit ? " SAL" : " SAL1") +  translationManager.emptyString;
                     }
                 }
             }
@@ -275,7 +279,7 @@ Rectangle {
                 font.pixelSize: 15
                 color: MoneroComponents.Style.dimmedFontColor
                 text: qsTr("To") + ":" + translationManager.emptyString
-                visible: !root.stake
+                visible: !root.stake && !root.audit
             }
 
             Flickable {
@@ -287,7 +291,7 @@ Rectangle {
                     : recipientsArea.contentHeight
                 boundsBehavior: isMac ? Flickable.DragAndOvershootBounds : Flickable.StopAtBounds
                 clip: true
-                visible: !root.stake
+                visible: !root.stake && !root.audit
 
                 TextArea.flickable: TextArea {
                     id : recipientsArea
@@ -317,7 +321,7 @@ Rectangle {
                                 title = qsTr("Salvium address") + translationManager.emptyString;
                             }
                             if (recipients.length > 1) {
-                                title = "%1. %2 - %3 SAL".arg(index + 1).arg(title).arg(recipient.amount);
+                                title = "%1. %2 - %3 %4".arg(index + 1).arg(title).arg(recipient.amount).arg(root.audit ? "SAL" : "SAL1")
                                 if (persistentSettings.fiatPriceEnabled) {
                                     title += " (%1)".arg(showFiatConversion(recipient.amount));
                                 }
@@ -356,7 +360,7 @@ Rectangle {
                                     return qsTr("Calculating fee") + "..." +  translationManager.emptyString;
                                 }
                             } else {
-                                return root.transactionFee + " SAL" + (maliciousTxFee ? " (HIGH FEE)" : "")
+                                return root.transactionFee + (root.audit ? " SAL" : " SAL1") + (maliciousTxFee ? " (HIGH FEE)" : "")
                             }
                         } else {
                             return "";

@@ -175,14 +175,14 @@ public:
     Q_INVOKABLE void setTrustedDaemon(bool arg);
 
     //! returns balance
-    Q_INVOKABLE quint64 balance() const;
-    Q_INVOKABLE quint64 balance(quint32 accountIndex) const;
-    Q_INVOKABLE quint64 balanceAll() const;
+    Q_INVOKABLE quint64 balance(const QString &asset) const;
+    Q_INVOKABLE quint64 balance(const QString &asset, quint32 accountIndex) const;
+    Q_INVOKABLE quint64 balanceAll(const QString &asset) const;
 
     //! returns unlocked balance
-    Q_INVOKABLE quint64 unlockedBalance() const;
-    Q_INVOKABLE quint64 unlockedBalance(quint32 accountIndex) const;
-    Q_INVOKABLE quint64 unlockedBalanceAll() const;
+    Q_INVOKABLE quint64 unlockedBalance(const QString &asset) const;
+    Q_INVOKABLE quint64 unlockedBalance(const QString &asset, quint32 accountIndex) const;
+    Q_INVOKABLE quint64 unlockedBalanceAll(const QString &asset) const;
 
     //! account/address management
     quint32 currentSubaddressAccount() const;
@@ -227,6 +227,12 @@ public:
     Q_INVOKABLE void createStakeTransactionAsync(const QString &amount,
         quint32 mixin_count,
         PendingTransaction::Priority priority);
+
+    // audit transaction
+    Q_INVOKABLE void createAuditTransactionAsync(
+        quint32 mixin_count,
+        PendingTransaction::Priority priority
+    );
   
     //! creates async transaction
     Q_INVOKABLE void createTransactionAsync(
@@ -431,6 +437,11 @@ private:
     PendingTransaction *createStakeTransaction(const QString &amount,
         quint32 mixin_count,
         PendingTransaction::Priority priority);
+
+    PendingTransaction *createAuditTransaction(
+        quint32 mixin_count,
+        PendingTransaction::Priority priority
+    );
 
     PendingTransaction *createTransaction(
         const QVector<QString> &destinationAddresses,

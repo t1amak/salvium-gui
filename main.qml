@@ -303,6 +303,7 @@ ApplicationWindow {
         currentWallet.currentSubaddressAccountChanged.disconnect(handleAccountChanged);
         middlePanel.paymentClicked.disconnect(handlePayment);
         middlePanel.stakeClicked.disconnect(handleStake);
+        middlePanel.auditClicked.disconnect(handleAudit);
         middlePanel.sweepUnmixableClicked.disconnect(handleSweepUnmixable);
         middlePanel.getProofClicked.disconnect(handleGetProof);
         middlePanel.checkProofClicked.disconnect(handleCheckProof);
@@ -355,6 +356,7 @@ ApplicationWindow {
         currentWallet.proxyAddress = Qt.binding(persistentSettings.getWalletProxyAddress);
         middlePanel.paymentClicked.connect(handlePayment);
         middlePanel.stakeClicked.connect(handleStake);
+        middlePanel.auditClicked.connect(handleAudit);
         middlePanel.sweepUnmixableClicked.connect(handleSweepUnmixable);
         middlePanel.getProofClicked.connect(handleGetProof);
         middlePanel.checkProofClicked.connect(handleCheckProof);
@@ -401,7 +403,7 @@ ApplicationWindow {
         if(!currentWallet){
             return 0
         }
-        return currentWallet.unlockedBalance()
+        return currentWallet.unlockedBalance("SAL1")
     }
 
     function updateBalance() {
@@ -411,8 +413,8 @@ ApplicationWindow {
         var balance = "?.??";
         var balanceU = "?.??";
         if(!hideBalanceForced && !persistentSettings.hideBalance){
-            balance = walletManager.displayAmount(currentWallet.balance());
-            balanceU = walletManager.displayAmount(currentWallet.unlockedBalance());
+            balance = walletManager.displayAmount(currentWallet.balance("SAL1"));
+            balanceU = walletManager.displayAmount(currentWallet.unlockedBalance("SAL1"));
         }
 
         if (persistentSettings.fiatPriceEnabled) {
@@ -422,10 +424,6 @@ ApplicationWindow {
         leftPanel.minutesToUnlock = (balance !== balanceU) ? currentWallet.history.minutesToUnlock : "";
         leftPanel.balanceString = balance
         leftPanel.balanceUnlockedString = balanceU
-        if (middlePanel.state === "Account") {
-            middlePanel.accountView.balanceAllText = walletManager.displayAmount(appWindow.currentWallet.balanceAll()) + " SAL";
-            middlePanel.accountView.unlockedBalanceAllText = walletManager.displayAmount(appWindow.currentWallet.unlockedBalanceAll()) + " SAL";
-        }
     }
 
     function onUriHandler(uri){
@@ -976,6 +974,18 @@ ApplicationWindow {
 
             console.log("wibble");
         }
+    }
+
+    function handleAudit(mixinCount, priority) {
+        console.log("Auditing account: ");
+
+        txConfirmationPopup.audit = true;
+        txConfirmationPopup.bottomTextAnimation.running = false;
+        txConfirmationPopup.bottomText.text  = qsTr("Creating AUDIT transaction...") + translationManager.emptyString;
+        txConfirmationPopup.transactionAmount = "(all)";
+        txConfirmationPopup.open();
+
+        currentWallet.createAuditTransactionAsync(mixinCount, priority);
     }
 
     //Choose where to save transaction
@@ -1906,6 +1916,12 @@ ApplicationWindow {
 
                 onStakingClicked: {
                     middlePanel.state = "Staking";
+                    middlePanel.flickable.contentY = 0;
+                    updateBalance();
+                }
+
+                onAuditClicked: {
+                    middlePanel.state = "Audit";
                     middlePanel.flickable.contentY = 0;
                     updateBalance();
                 }
