@@ -122,7 +122,7 @@ Rectangle {
               rightIcon: "qrc:///images/rightArrow.png"
               Layout.topMargin: 4
               text: qsTr("Audit") + translationManager.emptyString
-              enabled: true
+              enabled: false
               onClicked: {
                   console.log("Audit: auditClicked")
                   root.auditClicked(root.mixin, 0)
@@ -183,11 +183,10 @@ Rectangle {
                 pageRoot.enabled = true;
                 root.warningContent = "";
 
-                // Get the HF check done to verify whether we can have multiple recipients
-                if (currentWallet.useForkRules(2, 0)) {
-                    addRecipientCheckBox.visible = true;
+                if (currentWallet.useForkRules(8, 0) && !currentWallet.useForkRules(9, 0)) {
+                    auditButton.enabled = true;
                 } else {
-                    addRecipientCheckBox.visible = false;
+                    auditButton.enabled = false;
                 }
             }
         }
