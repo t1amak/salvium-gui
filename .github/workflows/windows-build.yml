@@ -1,0 +1,46 @@
+name: Build Salvium GUI for Windows
+
+on:
+  # Allows you to run this workflow manually from the Actions tab
+  workflow_dispatch:
+  # Triggers the workflow on push or pull request events but only for the main branch
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
+  build-windows:
+    # This is the line you asked about - changed to ubuntu-24.04
+    runs-on: ubuntu-24.04
+
+    steps:
+      # Step 1: Check out your repository's code, including the 'salvium' submodule
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+        with:
+          submodules: 'recursive'
+
+      # Step 2: Build the Docker image that contains the entire build environment.
+      # This uses the Dockerfile we created and fixed.
+      - name: Build Docker Image
+        run: |
+          docker build --tag salvium:build-env-windows \
+                       --build-arg THREADS=$(nproc) \
+                       -f Dockerfile.windows .
+
+      # Step 3: Run the compilation inside the Docker container.
+      # This is the final command you discovered.
+      - name: Compile Salvium GUI
+        run: |
+          docker run --rm --user $(id -u):$(id -g) \
+          -v "${{ github.workspace }}":/salvium-gui \
+          -w /salvium-gui salvium:build-env-windows \
+          sh -c 'make depends root=/depends target=x86_64-w64-mingw32 tag=win-x64 -j$(nproc)'
+
+      # Step 4: Upload the compiled application and installer as an artifact.
+      - name: Upload Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: salvium-gui-windows
+          path: build/
