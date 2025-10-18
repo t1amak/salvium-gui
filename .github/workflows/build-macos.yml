@@ -33,8 +33,8 @@ jobs:
       - name: Set up build environment paths
         # Tell the build system where to find ALL dependencies
         run: |
-          echo "CMAKE_PREFIX_PATH=/usr/local/opt/qt@5:/opt/homebrew/opt/openssl@3:/opt/homebrew/opt/boost@1.85" >> $GITHUB_ENV
-          echo "/usr/local/opt/qt@5/bin" >> $GITHUB_PATH
+          echo "CMAKE_PREFIX_PATH=/opt/homebrew/opt/qt@5:/opt/homebrew/opt/openssl@3:/opt/homebrew/opt/boost@1.85" >> $GITHUB_ENV
+          echo "/opt/homebrew/opt/qt@5/bin" >> $GITHUB_PATH
 
       # 4a. Configure CMake (Explicitly use Homebrew CMake, set policy and explicit Boost@1.85 paths)
       - name: Configure CMake
