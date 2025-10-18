@@ -46,6 +46,8 @@ jobs:
                 -D DEV_MODE=OFF \
                 -D MANUAL_SUBMODULES=OFF \
                 -D CMAKE_POLICY_DEFAULT_CMP0074=NEW \
+                -D Boost_INCLUDE_DIR=/opt/homebrew/opt/boost/include \
+                -D Boost_LIBRARY_DIR=/opt/homebrew/opt/boost/lib \
                 -D Boost_ROOT=/opt/homebrew/opt/boost \
                 ../..
 
