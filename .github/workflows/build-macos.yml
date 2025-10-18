@@ -1,0 +1,155 @@
+# Filename: .github/workflows/build-macos.yml
+
+name: Build macOS (Apple Silicon)
+
+on:
+  # Run manually from the "Actions" tab on GitHub
+  workflow_dispatch:
+  
+  # Run automatically on every 'push' to the 'main' branch
+  push:
+    branches: [ main ]
+
+jobs:
+  build-macos-arm64:
+    # Use the latest macOS runner (Apple Silicon)
+    runs-on: macos-latest
+
+    steps:
+      # 1. Check out source code
+      - name: Check out code (with submodules)
+        uses: actions/checkout@v4
+        with:
+          # Very important: this repository uses submodules
+          submodules: 'recursive'
+
+      # 2. Install dependencies (Qt5, Boost, etc.) via Homebrew
+      - name: Install dependencies (Homebrew)
+        run: |
+          brew install qt@5 boost openssl@3 pkg-config cmake zeromq
+
+      # 3. Set up build environment paths for Qt5 and OpenSSL (required by Homebrew)
+      - name: Set up build environment paths
+        # Tell the build system where to find Qt5 and OpenSSL
+        run: |
+          echo "CMAKE_PREFIX_PATH=/usr/local/opt/qt@5:/usr/local/opt/openssl@3" >> $GITHUB_ENV
+          echo "/usr/local/opt/qt@5/bin" >> $GITHUB_PATH
+
+      # 4. Build the application (Release mode)
+      - name: Build salvium-gui (Release)
+        # Use all available CPU cores on the runner
+        run: |
+          make release -j$(sysctl -n hw.ncpu)
+
+      # 5. Create unsigned .dmg
+      # This only runs if the build in step 4 succeeded
+      - name: Create unsigned .dmg
+        if: success()
+        # We use 'hdiutil' which is available on GitHub runners
+        run: |
+          hdiutil create -fs HFS+ -srcfolder build/release/bin/salvium-gui.app -volname "salvium-gui" salvium-gui-unsigned.dmg
+
+#
+# -----------------------------------------------------------------
+#   SECTION 6: SIGN AND NOTARIZE (DISABLED - FOR FUTURE USE)
+#   To enable this:
+#   1. Uncomment all steps in this section.
+#   2. Create the following secrets in your GitHub repository settings:
+#      - APPLE_CERT_DATA: Base64 encoded .p12 certificate (Developer ID Application)
+#      - APPLE_CERT_PASSWORD: The password for the .p12 certificate
+#      - APPLE_NOTARY_USERNAME: Your Apple ID email (e.g., developer@example.com)
+#      - APPLE_TEAM_ID: Your Apple Team ID (e.g., A1B2C3D4E5)
+#      - APPLE_NOTARY_PASSWORD: An app-specific password for notarytool (generate at appleid.apple.com)
+#   3. Comment out or remove Section 7 (Unsigned Packaging)
+# -----------------------------------------------------------------
+#
+#       - name: Install Apple Certificate
+#         if: success()
+#         run: |
+#           # Create a temporary keychain
+#           KEYCHAIN_PATH=$RUNNER_TEMP/app-signing.keychain-db
+#           security create-keychain -p "temp_password" $KEYCHAIN_PATH
+#           security set-keychain-settings -lut 21600 $KEYCHAIN_PATH
+#           security unlock-keychain -p "temp_password" $KEYCHAIN_PATH
+#
+#           # Import the certificate from secrets
+#           echo "${{ secrets.APPLE_CERT_DATA }}" | base64 --decode > certificate.p12
+#           security import certificate.p12 -k $KEYCHAIN_PATH -P "${{ secrets.APPLE_CERT_PASSWORD }}" -T /usr/bin/codesign
+#           rm certificate.p12
+#
+#           # Allow codesign to access the keychain
+#           security set-key-partition-list -S apple-tool:,apple: -s -k "temp_password" $KEYCHAIN_PATH
+#
+#       - name: Code Sign the .app
+#         if: success()
+#         run: |
+#           KEYCHAIN_PATH=$RUNNER_TEMP/app-signing.keychain-db
+#           APP_PATH="build/release/bin/salvium-gui.app"
+#
+#           # Find the Developer ID identity string
+#           # Note: Replace "Developer ID Application" if your cert name is different
+#           CERT_IDENTITY=$(security find-identity -v -p codesigning $KEYCHAIN_PATH | grep "Developer ID Application" | head -n 1 | awk -F '"' '{print $2}')
+#           
+#           echo "Signing app with identity: $CERT_IDENTITY"
+#
+#           # Sign the app with the hardened runtime
+#           codesign --force --deep --sign "$CERT_IDENTITY" \
+#                    --keychain $KEYCHAIN_PATH \
+#                    --options runtime \
+#                    $APP_PATH
+#
+#       - name: Create Signed .dmg
+#         if: success()
+#         run: |
+#           # Create a .dmg from the now-signed .app
+#           hdiutil create -fs HFS+ -srcfolder build/release/bin/salvium-gui.app -volname "salvium-gui" salvium-gui-signed.dmg
+#
+#       - name: Sign the .dmg
+#         if: success()
+#         run: |
+#           KEYCHAIN_PATH=$RUNNER_TEMP/app-signing.keychain-db
+#           CERT_IDENTITY=$(security find-identity -v -p codesigning $KEYCHAIN_PATH | grep "Developer ID Application" | head -n 1 | awk -F '"' '{print $2}')
+#           
+#           echo "Signing dmg with identity: $CERT_IDENTITY"
+#           codesign --force --sign "$CERT_IDENTITY" \
+#                    --keychain $KEYCHAIN_PATH \
+#                    salvium-gui-signed.dmg
+#
+#       - name: Notarize .dmg
+#         if: success()
+#         run: |
+#           # Submit the .dmg to Apple's notary service
+#           # This uses the new 'notarytool' which requires an app-specific password
+#           xcrun notarytool submit salvium-gui-signed.dmg \
+#                            --apple-id "${{ secrets.APPLE_NOTARY_USERNAME }}" \
+#                            --password "${{ secrets.APPLE_NOTARY_PASSWORD }}" \
+#                            --team-id "${{ secrets.APPLE_TEAM_ID }}" \
+#                            --wait
+#
+#       - name: Staple Notarization Ticket
+#         if: success()
+#         run: |
+#           # Attach the notarization ticket from Apple to the .dmg
+#           # This allows Gatekeeper to verify the app even when offline
+#           xcrun stapler staple salvium-gui-signed.dmg
+#
+#       - name: Upload Artifact (Signed and Notarized .dmg)
+#         if: success()
+#         uses: actions/upload-artifact@v4
+#         with:
+#           name: salvium-gui-macos-arm64-SIGNED
+#           path: salvium-gui-signed.dmg
+
+# -----------------------------------------------------------------
+#   SECTION 7: UNSIGNED PACKAGING (DEFAULT)
+#   This section creates an unsigned artifact.
+#   If you enable Section 6 (Signing), you should comment out or delete this section.
+# -----------------------------------------------------------------
+
+      # 7. Upload the .dmg as a build artifact
+      - name: Upload Artifact (Unsigned .dmg)
+        if: success()
+        uses: actions/upload-artifact@v4
+        with:
+          name: salvium-gui-macos-arm64-unsigned
+          path: salvium-gui-unsigned.dmg
