@@ -38,6 +38,9 @@ jobs:
       # 4. Build the application (Release mode)
       - name: Build salvium-gui (Release)
         # Use all available CPU cores on the runner
+        # Explicitly set Boost_ROOT as another hint for CMake
+        env:
+          Boost_ROOT: /opt/homebrew/opt/boost
         run: |
           make release -j$(sysctl -n hw.ncpu)
 
