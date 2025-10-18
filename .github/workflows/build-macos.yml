@@ -5,7 +5,7 @@ name: Build macOS (Apple Silicon)
 on:
   # Run manually from the "Actions" tab on GitHub
   workflow_dispatch:
-  
+
   # Run automatically on every 'push' to the 'main' branch
   push:
     branches: [ main ]
@@ -28,11 +28,11 @@ jobs:
         run: |
           brew install qt@5 boost openssl@3 pkg-config cmake zeromq
 
-      # 3. Set up build environment paths for Qt5 and OpenSSL (required by Homebrew)
+      # 3. Set up build environment paths
       - name: Set up build environment paths
-        # Tell the build system where to find Qt5 and OpenSSL
+        # Tell the build system where to find ALL dependencies
         run: |
-          echo "CMAKE_PREFIX_PATH=/usr/local/opt/qt@5:/usr/local/opt/openssl@3" >> $GITHUB_ENV
+          echo "CMAKE_PREFIX_PATH=/usr/local/opt/qt@5:/usr/local/opt/openssl@3:/opt/homebrew/opt/boost" >> $GITHUB_ENV
           echo "/usr/local/opt/qt@5/bin" >> $GITHUB_PATH
 
       # 4. Build the application (Release mode)
@@ -89,7 +89,7 @@ jobs:
 #           # Find the Developer ID identity string
 #           # Note: Replace "Developer ID Application" if your cert name is different
 #           CERT_IDENTITY=$(security find-identity -v -p codesigning $KEYCHAIN_PATH | grep "Developer ID Application" | head -n 1 | awk -F '"' '{print $2}')
-#           
+#
 #           echo "Signing app with identity: $CERT_IDENTITY"
 #
 #           # Sign the app with the hardened runtime
@@ -109,7 +109,7 @@ jobs:
 #         run: |
 #           KEYCHAIN_PATH=$RUNNER_TEMP/app-signing.keychain-db
 #           CERT_IDENTITY=$(security find-identity -v -p codesigning $KEYCHAIN_PATH | grep "Developer ID Application" | head -n 1 | awk -F '"' '{print $2}')
-#           
+#
 #           echo "Signing dmg with identity: $CERT_IDENTITY"
 #           codesign --force --sign "$CERT_IDENTITY" \
 #                    --keychain $KEYCHAIN_PATH \
