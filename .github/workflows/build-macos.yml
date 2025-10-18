@@ -23,33 +23,33 @@ jobs:
           # Very important: this repository uses submodules
           submodules: 'recursive'
 
-      # 2. Install dependencies (Qt5, Boost 1.81, openssl@3, etc.) via Homebrew
+      # 2. Install dependencies (Qt5, Boost 1.85, openssl@3, etc.) via Homebrew
       - name: Install dependencies (Homebrew)
         run: |
-          # Install boost@1.81 specifically and openssl@3
-          brew install qt@5 boost@1.81 openssl@3 pkg-config cmake zeromq
+          # Install boost@1.85 specifically and openssl@3
+          brew install qt@5 boost@1.85 openssl@3 pkg-config cmake zeromq
 
       # 3. Set up build environment paths
       - name: Set up build environment paths
         # Tell the build system where to find ALL dependencies
         run: |
-          echo "CMAKE_PREFIX_PATH=/usr/local/opt/qt@5:/opt/homebrew/opt/openssl@3:/opt/homebrew/opt/boost@1.81" >> $GITHUB_ENV
+          echo "CMAKE_PREFIX_PATH=/usr/local/opt/qt@5:/opt/homebrew/opt/openssl@3:/opt/homebrew/opt/boost@1.85" >> $GITHUB_ENV
           echo "/usr/local/opt/qt@5/bin" >> $GITHUB_PATH
 
-      # 4a. Configure CMake (Explicitly use Homebrew CMake, set policy and explicit Boost@1.81 paths)
+      # 4a. Configure CMake (Explicitly use Homebrew CMake, set policy and explicit Boost@1.85 paths)
       - name: Configure CMake
         run: |
           mkdir -p build/release
           cd build/release
           # Explicitly use cmake from Homebrew
           # Force CMake to use *_ROOT variables via CMP0074 policy
-          # Explicitly provide Boost include and library directories for version 1.81
+          # Explicitly provide Boost include and library directories for version 1.85
           /opt/homebrew/bin/cmake -D CMAKE_BUILD_TYPE=Release \
                 -D DEV_MODE=OFF \
                 -D MANUAL_SUBMODULES=OFF \
                 -D CMAKE_POLICY_DEFAULT_CMP0074=NEW \
-                -D Boost_INCLUDE_DIR=/opt/homebrew/opt/boost@1.81/include \
-                -D Boost_LIBRARY_DIR=/opt/homebrew/opt/boost@1.81/lib \
+                -D Boost_INCLUDE_DIR=/opt/homebrew/opt/boost@1.85/include \
+                -D Boost_LIBRARY_DIR=/opt/homebrew/opt/boost@1.85/lib \
                 ../..
 
       # 4b. Build with Make
