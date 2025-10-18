@@ -23,7 +23,7 @@ jobs:
           # Very important: this repository uses submodules
           submodules: 'recursive'
 
-      # 2. Install dependencies (Closer to Monero's list)
+      # 2. Install dependencies (Using openssl@1.1 and libsodium like Monero)
       - name: Install dependencies (Homebrew)
         run: |
           # Install boost@1.85, openssl@1.1, libsodium, and other deps from Monero's workflow
@@ -38,20 +38,22 @@ jobs:
           echo "CMAKE_PREFIX_PATH=/opt/homebrew/opt/qt@5:/opt/homebrew/opt/openssl@1.1:/opt/homebrew/opt/boost@1.85:/opt/homebrew/opt/libsodium:/opt/homebrew/opt/miniupnpc:/opt/homebrew/opt/protobuf" >> $GITHUB_ENV
           echo "/opt/homebrew/opt/qt@5/bin" >> $GITHUB_PATH
 
-      # 4a. Configure CMake (Explicitly use Homebrew CMake, set policy and explicit Boost@1.85 paths)
+      # 4a. Configure CMake (Explicitly add linker flag for OpenSSL)
       - name: Configure CMake
         run: |
           mkdir -p build/release
           cd build/release
           # Explicitly use cmake from Homebrew
           # Force CMake to use *_ROOT variables via CMP0074 policy
-          # Explicitly provide Boost include and library directories for version 1.85
+          # Explicitly provide Boost paths
+          # Explicitly add OpenSSL lib path to linker flags
           /opt/homebrew/bin/cmake -D CMAKE_BUILD_TYPE=Release \
                 -D DEV_MODE=OFF \
                 -D MANUAL_SUBMODULES=OFF \
                 -D CMAKE_POLICY_DEFAULT_CMP0074=NEW \
                 -D Boost_INCLUDE_DIR=/opt/homebrew/opt/boost@1.85/include \
                 -D Boost_LIBRARY_DIR=/opt/homebrew/opt/boost@1.85/lib \
+                -D CMAKE_EXE_LINKER_FLAGS="-L/opt/homebrew/opt/openssl@1.1/lib" \
                 ../..
 
       # 4b. Build with Make
