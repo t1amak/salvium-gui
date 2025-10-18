@@ -73,7 +73,7 @@ jobs:
       - name: Create unsigned .dmg
         if: success()
         run: |
-          hdiutil create -fs HFS+ -srcfolder build/release/bin/salvium-gui.app -volname "salvium-gui" salvium-gui-unsigned.dmg
+          hdiutil create -fs HFS+ -srcfolder build/release/bin/salvium-wallet-gui.app -volname "salvium-gui" salvium-gui-unsigned.dmg
 #
 # -----------------------------------------------------------------
 #   SECTION 6: SIGN AND NOTARIZE (DISABLED - FOR FUTURE USE)
