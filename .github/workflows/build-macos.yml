@@ -38,7 +38,7 @@ jobs:
           echo "CMAKE_PREFIX_PATH=/opt/homebrew/opt/qt@5:/opt/homebrew/opt/openssl@1.1:/opt/homebrew/opt/boost@1.85:/opt/homebrew/opt/libsodium:/opt/homebrew/opt/miniupnpc:/opt/homebrew/opt/protobuf" >> $GITHUB_ENV
           echo "/opt/homebrew/opt/qt@5/bin" >> $GITHUB_PATH
 
-      # 4a. Configure CMake (Use env CMAKE_PREFIX_PATH AND add explicit flags)
+      # 4a. Configure CMake (Force add Boost include path to CXX_FLAGS)
       - name: Configure CMake
         run: |
           mkdir -p build/release
@@ -46,7 +46,9 @@ jobs:
           # Explicitly use cmake from Homebrew
           # Force CMake to use *_ROOT variables via CMP0074 policy
           # Explicitly provide Boost paths for salvium submodule
-          # CMAKE_PREFIX_PATH (from $GITHUB_ENV) will be used by salvium-gui project
+          # Explicitly add OpenSSL lib path to linker flags
+          # --- THIS IS THE NEW FIX ---
+          # Forcefully add Boost include path to CXX flags for all targets
           /opt/homebrew/bin/cmake -D CMAKE_BUILD_TYPE=Release \
                 -D DEV_MODE=OFF \
                 -D MANUAL_SUBMODULES=OFF \
@@ -54,6 +56,7 @@ jobs:
                 -D Boost_INCLUDE_DIR=/opt/homebrew/opt/boost@1.85/include \
                 -D Boost_LIBRARY_DIR=/opt/homebrew/opt/boost@1.85/lib \
                 -D CMAKE_EXE_LINKER_FLAGS="-L/opt/homebrew/opt/openssl@1.1/lib" \
+                -D CMAKE_CXX_FLAGS="-I/opt/homebrew/opt/boost@1.85/include" \
                 ../..
         # This 'env' block ensures the CMAKE_PREFIX_PATH set in step 3 is actually used by cmake
         env:
