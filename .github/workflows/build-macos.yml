@@ -23,7 +23,7 @@ jobs:
           # Very important: this repository uses submodules
           submodules: 'recursive'
 
-      # 2. Install dependencies (Using openssl@1.1 and libsodium like Monero)
+      # 2. Install dependencies (Closer to Monero's list)
       - name: Install dependencies (Homebrew)
         run: |
           # Install boost@1.85, openssl@1.1, libsodium, and other deps from Monero's workflow
@@ -38,15 +38,15 @@ jobs:
           echo "CMAKE_PREFIX_PATH=/opt/homebrew/opt/qt@5:/opt/homebrew/opt/openssl@1.1:/opt/homebrew/opt/boost@1.85:/opt/homebrew/opt/libsodium:/opt/homebrew/opt/miniupnpc:/opt/homebrew/opt/protobuf" >> $GITHUB_ENV
           echo "/opt/homebrew/opt/qt@5/bin" >> $GITHUB_PATH
 
-      # 4a. Configure CMake (Explicitly add linker flag for OpenSSL)
+      # 4a. Configure CMake (Use env CMAKE_PREFIX_PATH AND add explicit flags)
       - name: Configure CMake
         run: |
           mkdir -p build/release
           cd build/release
           # Explicitly use cmake from Homebrew
           # Force CMake to use *_ROOT variables via CMP0074 policy
-          # Explicitly provide Boost paths
-          # Explicitly add OpenSSL lib path to linker flags
+          # Explicitly provide Boost paths for salvium submodule
+          # CMAKE_PREFIX_PATH (from $GITHUB_ENV) will be used by salvium-gui project
           /opt/homebrew/bin/cmake -D CMAKE_BUILD_TYPE=Release \
                 -D DEV_MODE=OFF \
                 -D MANUAL_SUBMODULES=OFF \
@@ -55,6 +55,9 @@ jobs:
                 -D Boost_LIBRARY_DIR=/opt/homebrew/opt/boost@1.85/lib \
                 -D CMAKE_EXE_LINKER_FLAGS="-L/opt/homebrew/opt/openssl@1.1/lib" \
                 ../..
+        # This 'env' block ensures the CMAKE_PREFIX_PATH set in step 3 is actually used by cmake
+        env:
+           CMAKE_PREFIX_PATH: ${{ env.CMAKE_PREFIX_PATH }}
 
       # 4b. Build with Make
       - name: Build with Make
