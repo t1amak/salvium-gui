@@ -23,17 +23,19 @@ jobs:
           # Very important: this repository uses submodules
           submodules: 'recursive'
 
-      # 2. Install dependencies (Qt5, Boost 1.85, openssl@3, etc.) via Homebrew
+      # 2. Install dependencies (Closer to Monero's list)
       - name: Install dependencies (Homebrew)
         run: |
-          # Install boost@1.85 specifically and openssl@3
-          brew install qt@5 boost@1.85 openssl@3 pkg-config cmake zeromq
+          # Install boost@1.85, openssl@1.1, libsodium, and other deps from Monero's workflow
+          brew install qt@5 boost@1.85 openssl@1.1 libsodium pkg-config cmake zeromq \
+                       hidapi libpgm miniupnpc expat libunwind-headers protobuf ccache
 
       # 3. Set up build environment paths
       - name: Set up build environment paths
-        # Tell the build system where to find ALL dependencies
+        # Tell the build system where to find ALL dependencies using correct Homebrew paths for ARM
+        # Added paths for openssl@1.1 and libsodium
         run: |
-          echo "CMAKE_PREFIX_PATH=/opt/homebrew/opt/qt@5:/opt/homebrew/opt/openssl@3:/opt/homebrew/opt/boost@1.85" >> $GITHUB_ENV
+          echo "CMAKE_PREFIX_PATH=/opt/homebrew/opt/qt@5:/opt/homebrew/opt/openssl@1.1:/opt/homebrew/opt/boost@1.85:/opt/homebrew/opt/libsodium:/opt/homebrew/opt/miniupnpc:/opt/homebrew/opt/protobuf" >> $GITHUB_ENV
           echo "/opt/homebrew/opt/qt@5/bin" >> $GITHUB_PATH
 
       # 4a. Configure CMake (Explicitly use Homebrew CMake, set policy and explicit Boost@1.85 paths)
@@ -64,7 +66,6 @@ jobs:
         if: success()
         run: |
           hdiutil create -fs HFS+ -srcfolder build/release/bin/salvium-gui.app -volname "salvium-gui" salvium-gui-unsigned.dmg
-
 #
 # -----------------------------------------------------------------
 #   SECTION 6: SIGN AND NOTARIZE (DISABLED - FOR FUTURE USE)
