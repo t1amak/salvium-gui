@@ -23,32 +23,33 @@ jobs:
           # Very important: this repository uses submodules
           submodules: 'recursive'
 
-      # 2. Install dependencies (Qt5, Boost, etc.) via Homebrew
+      # 2. Install dependencies (Qt5, Boost 1.74, openssl@3, etc.) via Homebrew
       - name: Install dependencies (Homebrew)
         run: |
-          brew install qt@5 boost openssl@3 pkg-config cmake zeromq
+          # Install boost@1.74 specifically and openssl@3
+          brew install qt@5 boost@1.74 openssl@3 pkg-config cmake zeromq
 
       # 3. Set up build environment paths
       - name: Set up build environment paths
         # Tell the build system where to find ALL dependencies
         run: |
-          echo "CMAKE_PREFIX_PATH=/usr/local/opt/qt@5:/usr/local/opt/openssl@3:/opt/homebrew/opt/boost" >> $GITHUB_ENV
+          echo "CMAKE_PREFIX_PATH=/usr/local/opt/qt@5:/opt/homebrew/opt/openssl@3:/opt/homebrew/opt/boost@1.74" >> $GITHUB_ENV
           echo "/usr/local/opt/qt@5/bin" >> $GITHUB_PATH
 
-      # 4a. Configure CMake (Explicitly set policy and Boost root)
+      # 4a. Configure CMake (Explicitly use Homebrew CMake, set policy and explicit Boost@1.74 paths)
       - name: Configure CMake
         run: |
           mkdir -p build/release
           cd build/release
-          # Force CMake to use Boost_ROOT via CMP0074 policy
-          # Also pass Boost_ROOT directly for good measure
+          # Explicitly use cmake from Homebrew
+          # Force CMake to use *_ROOT variables via CMP0074 policy
+          # Explicitly provide Boost include and library directories for version 1.74
           /opt/homebrew/bin/cmake -D CMAKE_BUILD_TYPE=Release \
                 -D DEV_MODE=OFF \
                 -D MANUAL_SUBMODULES=OFF \
                 -D CMAKE_POLICY_DEFAULT_CMP0074=NEW \
-                -D Boost_INCLUDE_DIR=/opt/homebrew/opt/boost/include \
-                -D Boost_LIBRARY_DIR=/opt/homebrew/opt/boost/lib \
-                -D Boost_ROOT=/opt/homebrew/opt/boost \
+                -D Boost_INCLUDE_DIR=/opt/homebrew/opt/boost@1.74/include \
+                -D Boost_LIBRARY_DIR=/opt/homebrew/opt/boost@1.74/lib \
                 ../..
 
       # 4b. Build with Make
@@ -59,10 +60,8 @@ jobs:
           make -j$(sysctl -n hw.ncpu)
 
       # 5. Create unsigned .dmg
-      # This only runs if the build in step 4b succeeded
       - name: Create unsigned .dmg
         if: success()
-        # We use 'hdiutil' which is available on GitHub runners
         run: |
           hdiutil create -fs HFS+ -srcfolder build/release/bin/salvium-gui.app -volname "salvium-gui" salvium-gui-unsigned.dmg
 
