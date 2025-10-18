@@ -42,7 +42,7 @@ jobs:
           cd build/release
           # Force CMake to use Boost_ROOT via CMP0074 policy
           # Also pass Boost_ROOT directly for good measure
-          cmake -D CMAKE_BUILD_TYPE=Release \
+          /opt/homebrew/bin/cmake -D CMAKE_BUILD_TYPE=Release \
                 -D DEV_MODE=OFF \
                 -D MANUAL_SUBMODULES=OFF \
                 -D CMAKE_POLICY_DEFAULT_CMP0074=NEW \
