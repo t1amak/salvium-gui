@@ -1,0 +1,257 @@
+name: Build and Release
+
+on:
+  workflow_dispatch:
+    inputs:
+      tag_name:
+        description: 'The tag name to create (e.g., v1.0.1)'
+        required: true
+      release_notes:
+        description: 'Release notes or description (supports Markdown)'
+        required: false
+        default: 'New release'
+
+env:
+  FREE_DISKSPACE: |
+    sudo rm -rf /usr/local/.ghcup /usr/share/dotnet /usr/share/swift /usr/share/miniconda
+
+jobs:
+
+  build-macos-arm64:
+    runs-on: macos-latest
+    steps:
+      - name: Check out code (with submodules)
+        uses: actions/checkout@v4
+        with:
+          submodules: 'recursive'
+      - name: Install dependencies (Homebrew)
+        run: |
+          brew install qt@5 boost@1.85 openssl@1.1 libsodium pkg-config cmake zeromq \
+                       hidapi libpgm miniupnpc expat libunwind-headers protobuf ccache
+      - name: Set up build environment paths
+        run: |
+          echo "CMAKE_PREFIX_PATH=/opt/homebrew/opt/qt@5:/opt/homebrew/opt/openssl@1.1:/opt/homebrew/opt/boost@1.85:/opt/homebrew/opt/libsodium:/opt/homebrew/opt/miniupnpc:/opt/homebrew/opt/protobuf" >> $GITHUB_ENV
+          echo "/opt/homebrew/opt/qt@5/bin" >> $GITHUB_PATH
+      - name: Configure CMake
+        run: |
+          mkdir -p build/release
+          cd build/release
+          cmake -D CMAKE_BUILD_TYPE=Release \
+                -D DEV_MODE=OFF \
+                -D MANUAL_SUBMODULES=OFF \
+                -D CMAKE_POLICY_DEFAULT_CMP0074=NEW \
+                -D Boost_INCLUDE_DIR=/opt/homebrew/opt/boost@1.85/include \
+                -D Boost_LIBRARY_DIR=/opt/homebrew/opt/boost@1.85/lib \
+                -D CMAKE_EXE_LINKER_FLAGS="-L/opt/homebrew/opt/openssl@1.1/lib" \
+                -D CMAKE_CXX_FLAGS="-I/opt/homebrew/opt/boost@1.85/include" \
+                ../..
+        env:
+           CMAKE_PREFIX_PATH: ${{ env.CMAKE_PREFIX_PATH }}
+      - name: Build with Make
+        run: |
+          cd build/release
+          make -j$(sysctl -n hw.ncpu)
+      - name: Test QML
+        if: success()
+        run: |
+          cd build/release/bin
+          ./salvium-wallet-gui.app/Contents/MacOS/salvium-wallet-gui --test-qml
+      - name: Create unsigned .dmg
+        if: success()
+        run: |
+          hdiutil create -fs HFS+ -srcfolder build/release/bin/salvium-wallet-gui.app -volname "salvium-gui" salvium-gui-unsigned.dmg
+      - name: SHA256 Sum DMG
+        if: success()
+        run: shasum -a 256 salvium-gui-unsigned.dmg | tee salvium-gui-unsigned.dmg.sha256
+      - name: Upload Artifact (Unsigned .dmg)
+        if: success()
+        uses: actions/upload-artifact@v4
+        with:
+          name: salvium-gui-macos-arm64-unsigned
+          path: |
+            salvium-gui-unsigned.dmg
+            salvium-gui-unsigned.dmg.sha256
+
+  build-windows:
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+        with:
+          submodules: 'recursive'
+      - name: Build Docker Image for Windows Env
+        run: |
+          docker build --tag salvium:build-env-windows \
+                       --build-arg THREADS=$(nproc) \
+                       -f Dockerfile.windows .
+      - name: Compile Salvium GUI (Windows Target)
+        run: |
+          docker run --rm --user $(id -u):$(id -g) \
+          -v "${{ github.workspace }}":/salvium-gui \
+          -w /salvium-gui salvium:build-env-windows \
+          sh -c 'make depends root=/depends target=x86_64-w64-mingw32 tag=win-x64 -j$(nproc)'
+
+      - name: SHA256 Sum EXEs
+        if: success()
+        run: |
+          BIN_DIR=$(find build/x86_64-w64-mingw32/release/bin -type d | head -n 1)
+          if [ -d "$BIN_DIR" ]; then
+            cd "$BIN_DIR"
+            if [ -f "salvium-wallet-gui.exe" ]; then
+              sha256sum salvium-wallet-gui.exe | tee salvium-wallet-gui.exe.sha256
+            else
+              echo "salvium-wallet-gui.exe not found!"
+              exit 1
+            fi
+            if [ -f "salviumd.exe" ]; then
+              sha256sum salviumd.exe | tee salviumd.exe.sha256
+            else
+              # This is a soft fail, as maybe the daemon isn't always built
+              echo "salviumd.exe not found! Skipping checksum."
+            fi
+          else
+            echo "Windows bin directory not found!"
+            exit 1
+          fi
+
+      - name: Upload Artifact (Windows Build Output)
+        uses: actions/upload-artifact@v4
+        with:
+          name: salvium-gui-windows-x64
+          path: |
+            build/x86_64-w64-mingw32/release/bin/salvium-wallet-gui.exe
+            build/x86_64-w64-mingw32/release/bin/salvium-wallet-gui.exe.sha256
+            build/x86_64-w64-mingw32/release/bin/salviumd.exe
+            build/x86_64-w64-mingw32/release/bin/salviumd.exe.sha256
+
+          if-no-files-found: warn
+
+  docker-linux-static:
+    runs-on: ubuntu-24.04
+    steps:
+    - uses: actions/checkout@v4
+      with:
+        submodules: recursive
+    - uses: satackey/action-docker-layer-caching@v0.0.11
+      if: "!startsWith(github.ref, 'refs/tags/v')"
+      continue-on-error: true
+    - name: install host dependencies (for xvfb)
+      run: sudo apt update && sudo apt -y install xvfb libxcb-icccm4 libxcb-image0 libxcb-keysyms1 libxcb-randr0 libxcb-render-util0 libxcb-xkb1 libxcb-shape0 libxkbcommon-x11-0 libegl1
+    - name: free up diskspace
+      run: ${{env.FREE_DISKSPACE}}
+    - name: prepare build environment (Docker)
+      run: docker build --tag salvium:build-env-linux --build-arg THREADS=$(nproc) --file Dockerfile.linux .
+    - name: build (inside Docker)
+      run: docker run --rm -v ${{ github.workspace }}:/salvium-gui -w /salvium-gui salvium:build-env-linux sh -c 'make release-static -j$(nproc)'
+    - name: sha256sum Binary
+      run: |
+        cd build/release/bin
+        sha256sum salvium-wallet-gui | tee salvium-wallet-gui.sha256
+        sha256sum salviumd | tee salviumd.sha256
+    - name: test qml
+      run: xvfb-run -a ${{ github.workspace }}/build/release/bin/salvium-wallet-gui --test-qml
+    - uses: actions/upload-artifact@v4
+      with:
+        name: salvium-gui-linux-x64-static
+        path: |
+          build/release/bin/salvium-wallet-gui
+          build/release/bin/salviumd
+          build/release/bin/salvium-wallet-gui.sha256
+          build/release/bin/salviumd.sha256
+
+  docker-android:
+    runs-on: ubuntu-22.04
+    steps:
+    - uses: actions/checkout@v4
+      with:
+        submodules: recursive
+    - uses: satackey/action-docker-layer-caching@v0.0.11
+      if: "!startsWith(github.ref, 'refs/tags/v')"
+      continue-on-error: true
+    - name: free up diskspace
+      run: ${{env.FREE_DISKSPACE}}
+    - name: Build Android Docker Image
+      run: |
+        docker build --tag salvium:android-build-final \
+                     --build-arg THREADS=$(nproc) \
+                     --file Dockerfile.android .
+    - name: Build APK and Extract
+      run: |
+        docker run --name temp_salvium_apk salvium:android-build-final
+        mkdir -p ./android_apk_output
+        docker cp temp_salvium_apk:/salvium-apk ./android_apk_output
+        docker rm temp_salvium_apk
+    - name: SHA256 Sum APK
+      run: |
+        APK_FILE=$(find ./android_apk_output -name '*.apk' | head -n 1)
+        if [ -f "$APK_FILE" ]; then
+          cd $(dirname "$APK_FILE")
+          sha256sum "$(basename "$APK_FILE")" | tee "$(basename "$APK_FILE")".sha256
+        else
+          echo "Android APK not found in ./android_apk_output!"
+          exit 1
+        fi
+    - uses: actions/upload-artifact@v4
+      with:
+        name: salvium-gui-android-arm64-v8a
+        path: ./android_apk_output/
+
+  create-release:
+    name: Create GitHub Release
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    needs:
+      - build-macos-arm64
+      - build-windows
+      - docker-linux-static
+      - docker-android
+
+    steps:
+      - name: Download all artifacts
+        uses: actions/download-artifact@v4
+        with:
+          path: ./artifacts
+
+      - name: Display artifact structure
+        run: ls -R ./artifacts
+
+      - name: Find artifact paths
+        id: find_files
+        run: |
+          echo "dmg_path=$(find ./artifacts/salvium-gui-macos-arm64-unsigned -name '*.dmg' | head -n 1)" >> $GITHUB_OUTPUT
+          echo "win_exe_path=$(find ./artifacts/salvium-gui-windows-x64 -name 'salvium-wallet-gui.exe' | head -n 1)" >> $GITHUB_OUTPUT
+          echo "win_daemon_path=$(find ./artifacts/salvium-gui-windows-x64 -name 'salviumd.exe' | head -n 1)" >> $GITHUB_OUTPUT
+          echo "linux_bin_path=$(find ./artifacts/salvium-gui-linux-x64-static -name 'salvium-wallet-gui' | head -n 1)" >> $GITHUB_OUTPUT
+          echo "linux_daemon_path=$(find ./artifacts/salvium-gui-linux-x64-static -name 'salviumd' | head -n 1)" >> $GITHUB_OUTPUT
+          echo "apk_path=$(find ./artifacts/salvium-gui-android-arm64-v8a -name '*.apk' | head -n 1)" >> $GITHUB_OUTPUT
+
+      - name: Prepare Release Notes and Checksums
+        id: prep_release
+        run: |
+          echo "${{ github.event.inputs.release_notes }}" > release_body.md
+          echo -e "\n\n## SHA256 Checksums" >> release_body.md
+          find ./artifacts -name '*.sha256' -exec cat {} + >> release_body.md
+
+          # Create a simple checksums.txt for upload
+          find ./artifacts -name '*.sha256' -exec cat {} + > checksums.txt
+
+          echo "body_path=release_body.md" >> $GITHUB_OUTPUT
+          echo "checksum_path=checksums.txt" >> $GITHUB_OUTPUT
+
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ${{ github.event.inputs.tag_name }}
+          name: Release ${{ github.event.inputs.tag_name }}
+          body_path: ${{ steps.prep_release.outputs.body_path }}
+          draft: false
+          prerelease: false
+          files: |
+            ${{ steps.find_files.outputs.dmg_path }}
+            ${{ steps.find_files.outputs.win_exe_path }}
+            ${{ steps.find_files.outputs.win_daemon_path }}
+            ${{ steps.find_files.outputs.linux_bin_path }}
+            ${{ steps.find_files.outputs.linux_daemon_path }}
+            ${{ steps.find_files.outputs.apk_path }}
+            ${{ steps.prep_release.outputs.checksum_path }}
