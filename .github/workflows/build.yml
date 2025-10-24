@@ -167,8 +167,8 @@ jobs:
                      --file Dockerfile.android .
     - name: Extract APK from Docker Image
       run: |
+        docker run --name temp_salvium_apk salvium:android-build-final
         mkdir -p ./android_apk_output
-        docker create --name temp_salvium_apk salvium:android-build-final
         docker cp temp_salvium_apk:/salvium-apk ./android_apk_output
         docker rm temp_salvium_apk
     - name: SHA256 Sum APK
