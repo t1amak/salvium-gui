@@ -33,7 +33,7 @@ jobs:
         run: |
           mkdir -p build/release
           cd build/release
-          /opt/homebrew/bin/cmake -D CMAKE_BUILD_TYPE=Release \
+          cmake -D CMAKE_BUILD_TYPE=Release \
                 -D DEV_MODE=OFF \
                 -D MANUAL_SUBMODULES=OFF \
                 -D CMAKE_POLICY_DEFAULT_CMP0074=NEW \
@@ -50,10 +50,20 @@ jobs:
           cd build/release
           make -j$(sysctl -n hw.ncpu)
 
+      - name: Test QML
+        if: success()
+        run: |
+          cd build/release/bin
+          ./salvium-wallet-gui.app/Contents/MacOS/salvium-wallet-gui --test-qml
+
       - name: Create unsigned .dmg
         if: success()
         run: |
           hdiutil create -fs HFS+ -srcfolder build/release/bin/salvium-wallet-gui.app -volname "salvium-gui" salvium-gui-unsigned.dmg
+
+      - name: SHA256 Sum DMG
+        if: success()
+        run: shasum -a 256 salvium-gui-unsigned.dmg
 
       - name: Upload Artifact (Unsigned .dmg)
         if: success()
@@ -71,24 +81,35 @@ jobs:
         with:
           submodules: 'recursive'
 
-      - name: Build Docker Image
+      - name: Build Docker Image for Windows Env
         run: |
           docker build --tag salvium:build-env-windows \
                        --build-arg THREADS=$(nproc) \
                        -f Dockerfile.windows .
 
-      - name: Compile Salvium GUI
+      - name: Compile Salvium GUI (Windows Target)
         run: |
           docker run --rm --user $(id -u):$(id -g) \
           -v "${{ github.workspace }}":/salvium-gui \
           -w /salvium-gui salvium:build-env-windows \
           sh -c 'make depends root=/depends target=x86_64-w64-mingw32 tag=win-x64 -j$(nproc)'
 
-      - name: Upload Artifact
+      - name: SHA256 Sum EXE
+        if: success()
+        run: |
+          EXE_PATH=$(find build/x86_64-w64-mingw32/release/bin -name 'salvium-wallet-gui.exe' | head -n 1)
+          if [ -f "$EXE_PATH" ]; then
+            sha256sum "$EXE_PATH"
+          else
+            echo "Windows EXE not found at expected path!"
+            exit 1
+          fi
+
+      - name: Upload Artifact (Windows Build Output)
         uses: actions/upload-artifact@v4
         with:
-          name: salvium-gui-windows
-          path: build/
+          name: salvium-gui-windows-x64
+          path: build/x86_64-w64-mingw32/release/bin/
 
   docker-linux-static:
     runs-on: ubuntu-24.04
@@ -103,27 +124,28 @@ jobs:
         key: docker-linux-static-{hash}
         restore-keys: |
           docker-linux-static-
-    - name: install dependencies
-      run: sudo apt -y install xvfb libxcb-icccm4 libxcb-image0 libxcb-keysyms1 libxcb-randr0 libxcb-render-util0 libxcb-xkb1 libxcb-shape0 libxkbcommon-x11-0
+    - name: install host dependencies (for xvfb)
+      run: sudo apt update && sudo apt -y install xvfb libxcb-icccm4 libxcb-image0 libxcb-keysyms1 libxcb-randr0 libxcb-render-util0 libxcb-xkb1 libxcb-shape0 libxkbcommon-x11-0 libegl1
     - name: free up diskspace
       run: ${{env.FREE_DISKSPACE}}
-    - name: prepare build environment
-      run: docker build --tag salvium:build-env-linux --build-arg THREADS=3 --file Dockerfile.linux .
-    - name: build
-      run: docker run --rm -v /home/runner/work/salvium-gui/salvium-gui:/salvium-gui -w /salvium-gui salvium:build-env-linux sh -c 'make release-static -j3'
-    - name: sha256sum
-      run: shasum -a256 /home/runner/work/salvium-gui/salvium-gui/build/release/bin/salvium-wallet-gui
+    - name: prepare build environment (Docker)
+      run: docker build --tag salvium:build-env-linux --build-arg THREADS=$(nproc) --file Dockerfile.linux .
+    - name: build (inside Docker)
+      run: docker run --rm -v ${{ github.workspace }}:/salvium-gui -w /salvium-gui salvium:build-env-linux sh -c 'make release-static -j$(nproc)'
+    - name: sha256sum Binary
+      run: sha256sum build/release/bin/salvium-wallet-gui
     - name: test qml
-      run: xvfb-run -a /home/runner/work/salvium-gui/salvium-gui/build/release/bin/salvium-wallet-gui --test-qml
+      run: xvfb-run -a ${{ github.workspace }}/build/release/bin/salvium-wallet-gui --test-qml
     - uses: actions/upload-artifact@v4
       with:
-        name: ${{ github.job }}
+        name: salvium-gui-linux-x64-static
         path: |
-          /home/runner/work/salvium-gui/salvium-gui/build/release/bin/salvium-wallet-gui
-          /home/runner/work/salvium-gui/salvium-gui/build/release/bin/salviumd
+          build/release/bin/salvium-wallet-gui
+          build/release/bin/salviumd
 
   docker-android:
-    runs-on: ubuntu-24.04
+    runs-on: ubuntu-22.04
+
     steps:
     - uses: actions/checkout@v4
       with:
@@ -132,18 +154,34 @@ jobs:
       if: "!startsWith(github.ref, 'refs/tags/v')"
       continue-on-error: true
       with:
-        key: docker-android-static-{hash}
+        key: docker-android-{hash}
         restore-keys: |
-          docker-android-static-
+          docker-android-
     - name: free up diskspace
       run: ${{env.FREE_DISKSPACE}}
-    - name: prepare build environment
-      run: docker build --tag salvium:build-env-android --build-arg THREADS=3 --file Dockerfile.android .
-    - name: build
-      run: docker run --rm -v /home/runner/work/salvium-gui/salvium-gui:/salvium-gui -e THREADS=3 salvium:build-env-android
-    - name: Remove obsolete docker layers
-      run: docker images -a | grep none | awk '{ print $3; }' | xargs docker rmi || true
+
+    - name: Build Android APK via Docker
+      run: |
+        docker build --tag salvium:android-build-final \
+                     --build-arg THREADS=$(nproc) \
+                     --file Dockerfile.android .
+    - name: Extract APK from Docker Image
+      run: |
+        mkdir -p ./android_apk_output
+        docker create --name temp_salvium_apk salvium:android-build-final
+        docker cp temp_salvium_apk:/salvium-apk ./android_apk_output
+        docker rm temp_salvium_apk
+    - name: SHA256 Sum APK
+      run: |
+        APK_FILE=$(find ./android_apk_output -name '*.apk' | head -n 1)
+        if [ -f "$APK_FILE" ]; then
+          sha256sum "$APK_FILE"
+        else
+          echo "Android APK not found in ./android_apk_output!"
+          exit 1
+        fi
+
     - uses: actions/upload-artifact@v4
       with:
-        name: ${{ github.job }}
-        path: /home/runner/work/salvium-gui/salvium-gui/build/Android/release/android-build/salvium-gui.apk
+        name: salvium-gui-android-arm64-v8a
+        path: ./android_apk_output/

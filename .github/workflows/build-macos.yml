@@ -1,44 +1,30 @@
-# Filename: .github/workflows/build-macos.yml
-
 name: Build macOS (Apple Silicon)
 
 on:
-  # Run manually from the "Actions" tab on GitHub
   workflow_dispatch:
-
-  # Run automatically on every 'push' to the 'main' branch
   push:
     branches: [ main ]
 
 jobs:
   build-macos-arm64:
-    # Use the latest macOS runner (Apple Silicon)
     runs-on: macos-latest
 
     steps:
-      # 1. Check out source code
       - name: Check out code (with submodules)
         uses: actions/checkout@v4
         with:
-          # Very important: this repository uses submodules
           submodules: 'recursive'
 
-      # 2. Install dependencies (Closer to Monero's list)
       - name: Install dependencies (Homebrew)
         run: |
-          # Install boost@1.85, openssl@1.1, libsodium, and other deps from Monero's workflow
           brew install qt@5 boost@1.85 openssl@1.1 libsodium pkg-config cmake zeromq \
                        hidapi libpgm miniupnpc expat libunwind-headers protobuf ccache
 
-      # 3. Set up build environment paths
       - name: Set up build environment paths
-        # Tell the build system where to find ALL dependencies using correct Homebrew paths for ARM
-        # Added paths for openssl@1.1 and libsodium
         run: |
           echo "CMAKE_PREFIX_PATH=/opt/homebrew/opt/qt@5:/opt/homebrew/opt/openssl@1.1:/opt/homebrew/opt/boost@1.85:/opt/homebrew/opt/libsodium:/opt/homebrew/opt/miniupnpc:/opt/homebrew/opt/protobuf" >> $GITHUB_ENV
           echo "/opt/homebrew/opt/qt@5/bin" >> $GITHUB_PATH
 
-      # 4a. Configure CMake (Force add Boost include path to CXX_FLAGS)
       - name: Configure CMake
         run: |
           mkdir -p build/release
@@ -58,25 +44,22 @@ jobs:
                 -D CMAKE_EXE_LINKER_FLAGS="-L/opt/homebrew/opt/openssl@1.1/lib" \
                 -D CMAKE_CXX_FLAGS="-I/opt/homebrew/opt/boost@1.85/include" \
                 ../..
-        # This 'env' block ensures the CMAKE_PREFIX_PATH set in step 3 is actually used by cmake
         env:
            CMAKE_PREFIX_PATH: ${{ env.CMAKE_PREFIX_PATH }}
 
-      # 4b. Build with Make
       - name: Build with Make
         run: |
           # Now run make in the configured build directory
           cd build/release
           make -j$(sysctl -n hw.ncpu)
 
-      # 5. Create unsigned .dmg
       - name: Create unsigned .dmg
         if: success()
         run: |
           hdiutil create -fs HFS+ -srcfolder build/release/bin/salvium-wallet-gui.app -volname "salvium-gui" salvium-gui-unsigned.dmg
 #
 # -----------------------------------------------------------------
-#   SECTION 6: SIGN AND NOTARIZE (DISABLED - FOR FUTURE USE)
+#   SIGN AND NOTARIZE (DISABLED - FOR FUTURE USE)
 #   To enable this:
 #   1. Uncomment all steps in this section.
 #   2. Create the following secrets in your GitHub repository settings:
@@ -166,12 +149,8 @@ jobs:
 #           path: salvium-gui-signed.dmg
 
 # -----------------------------------------------------------------
-#   SECTION 7: UNSIGNED PACKAGING (DEFAULT)
-#   This section creates an unsigned artifact.
-#   If you enable Section 6 (Signing), you should comment out or delete this section.
+#   If you enable Signing, you should comment out or delete this section.
 # -----------------------------------------------------------------
-
-      # 7. Upload the .dmg as a build artifact
       - name: Upload Artifact (Unsigned .dmg)
         if: success()
         uses: actions/upload-artifact@v4
