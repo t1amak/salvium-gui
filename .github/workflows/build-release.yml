@@ -142,7 +142,7 @@ jobs:
     - name: prepare build environment (Docker)
       run: docker build --tag salvium:build-env-linux --build-arg THREADS=$(nproc) --file Dockerfile.linux .
     - name: build (inside Docker)
-      run: docker run --rm -v ${{ github.workspace }}:/salvium-gui -w /salvium-gui salvium:build-env-linux sh -c 'make release-static -j$(nproc)'
+      run: docker run --rm -v ${{ github.workspace }}:/salvium-gui -w /salvium-gui -e HOST_UID=$(id -u) -e HOST_GID=$(id -g) salvium:build-env-linux sh -c "make release-static -j$(nproc) && chown -R $HOST_UID:$HOST_GID build"
     - name: sha256sum Binary
       run: |
         cd build/release/bin
