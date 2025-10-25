@@ -205,7 +205,6 @@ RUN git clone -b v3.31.4 --depth 1 https://github.com/Kitware/CMake \
     && PATH=${HOST_PATH} make -j${THREADS} install \
     && rm -rf $(pwd)
 
-# Workaround
 ENV NEW_SDK_ROOT=${WORKDIR}/sdk
 RUN mkdir ${NEW_SDK_ROOT} \
     && cp -r ${ANDROID_SDK_ROOT}/licenses ${NEW_SDK_ROOT} \
@@ -238,4 +237,6 @@ CMD set -ex \
     && make -j${THREADS} -C src \
     && make -j${THREADS} apk \
     && mkdir /salvium-apk \
-    && find /salvium-gui/build/Android/release/ -name '*.apk' -exec cp {} /salvium-apk/ \;
+    && find /salvium-gui/build/Android/release/ -name '*.apk' -exec cp {} /salvium-apk/ \; \
+    && chown -R ${HOST_UID}:${HOST_GID} /salvium-gui
+
