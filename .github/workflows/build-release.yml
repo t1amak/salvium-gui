@@ -177,7 +177,7 @@ jobs:
 
     - name: Build APK (inside Docker)
       run: |
-        docker run --rm -v "${{ github.workspace }}":/salvium-gui salvium:android-build
+        docker run --rm -v "${{ github.workspace }}":/salvium-gui -e THREADS=$(nproc) salvium:android-build
 
     - name: SHA256 Sum APK
       run: |

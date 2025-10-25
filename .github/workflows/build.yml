@@ -168,7 +168,7 @@ jobs:
       run: |
         # This is the new run command, similar to Monero's
         # It mounts the workspace code into /salvium-gui
-        docker run --rm -v "${{ github.workspace }}":/salvium-gui salvium:android-build
+        docker run --rm -v "${{ github.workspace }}":/salvium-gui -e THREADS=$(nproc) salvium:android-build
 
     - name: SHA256 Sum APK
       run: |
