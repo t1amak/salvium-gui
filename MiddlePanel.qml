@@ -55,7 +55,7 @@ Rectangle {
         onSweepUnmixableClicked: root.sweepUnmixableClicked()
     }
     property Audit auditView: Audit {
-        onAuditClicked: root.auditClicked(mixinCount, priority)
+    //    onAuditClicked: root.auditClicked(mixinCount, priority)
     }
     property Receive receiveView: Receive { }
     property Merchant merchantView: Merchant { }
@@ -72,7 +72,7 @@ Rectangle {
 
     signal paymentClicked(var recipients, string paymentId, int mixinCount, int priority, string description)
     signal stakeClicked(string amount, string paymentId, int mixinCount, int priority, string description)
-    signal auditClicked(int mixinCount, int priority)
+ //   signal auditClicked(int mixinCount, int priority)
     signal sweepUnmixableClicked()
     signal generatePaymentIdInvoked()
     signal getProofClicked(string txid, string address, string message, string amount);
@@ -144,11 +144,15 @@ Rectangle {
                 name: "Yield"
                 PropertyChanges { target: root; currentView: yieldView }
                 PropertyChanges { target: mainFlickable; contentHeight: yieldView.contentHeight + 80 }
-            },State {
+            },
+/*
+            State {
                 name: "Audit"
                 PropertyChanges { target: root; currentView: auditView }
                 PropertyChanges { target: mainFlickable; contentHeight: auditView.transferHeight1 + auditView.transferHeight2 + 80 }
-            }, State {
+            },
+*/
+            State {
                 name: "Transfer"
                 PropertyChanges { target: root; currentView: transferView }
                 PropertyChanges { target: mainFlickable; contentHeight: transferView.transferHeight1 + transferView.transferHeight2 + 80 }

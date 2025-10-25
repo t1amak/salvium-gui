@@ -59,7 +59,7 @@ Rectangle {
     signal yieldClicked()
     signal stakingClicked()
     signal transferClicked()
-    signal auditClicked()
+  //  signal auditClicked()
     signal receiveClicked()
     signal advancedClicked()
     signal settingsClicked()
@@ -494,7 +494,7 @@ Rectangle {
             }
 
             // ------------- Audit tab ---------------
-
+/*
             MoneroComponents.MenuButton {
                 id: auditButton
                 anchors.left: parent.left
@@ -514,7 +514,7 @@ Rectangle {
                 anchors.right: parent.right
                 anchors.leftMargin: 20
             }
-
+*/
             // ------------- History tab ---------------
 
             MoneroComponents.MenuButton {

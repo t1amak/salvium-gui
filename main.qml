@@ -313,7 +313,7 @@ ApplicationWindow {
         currentWallet.currentSubaddressAccountChanged.disconnect(handleAccountChanged);
         middlePanel.paymentClicked.disconnect(handlePayment);
         middlePanel.stakeClicked.disconnect(handleStake);
-        middlePanel.auditClicked.disconnect(handleAudit);
+  //      middlePanel.auditClicked.disconnect(handleAudit);
         middlePanel.sweepUnmixableClicked.disconnect(handleSweepUnmixable);
         middlePanel.getProofClicked.disconnect(handleGetProof);
         middlePanel.checkProofClicked.disconnect(handleCheckProof);
@@ -370,7 +370,7 @@ ApplicationWindow {
         currentWallet.proxyAddress = Qt.binding(persistentSettings.getWalletProxyAddress);
         middlePanel.paymentClicked.connect(handlePayment);
         middlePanel.stakeClicked.connect(handleStake);
-        middlePanel.auditClicked.connect(handleAudit);
+  //      middlePanel.auditClicked.connect(handleAudit);
         middlePanel.sweepUnmixableClicked.connect(handleSweepUnmixable);
         middlePanel.getProofClicked.connect(handleGetProof);
         middlePanel.checkProofClicked.connect(handleCheckProof);
@@ -1998,13 +1998,13 @@ ApplicationWindow {
                     middlePanel.flickable.contentY = 0;
                     updateBalance();
                 }
-
+/*
                 onAuditClicked: {
                     middlePanel.state = "Audit";
                     middlePanel.flickable.contentY = 0;
                     updateBalance();
                 }
-
+*/
                 onYieldClicked: {
                     middlePanel.state = "Yield";
                     middlePanel.flickable.contentY = 0;
