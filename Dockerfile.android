@@ -238,4 +238,4 @@ CMD set -ex \
     && make -j${THREADS} -C src \
     && make -j${THREADS} apk \
     && mkdir /salvium-apk \
-    && find /salvium-gui/build/Android/release/ -name '*.apk' -exec cp {} /salvium-apk/
+    && find /salvium-gui/build/Android/release/ -name '*.apk' -exec cp {} /salvium-apk/ \;
