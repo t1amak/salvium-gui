@@ -7,7 +7,7 @@ if(APPLE OR (WIN32 AND NOT STATIC))
         find_program(MACDEPLOYQT_EXECUTABLE macdeployqt HINTS "${_qt_bin_dir}")
         add_custom_command(TARGET deploy
                            POST_BUILD
-                           COMMAND "${MACDEPLOYQT_EXECUTABLE}" "$<TARGET_FILE_DIR:salvium-wallet-gui>/../.." -always-overwrite -qmldir="${CMAKE_SOURCE_DIR}"
+                           COMMAND "${MACDEPLOYQT_EXECUTABLE}" "${CMAKE_BINARY_DIR}/bin/salvium-wallet-gui.app" -always-overwrite -qmldir="${CMAKE_SOURCE_DIR}"
                            COMMENT "Running macdeployqt..."
         )
 
@@ -42,7 +42,7 @@ if(APPLE OR (WIN32 AND NOT STATIC))
         if(CODESIGN_EXECUTABLE)
             add_custom_command(TARGET deploy
                             POST_BUILD
-                            COMMAND "${CODESIGN_EXECUTABLE}" --force --deep --sign - "$<TARGET_FILE_DIR:salvium-wallet-gui>/../.."
+                            COMMAND "${CODESIGN_EXECUTABLE}" --force --deep --sign - "${CMAKE_BINARY_DIR}/bin/salvium-wallet-gui.app"
                             COMMENT "Running codesign..."
             )
         endif()
