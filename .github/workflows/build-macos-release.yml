@@ -1,0 +1,125 @@
+name: Build macOS (Apple Silicon) Release
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [ main ]
+
+jobs:
+  build-static-daemon:
+    name: 1. Build Static Daemon (Cross-Compile)
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check out code (with submodules)
+        uses: actions/checkout@v4
+        with:
+          submodules: 'recursive'
+
+      - name: Build the Docker build environment
+        run: |
+          # This step now builds from your Dockerfile
+          docker build -t daemon-builder -f Dockerfile.daemon-mac .
+
+      - name: Build Static salviumd
+        run: |
+          # Run the build inside the container, mounting our workspace
+          # We execute the command from the make_releases.sh script
+          docker run --rm --user $(id -u):$(id -g) \
+            -v ${{ github.workspace }}:/workspace \
+            -w /workspace/salvium \
+            daemon-builder \
+            sh -c "USE_DEVICE_TREZOR=OFF make depends target=aarch64-apple-darwin -j$(nproc)"
+
+      - name: Upload Static Daemon Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: static-salviumd
+          path: salvium/build/aarch64-apple-darwin/release/bin/salviumd
+          if-no-files-found: error
+
+  build-macos-app:
+    name: 2. Build GUI App (Native)
+    runs-on: macos-latest
+    steps:
+      - name: Check out code (with submodules)
+        uses: actions/checkout@v4
+        with:
+          submodules: 'recursive'
+
+      - name: Install dependencies (Homebrew)
+        run: |
+          brew install qt@5 boost@1.85 openssl@1.1 libsodium pkg-config cmake zeromq \
+                       hidapi libpgm miniupnpc expat libunwind-headers protobuf ccache
+
+      - name: Set up build environment paths
+        run: |
+          echo "CMAKE_PREFIX_PATH=/opt/homebrew/opt/qt@5:/opt/homebrew/opt/openssl@1.1:/opt/homebrew/opt/boost@1.85:/opt/homebrew/opt/libsodium:/opt/homebrew/opt/miniupnpc:/opt/homebrew/opt/protobuf" >> $GITHUB_ENV
+          echo "/opt/homebrew/opt/qt@5/bin" >> $GITHUB_PATH
+
+      - name: Configure CMake (GUI)
+        run: |
+          mkdir -p build/release
+          cd build/release
+          /opt/homebrew/bin/cmake -D CMAKE_BUILD_TYPE=Release \
+                -D DEV_MODE=OFF \
+                -D MANUAL_SUBMODULES=OFF \
+                -D CMAKE_POLICY_DEFAULT_CMP0074=NEW \
+                -D Boost_INCLUDE_DIR=/opt/homebrew/opt/boost@1.85/include \
+                -D Boost_LIBRARY_DIR=/opt/homebrew/opt/boost@1.85/lib \
+                -D CMAKE_EXE_LINKER_FLAGS="-L/opt/homebrew/opt/openssl@1.1/lib" \
+                -D CMAKE_CXX_FLAGS="-I/opt/homebrew/opt/boost@1.85/include" \
+                ../..
+        env:
+           CMAKE_PREFIX_PATH: ${{ env.CMAKE_PREFIX_PATH }}
+
+      - name: Build and Deploy (Make)
+        run: |
+          cd build/release
+          # This builds the app and bundles Qt libraries
+          make -j$(sysctl -n hw.ncpu)
+          make deploy
+
+      - name: Upload GUI App Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: macos-app-bundle
+          path: build/release/bin/salvium-wallet-gui.app
+
+  bundle-macos-release:
+    name: 3. Create Final macOS DMG
+    runs-on: macos-latest
+    needs: [build-static-daemon, build-macos-app]
+
+    steps:
+      - name: Download Static Daemon
+        uses: actions/download-artifact@v4
+        with:
+          name: static-salviumd
+          path: ./static-daemon
+
+      - name: Download App Bundle
+        uses: actions/download-artifact@v4
+        with:
+          name: macos-app-bundle
+          path: ./salvium-wallet-gui.app
+
+      - name: Make Static Daemon Executable
+        run: chmod +x ./static-daemon/salviumd
+
+      - name: Replace Daemon with Static Version
+        run: |
+          echo "Overwriting non-portable daemon with static version..."
+          cp ./static-daemon/salviumd ./salvium-wallet-gui.app/Contents/MacOS/salviumd
+          echo "Daemon replaced."
+
+      - name: Create unsigned .dmg
+        run: |
+          hdiutil create -fs HFS+ -srcfolder ./salvium-wallet-gui.app -volname "salvium-gui" salvium-gui-unsigned.dmg
+
+      - name: Upload Artifact (Unsigned .dmg)
+        if: success()
+        uses: actions/upload-artifact@v4
+        with:
+          name: salvium-gui-macos-arm64-unsigned
+          path: salvium-gui-unsigned.dmg
