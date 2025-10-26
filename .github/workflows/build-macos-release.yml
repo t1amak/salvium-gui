@@ -31,12 +31,30 @@ jobs:
 
       - name: Get Latest Salvium Release Asset URL
         id: get_asset_url
+        env:
+          GH_TOKEN: ${{ github.token }} # Add this env var
         run: |
-          LATEST_RELEASE_JSON=$(curl -sL https://api.github.com/repos/salvium/salvium/releases/latest)
+          # Use GH_TOKEN for authentication
+          API_URL="https://api.github.com/repos/salvium/salvium/releases/latest"
+          echo "Fetching latest release data from $API_URL"
+          LATEST_RELEASE_JSON=$(curl -sL -H "Authorization: Bearer $GH_TOKEN" -H "Accept: application/vnd.github.v3+json" "$API_URL")
+
+          # Check if curl returned valid JSON before proceeding
+          if ! echo "$LATEST_RELEASE_JSON" | jq empty; then
+            echo "Error: Failed to fetch valid JSON from GitHub API."
+            echo "API Response:"
+            echo "$LATEST_RELEASE_JSON"
+            exit 1
+          fi
+
+          echo "API Response received successfully."
+          # Now use jq to find the asset URL
           ASSET_URL=$(echo "$LATEST_RELEASE_JSON" | jq -r '.assets[] | select(.name | endswith("macos-arm64.zip")) | .browser_download_url')
 
           if [ -z "$ASSET_URL" ] || [ "$ASSET_URL" == "null" ]; then
-            echo "Error: Could not find macos-arm64.zip asset in the latest release."
+            echo "Error: Could not find macos-arm64.zip asset in the latest release JSON."
+            echo "Parsed JSON (only names):"
+            echo "$LATEST_RELEASE_JSON" | jq -r '.assets[].name' # Print asset names for debugging
             exit 1
           fi
 
