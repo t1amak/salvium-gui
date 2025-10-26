@@ -37,6 +37,13 @@ if(APPLE OR (WIN32 AND NOT STATIC))
             )
         endif()
 
+        # Add command to run the fix_qt_paths.py script
+        add_custom_command(TARGET deploy
+                   POST_BUILD
+                   COMMAND /usr/bin/python3 "${CMAKE_SOURCE_DIR}/share/fix_qt_paths.py" "${CMAKE_BINARY_DIR}/bin/salvium-wallet-gui.app"
+                   COMMENT "Running fix_qt_paths.py script..."
+        )
+
         # Apple Silicon requires all binaries to be codesigned
         find_program(CODESIGN_EXECUTABLE NAMES codesign)
         if(CODESIGN_EXECUTABLE)
