@@ -27,7 +27,7 @@ jobs:
       - name: Install dependencies (Homebrew)
         run: |
           brew install qt@5 boost@1.85 openssl@1.1 libsodium pkg-config cmake zeromq \
-                       hidapi libpgm miniupnpc expat libunwind-headers protobuf ccache
+                       hidapi libpgm miniupnpc expat libunwind-headers protobuf ccache zip
       - name: Set up build environment paths
         run: |
           echo "CMAKE_PREFIX_PATH=/opt/homebrew/opt/qt@5:/opt/homebrew/opt/openssl@1.1:/opt/homebrew/opt/boost@1.85:/opt/homebrew/opt/libsodium:/opt/homebrew/opt/miniupnpc:/opt/homebrew/opt/protobuf" >> $GITHUB_ENV
@@ -63,14 +63,18 @@ jobs:
       - name: SHA256 Sum DMG
         if: success()
         run: shasum -a 256 salvium-gui-unsigned.dmg | tee salvium-gui-unsigned.dmg.sha256
-      - name: Upload Artifact (Unsigned .dmg)
+
+      - name: Create ZIP archive
+        if: success()
+        run: |
+          zip salvium-gui-macos-arm64-unsigned.zip salvium-gui-unsigned.dmg salvium-gui-unsigned.dmg.sha256
+
+      - name: Upload Artifact (Zipped .dmg)
         if: success()
         uses: actions/upload-artifact@v4
         with:
-          name: salvium-gui-macos-arm64-unsigned
-          path: |
-            salvium-gui-unsigned.dmg
-            salvium-gui-unsigned.dmg.sha256
+          name: salvium-gui-macos-arm64-unsigned-zip
+          path: salvium-gui-macos-arm64-unsigned.zip
 
   build-windows:
     runs-on: ubuntu-24.04
@@ -79,6 +83,8 @@ jobs:
         uses: actions/checkout@v4
         with:
           submodules: 'recursive'
+      - name: Install zip
+        run: sudo apt-get update && sudo apt-get install -y zip
       - name: Build Docker Image for Windows Env
         run: |
           docker build --tag salvium:build-env-windows \
@@ -109,22 +115,26 @@ jobs:
               # This is a soft fail, as maybe the daemon isn't always built
               echo "salviumd.exe not found! Skipping checksum."
             fi
+            # Save the bin directory path for the zipping step
+            echo "BIN_DIR_PATH=$PWD" >> $GITHUB_ENV
           else
             echo "Windows bin directory not found!"
             exit 1
           fi
 
-      - name: Upload Artifact (Windows Build Output)
+      - name: Create ZIP archive
+        if: success()
+        run: |
+          cd "${{ env.BIN_DIR_PATH }}"
+          zip salvium-gui-windows-x64.zip salvium-wallet-gui.exe salviumd.exe *.sha256
+          echo "ZIP_PATH=${{ env.BIN_DIR_PATH }}/salvium-gui-windows-x64.zip" >> $GITHUB_ENV
+
+      - name: Upload Artifact (Zipped Windows Build)
         uses: actions/upload-artifact@v4
         with:
-          name: salvium-gui-windows-x64
-          path: |
-            build/x86_64-w64-mingw32/release/bin/salvium-wallet-gui.exe
-            build/x86_64-w64-mingw32/release/bin/salvium-wallet-gui.exe.sha256
-            build/x86_64-w64-mingw32/release/bin/salviumd.exe
-            build/x86_64-w64-mingw32/release/bin/salviumd.exe.sha256
-
-          if-no-files-found: warn
+          name: salvium-gui-windows-x64-zip
+          path: ${{ env.ZIP_PATH }}
+          if-no-files-found: error # Fail the job if the zip wasn't created
 
   docker-linux-static:
     runs-on: ubuntu-24.04
@@ -135,14 +145,14 @@ jobs:
     - uses: satackey/action-docker-layer-caching@v0.0.11
       if: "!startsWith(github.ref, 'refs/tags/v')"
       continue-on-error: true
-    - name: install host dependencies (for xvfb)
-      run: sudo apt update && sudo apt -y install xvfb libxcb-icccm4 libxcb-image0 libxcb-keysyms1 libxcb-randr0 libxcb-render-util0 libxcb-xkb1 libxcb-shape0 libxkbcommon-x11-0 libegl1
+    - name: install host dependencies (for xvfb and zip)
+      run: sudo apt update && sudo apt -y install xvfb libxcb-icccm4 libxcb-image0 libxcb-keysyms1 libxcb-randr0 libxcb-render-util0 libxcb-xkb1 libxcb-shape0 libxkbcommon-x11-0 libegl1 zip
     - name: free up diskspace
       run: ${{env.FREE_DISKSPACE}}
     - name: prepare build environment (Docker)
       run: docker build --tag salvium:build-env-linux --build-arg THREADS=$(nproc) --file Dockerfile.linux .
     - name: build (inside Docker)
-      run: docker run --rm -v ${{ github.workspace }}:/salvium-gui -w /salvium-gui salvium:build-env-linux sh -c "make release-static -j$(nproc)"
+      run: docker run --rm -v ${{ github.workspace }}:/salvium-gui -w /salvium-gui salvium:build-env-linux sh -c 'make release-static -j$(nproc)'
     - name: Fix file permissions
       run: sudo chown -R $(id -u):$(id -g) ${{ github.workspace }}/build
     - name: sha256sum Binary
@@ -150,59 +160,23 @@ jobs:
         cd build/release/bin
         sha256sum salvium-wallet-gui | tee salvium-wallet-gui.sha256
         sha256sum salviumd | tee salviumd.sha256
+        # Save the bin directory path for the zipping step
+        echo "BIN_DIR_PATH=$PWD" >> $GITHUB_ENV
     - name: test qml
       run: xvfb-run -a ${{ github.workspace }}/build/release/bin/salvium-wallet-gui --test-qml
-    - uses: actions/upload-artifact@v4
-      with:
-        name: salvium-gui-linux-x64-static
-        path: |
-          build/release/bin/salvium-wallet-gui
-          build/release/bin/salviumd
-          build/release/bin/salvium-wallet-gui.sha256
-          build/release/bin/salviumd.sha256
 
-  docker-android:
-    runs-on: ubuntu-22.04
-    steps:
-    - uses: actions/checkout@v4
-      with:
-        submodules: recursive
-    - uses: satackey/action-docker-layer-caching@v0.0.11
-      if: "!startsWith(github.ref, 'refs/tags/v')"
-      continue-on-error: true
-    - name: free up diskspace
-      run: ${{env.FREE_DISKSPACE}}
-
-    - name: Prepare Build Environment
+    - name: Create ZIP archive
       run: |
-        docker build --tag salvium:android-build --build-arg THREADS=$(nproc) --file Dockerfile.android .
-
-    - name: Build APK (inside Docker)
-      run: |
-        docker run --rm -v "${{ github.workspace }}":/salvium-gui -e THREADS=$(nproc) -e HOST_UID=$(id -u) -e HOST_GID=$(id -g) salvium:android-build
-
-    - name: SHA256 Sum APK
-      run: |
-        APK_DIR="${{ github.workspace }}/build/Android/release/android-build"
-        APK_NAME="salvium-gui.apk"
-        APK_PATH="${APK_DIR}/${APK_NAME}"
-
-        if [ -f "$APK_PATH" ]; then
-          cd "$APK_DIR"
-          sha256sum "$APK_NAME" | tee "$APK_NAME.sha256"
-        else
-          echo "Android APK not found at expected path: $APK_PATH"
-          echo "Listing files in build/Android/release:"
-          ls -R "${{ github.workspace }}/build/Android/release"
-          exit 1
-        fi
+        cd "${{ env.BIN_DIR_PATH }}"
+        zip salvium-gui-linux-x64-static.zip salvium-wallet-gui salviumd *.sha256
+        echo "ZIP_PATH=${{ env.BIN_DIR_PATH }}/salvium-gui-linux-x64-static.zip" >> $GITHUB_ENV
 
     - uses: actions/upload-artifact@v4
       with:
-        name: salvium-gui-android-arm64-v8a
-        path: |
-          ${{ github.workspace }}/build/Android/release/android-build/salvium-gui.apk
-          ${{ github.workspace }}/build/Android/release/android-build/salvium-gui.apk.sha256
+        name: salvium-gui-linux-x64-static-zip
+        path: ${{ env.ZIP_PATH }}
+
+  # --- Android job completely removed ---
 
   create-release:
     name: Create GitHub Release
@@ -213,7 +187,7 @@ jobs:
       - build-macos-arm64
       - build-windows
       - docker-linux-static
-      - docker-android
+      # - docker-android # Removed from needs
 
     steps:
       - name: Download all artifacts
@@ -227,22 +201,26 @@ jobs:
       - name: Find artifact paths
         id: find_files
         run: |
-          echo "dmg_path=$(find ./artifacts/salvium-gui-macos-arm64-unsigned -name '*.dmg' | head -n 1)" >> $GITHUB_OUTPUT
-          echo "win_exe_path=$(find ./artifacts/salvium-gui-windows-x64 -name 'salvium-wallet-gui.exe' | head -n 1)" >> $GITHUB_OUTPUT
-          echo "win_daemon_path=$(find ./artifacts/salvium-gui-windows-x64 -name 'salviumd.exe' | head -n 1)" >> $GITHUB_OUTPUT
-          echo "linux_bin_path=$(find ./artifacts/salvium-gui-linux-x64-static -name 'salvium-wallet-gui' | head -n 1)" >> $GITHUB_OUTPUT
-          echo "linux_daemon_path=$(find ./artifacts/salvium-gui-linux-x64-static -name 'salviumd' | head -n 1)" >> $GITHUB_OUTPUT
-          echo "apk_path=$(find ./artifacts/salvium-gui-android-arm64-v8a -name '*.apk' | head -n 1)" >> $GITHUB_OUTPUT
+          echo "macos_zip_path=$(find ./artifacts/salvium-gui-macos-arm64-unsigned-zip -name '*.zip' | head -n 1)" >> $GITHUB_OUTPUT
+          echo "windows_zip_path=$(find ./artifacts/salvium-gui-windows-x64-zip -name '*.zip' | head -n 1)" >> $GITHUB_OUTPUT
+          echo "linux_zip_path=$(find ./artifacts/salvium-gui-linux-x64-static-zip -name '*.zip' | head -n 1)" >> $GITHUB_OUTPUT
+          # apk_path removed
 
       - name: Prepare Release Notes and Checksums
         id: prep_release
+        env:
+          # This correctly preserves newlines from the input
+          RELEASE_NOTES: ${{ github.event.inputs.release_notes }}
         run: |
-          echo "${{ github.event.inputs.release_notes }}" > release_body.md
+          echo "$RELEASE_NOTES" > release_body.md
           echo -e "\n\n## SHA256 Checksums" >> release_body.md
-          find ./artifacts -name '*.sha256' -exec cat {} + >> release_body.md
+
+          # We need to find the .sha256 files inside the artifact directories
+          # The download-artifact action unzips our zips by default, so we search for the sha256 files inside
+          find ./artifacts -type f -name '*.sha256' -exec cat {} + >> release_body.md
 
           # Create a simple checksums.txt for upload
-          find ./artifacts -name '*.sha256' -exec cat {} + > checksums.txt
+          find ./artifacts -type f -name '*.sha256' -exec cat {} + > checksums.txt
 
           echo "body_path=release_body.md" >> $GITHUB_OUTPUT
           echo "checksum_path=checksums.txt" >> $GITHUB_OUTPUT
@@ -256,10 +234,7 @@ jobs:
           draft: false
           prerelease: false
           files: |
-            ${{ steps.find_files.outputs.dmg_path }}
-            ${{ steps.find_files.outputs.win_exe_path }}
-            ${{ steps.find_files.outputs.win_daemon_path }}
-            ${{ steps.find_files.outputs.linux_bin_path }}
-            ${{ steps.find_files.outputs.linux_daemon_path }}
-            ${{ steps.find_files.outputs.apk_path }}
+            ${{ steps.find_files.outputs.macos_zip_path }}
+            ${{ steps.find_files.outputs.windows_zip_path }}
+            ${{ steps.find_files.outputs.linux_zip_path }}
             ${{ steps.prep_release.outputs.checksum_path }}
