@@ -51,10 +51,10 @@ jobs:
             exit 1
           fi
 
-          ASSET_URL=$(echo "$LATEST_RELEASE_JSON" | jq -r '.assets[] | select(.name | endswith("macos-arm64.zip")) | .browser_download_url')
+          ASSET_URL=$(echo "$LATEST_RELEASE_JSON" | jq -r '.assets[] | select(.name | endswith("macos-aarch64.zip") or endswith("macos-arm64.zip")) | .browser_download_url' | head -n 1)
 
           if [ -z "$ASSET_URL" ] || [ "$ASSET_URL" == "null" ]; then
-            echo "Error: Could not find macos-arm64.zip asset in the latest release JSON."
+            echo "Error: Could not find macOS ARM64 asset (macos-aarch64.zip or macos-arm64.zip) in the latest release JSON."
             echo "$LATEST_RELEASE_JSON" | jq -r '.assets[].name'
             exit 1
           fi
