@@ -100,7 +100,7 @@ Rectangle {
                 id: miningModeModel
 
                 ListElement { column1: qsTr("Solo") ; column2: ""; priority: 0}
-      //          ListElement { column1: "P2Pool" ; column2: ""; priority: 1}
+                ListElement { column1: "P2Pool" ; column2: ""; priority: 1}
             }
 
             ColumnLayout {
@@ -383,8 +383,8 @@ Rectangle {
             ListModel {
                 id: chainModel
 
-                ListElement { column1: qsTr("Mini") ; column2: ""; priority: 0}
-                ListElement { column1: qsTr("Main") ; column2: ""; priority: 1}
+                // ListElement { column1: qsTr("Mini") ; column2: ""; priority: 0}
+                ListElement { column1: qsTr("Main") ; column2: ""; priority: 0}
             }
 
             ColumnLayout {
@@ -401,7 +401,7 @@ Rectangle {
 
                 MoneroComponents.Tooltip {
                     id: chainsHelpTooltip
-                    text: qsTr("Use the mini chain if you have a low hashrate.") + translationManager.emptyString
+                    text: qsTr("P2Pool mini chain is currently disabled for Salvium.") + translationManager.emptyString
                 }
 
                 MouseArea {
@@ -427,7 +427,7 @@ Rectangle {
                     Layout.maximumWidth: 200
                     id: chainDropdown
                     visible: persistentSettings.allow_p2pool_mining
-                    currentIndex: persistentSettings.chainDropdownSelected
+                    currentIndex: 0
                     dataModel: chainModel
                     onChanged: persistentSettings.chainDropdownSelected = chainDropdown.currentIndex;
                 }
@@ -627,10 +627,11 @@ allArgs = allArgs.filter( ( el ) => !defaultArgs.includes( el.split(" ")[0] ) )
 
     function startP2Pool() {
         var address = currentWallet.address(0, 0);
-        var chain = "mini"
-        if (chainDropdown.currentIndex === 1) {
-            chain = "main"
-        }
+        var chain = "main"
+        // Mini chain disabled for Salvium for now.
+        // if (chainDropdown.currentIndex === 1) {
+        //     chain = "main"
+        // }
         var p2poolArgs = persistentSettings.p2poolFlags;
         var success = p2poolManager.start(p2poolArgs, address, chain, threads);
         if (success) 
