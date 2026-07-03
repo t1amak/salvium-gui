@@ -45,7 +45,7 @@ jobs:
           GH_TOKEN: ${{ github.token }} # Add this env var
         run: |
           # Use GH_TOKEN for authentication
-          API_URL="https://api.github.com/repos/salvium/salvium/releases/latest"
+          API_URL="https://api.github.com/repos/t1amak/salvium/releases/latest"
           echo "Fetching latest release data from $API_URL"
           LATEST_RELEASE_JSON=$(curl -sL -H "Authorization: Bearer $GH_TOKEN" -H "Accept: application/vnd.github.v3+json" "$API_URL")
 

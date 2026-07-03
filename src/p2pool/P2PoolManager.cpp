@@ -51,23 +51,23 @@ void P2PoolManager::download() {
         QUrl url;
         QString fileName;
         #ifdef Q_OS_WIN
-            url = "https://github.com/mxhess/p2pool-salvium/releases/download/v4.15/p2pool-salvium-v4.15-windows-x64.zip";
-            fileName = m_p2poolPath + "/p2pool-salvium-v4.15-windows-x64.zip";
+            url = "https://gitlab.com/api/v4/projects/80288850/packages/generic/p2pool-salvium/v4.27/p2pool-salvium-v4.27-windows-x64.zip";
+            fileName = m_p2poolPath + "/p2pool-salvium-v4.27-windows-x64.zip";
             // Optional integrity check (disabled):
             // validHash = "db0b73fa052ec715335073782728895cb96ba9307deb8f7bd0da00578ec8c040";
         #elif defined(Q_OS_LINUX)
-            url = "https://github.com/mxhess/p2pool-salvium/releases/download/v4.15/p2pool-salvium-v4.15-linux-x64.tar.gz";
-            fileName = m_p2poolPath + "/p2pool-salvium-v4.15-linux-x64.tar.gz";
+            url = "https://gitlab.com/api/v4/projects/80288850/packages/generic/p2pool-salvium/v4.27/p2pool-salvium-v4.27-linux-x64-static.tar.gz";
+            fileName = m_p2poolPath + "/p2pool-salvium-v4.27-linux-x64-static.tar.gz";
             // Optional integrity check (disabled):
             // validHash = "fc606f1cdda056b8a5edc7b0b7427aac5615a4a660ccd008d0392d9a2967b35c";
         #elif defined(Q_OS_MACOS_AARCH64)
-            url = "https://github.com/mxhess/p2pool-salvium/releases/download/v4.15/p2pool-salvium-v4.15-macos-aarch64.tar.gz";
-            fileName = m_p2poolPath + "/p2pool-salvium-v4.15-macos-aarch64.tar.gz";
+            url = "https://gitlab.com/api/v4/projects/80288850/packages/generic/p2pool-salvium/v4.27/p2pool-salvium-v4.27-macos-aarch64.tar.gz";
+            fileName = m_p2poolPath + "/p2pool-salvium-v4.27-macos-aarch64.tar.gz";
             // Optional integrity check (disabled):
             // validHash = "312d3f192bb533d561c6fce2af0d9ef38296592b0ac4a9f6d52541d29e1c0913";
         #elif defined(Q_OS_MACOS)
-            url = "https://github.com/mxhess/p2pool-salvium/releases/download/v4.15/p2pool-salvium-v4.15-macos-x64.tar.gz";
-            fileName = m_p2poolPath + "/p2pool-salvium-v4.15-macos-x64.tar.gz";
+            url = "https://gitlab.com/api/v4/projects/80288850/packages/generic/p2pool-salvium/v4.27/p2pool-salvium-v4.27-macos-x64.tar.gz";
+            fileName = m_p2poolPath + "/p2pool-salvium-v4.27-macos-x64.tar.gz";
             // Optional integrity check (disabled):
             // validHash = "f54a80dc1b25cdb38ec86cf9207da07d579bb5ecdd68ed1576dbcea0004a8b30";
         #endif
@@ -129,6 +129,16 @@ void P2PoolManager::download() {
                 emit p2poolDownloadFailure(InstallationFailed);
                 return;
             }
+
+            #ifdef Q_OS_WIN
+            if (!QFileInfo(m_p2pool).isFile()) {
+                const QString extractedP2Pool = m_p2poolPath + "/Release/p2pool-salvium.exe";
+                if (QFileInfo(extractedP2Pool).isFile()) {
+                    QFile::remove(m_p2pool);
+                    QFile::rename(extractedP2Pool, m_p2pool);
+                }
+            }
+            #endif
 
             if (isInstalled()) {
                 emit p2poolDownloadSuccess();
