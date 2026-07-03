@@ -23,7 +23,10 @@ jobs:
     # Environment variables for freeing disk and the Qt source build
     env:
       FREE_DISKSPACE: |
-        sudo rm -rf /usr/local/.ghcup /usr/share/dotnet /usr/share/swift /usr/share/miniconda
+        sudo rm -rf /usr/local/.ghcup 2>/dev/null || true
+        sudo rm -rf /usr/share/dotnet 2>/dev/null || true
+        sudo rm -rf /usr/share/swift 2>/dev/null || true
+        sudo rm -rf /usr/share/miniconda 2>/dev/null || true
       QT_TAG: v5.15.17-lts-lgpl
       QT_PREFIX: ${{ github.workspace }}/qt-install
 
