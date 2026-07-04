@@ -116,20 +116,20 @@ RUN wget -q https://archives.boost.io/release/${BOOST_VERSION_DOT}/source/boost_
     install -j${THREADS} \
     && rm -rf $(pwd)
 
-ARG OPENSSL_VERSION=1.1.1w
-ARG OPENSSL_HASH=cf3098950cb4d853ad95c0841f1f9c6d3dc102dccfcacd521d93925208b76ac8
+ARG OPENSSL_VERSION=4.0.1
+ARG OPENSSL_HASH=2db3f3a0d6ea4b59e1f094ace2c8cd536dffb87cdc39084c5afa1e6f7f37dd09
 RUN wget -q https://www.openssl.org/source/openssl-${OPENSSL_VERSION}.tar.gz \
     && echo "${OPENSSL_HASH}  openssl-${OPENSSL_VERSION}.tar.gz" | sha256sum -c \
     && tar -xzf openssl-${OPENSSL_VERSION}.tar.gz \
     && rm openssl-${OPENSSL_VERSION}.tar.gz \
     && cd openssl-${OPENSSL_VERSION} \
     && ANDROID_NDK_HOME=${ANDROID_NDK_ROOT} ./Configure CC=${ANDROID_CLANG} CXX=${ANDROID_CLANGPP} \
-    android-arm64 no-shared --static \
-    --with-zlib-include=${PREFIX}/include --with-zlib-lib=${PREFIX}/lib \
-    --prefix=${PREFIX} --openssldir=${PREFIX} \
+    android-arm64 --static --prefix=${PREFIX} --openssldir=${PREFIX} --libdir=lib \
+    no-dso no-dtls1 no-ec_nistp_64_gcc_128 no-gost no-md2 no-rc5 no-rdrand no-rfc3779 \
+    no-sctp no-shared no-ssl-trace no-tests no-unit-test no-weak-ssl-ciphers no-zlib no-zlib-dynamic \
     && sed -i 's/CNF_EX_LIBS=-ldl -pthread//g;s/BIN_CFLAGS=-pie $(CNF_CFLAGS) $(CFLAGS)//g' Makefile \
-    && ANDROID_NDK_HOME=${ANDROID_NDK_ROOT} make -j${THREADS} \
-    && make -j${THREADS} install \
+    && ANDROID_NDK_HOME=${ANDROID_NDK_ROOT} make -j${THREADS} build_libs \
+    && make -j${THREADS} install_sw \
     && rm -rf $(pwd)
 
 ARG EXPAT_VERSION=2.6.4
@@ -144,14 +144,18 @@ RUN wget https://github.com/libexpat/libexpat/releases/download/R_2_6_4/expat-${
     make -j$THREADS install && \
     rm -rf $(pwd)
 
-ARG UNBOUND_VERSION=1.22.0
-ARG UNBOUND_HASH=c5dd1bdef5d5685b2cedb749158dd152c52d44f65529a34ac15cd88d4b1b3d43
+ARG UNBOUND_VERSION=1.25.1
+ARG UNBOUND_HASH=0fe8b6277b0959cfd17562debac0aa5f71e0b02dc4ffa9c60271c583edab586f
+COPY salvium/contrib/depends/patches/unbound/no-expat.patch /tmp/unbound-no-expat.patch
+COPY salvium/contrib/depends/patches/unbound/gcc15-const-correctness.patch /tmp/unbound-gcc15-const-correctness.patch
 RUN wget https://www.nlnetlabs.nl/downloads/unbound/unbound-${UNBOUND_VERSION}.tar.gz && \
     echo "${UNBOUND_HASH}  unbound-${UNBOUND_VERSION}.tar.gz" | sha256sum -c && \
     tar -xzf unbound-${UNBOUND_VERSION}.tar.gz && \
     rm unbound-${UNBOUND_VERSION}.tar.gz && \
     cd unbound-${UNBOUND_VERSION} && \
-    CC=${ANDROID_CLANG} CXX=${ANDROID_CLANGPP} ./configure --disable-shared --enable-static --without-pyunbound --with-libexpat=${PREFIX} --with-ssl=${PREFIX} --with-libevent=no --without-pythonmodule --disable-flto --with-pthreads --with-libunbound-only --host=aarch64-linux-android --with-pic --prefix=${PREFIX} && \
+    patch -p1 < /tmp/unbound-no-expat.patch && \
+    patch -p1 < /tmp/unbound-gcc15-const-correctness.patch && \
+    CC=${ANDROID_CLANG} CXX=${ANDROID_CLANGPP} ./configure --disable-shared --enable-static --without-pyunbound --with-libexpat=no --with-ssl=${PREFIX} --with-libevent=no --without-pythonmodule --disable-flto --with-pthreads --with-libunbound-only --disable-gost --host=aarch64-linux-android --with-pic --prefix=${PREFIX} && \
     make -j$THREADS && \
     make -j$THREADS install && \
     rm -rf $(pwd)
@@ -239,4 +243,3 @@ CMD set -ex \
     && mkdir /salvium-apk \
     && find /salvium-gui/build/Android/release/ -name '*.apk' -exec cp {} /salvium-apk/ \; \
     && chown -R ${HOST_UID}:${HOST_GID} /salvium-gui
-

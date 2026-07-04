@@ -1,1 +1,8 @@
 *
+!salvium/
+!salvium/contrib/
+!salvium/contrib/depends/
+!salvium/contrib/depends/patches/
+!salvium/contrib/depends/patches/unbound/
+!salvium/contrib/depends/patches/unbound/no-expat.patch
+!salvium/contrib/depends/patches/unbound/gcc15-const-correctness.patch
