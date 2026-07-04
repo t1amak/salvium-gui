@@ -99,14 +99,16 @@ RUN wget -q http://ftp.gnu.org/pub/gnu/libiconv/libiconv-${ICONV_VERSION}.tar.gz
     && make -j${THREADS} \
     && make -j${THREADS} install
 
-ARG BOOST_VERSION=1_85_0
-ARG BOOST_VERSION_DOT=1.85.0
-ARG BOOST_HASH=7009fe1faa1697476bdc7027703a2badb84e849b7b0baad5086b087b971f8617
+ARG BOOST_VERSION=1_91_0
+ARG BOOST_VERSION_DOT=1.91.0
+ARG BOOST_HASH=de5e6b0e4913395c6bdfa90537febd9028ea4c0735d2cdb0cd9b45d5f51264f5
+COPY salvium/contrib/depends/patches/boost/gcc15-wchar-from-mb-init.patch /tmp/boost-gcc15-wchar-from-mb-init.patch
 RUN wget -q https://archives.boost.io/release/${BOOST_VERSION_DOT}/source/boost_${BOOST_VERSION}.tar.bz2 \
     && echo "${BOOST_HASH}  boost_${BOOST_VERSION}.tar.bz2" | sha256sum -c \
     && tar -xf boost_${BOOST_VERSION}.tar.bz2 \
     && rm -f boost_${BOOST_VERSION}.tar.bz2 \
     && cd boost_${BOOST_VERSION} \
+    && patch -p1 < /tmp/boost-gcc15-wchar-from-mb-init.patch \
     && PATH=${HOST_PATH} ./bootstrap.sh --prefix=${PREFIX} \
     && printf "using clang : arm : ${ANDROID_CLANGPP} :\n<cxxflags>\"-fPIC\"\n<cflags>\"-fPIC\" ;" > user.jam \
     && PATH=${TOOLCHAIN_DIR}/bin:${HOST_PATH} ./b2 --build-type=minimal link=static runtime-link=static \
