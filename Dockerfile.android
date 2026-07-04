@@ -109,11 +109,11 @@ RUN wget -q https://archives.boost.io/release/${BOOST_VERSION_DOT}/source/boost_
     && rm -f boost_${BOOST_VERSION}.tar.bz2 \
     && cd boost_${BOOST_VERSION} \
     && patch -p1 < /tmp/boost-gcc15-wchar-from-mb-init.patch \
-    && PATH=${HOST_PATH} ./bootstrap.sh --prefix=${PREFIX} \
+    && PATH=${HOST_PATH} ./bootstrap.sh --prefix=${PREFIX} --without-icu --with-libraries=chrono,date_time,filesystem,program_options,regex,serialization,thread,locale \
     && printf "using clang : arm : ${ANDROID_CLANGPP} :\n<cxxflags>\"-fPIC\"\n<cflags>\"-fPIC\" ;" > user.jam \
     && PATH=${TOOLCHAIN_DIR}/bin:${HOST_PATH} ./b2 --build-type=minimal link=static runtime-link=static \
     --with-chrono --with-date_time --with-filesystem --with-program_options --with-regex --with-serialization \
-    --with-system --with-thread --with-locale --build-dir=android --stagedir=android toolset=clang-arm threading=multi \
+    --with-thread --with-locale --build-dir=android --stagedir=android toolset=clang-arm threading=multi \
     threadapi=pthread target-os=android -sICONV_PATH=${PREFIX} --user-config=user.jam architecture=arm address-model=64 \
     install -j${THREADS} \
     && rm -rf $(pwd)

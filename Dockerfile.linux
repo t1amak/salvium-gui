@@ -170,8 +170,8 @@ RUN wget https://archives.boost.io/release/${BOOST_VERSION_DOT}/source/boost_${B
     rm boost_${BOOST_VERSION}.tar.bz2 && \
     cd boost_${BOOST_VERSION} && \
     patch -p1 < /tmp/boost-gcc15-wchar-from-mb-init.patch && \
-    ./bootstrap.sh && \
-    ./b2 --with-atomic --with-system --with-filesystem --with-thread --with-date_time --with-chrono --with-regex --with-serialization --with-program_options --with-locale variant=release link=static runtime-link=shared cflags="${CFLAGS}" cxxflags="${CXXFLAGS}" install -a --prefix=/usr && \
+    ./bootstrap.sh --without-icu --with-libraries=atomic,chrono,filesystem,thread,date_time,regex,serialization,program_options,locale && \
+    ./b2 --with-atomic --with-chrono --with-filesystem --with-thread --with-date_time --with-regex --with-serialization --with-program_options --with-locale variant=release link=static runtime-link=shared cflags="${CFLAGS}" cxxflags="${CXXFLAGS}" install -a --prefix=/usr && \
     rm -rf $(pwd)
 
 ARG OPENSSL_VERSION=4.0.1
