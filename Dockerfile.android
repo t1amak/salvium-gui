@@ -127,7 +127,7 @@ RUN wget -q https://www.openssl.org/source/openssl-${OPENSSL_VERSION}.tar.gz \
     && cd openssl-${OPENSSL_VERSION} \
     && ANDROID_NDK_HOME=${ANDROID_NDK_ROOT} ./Configure CC=${ANDROID_CLANG} CXX=${ANDROID_CLANGPP} \
     android-arm64 --static --prefix=${PREFIX} --openssldir=${PREFIX} --libdir=lib \
-    no-dso no-dtls1 no-ec_nistp_64_gcc_128 no-gost no-md2 no-rc5 no-rdrand no-rfc3779 \
+    no-asm no-dso no-dtls1 no-ec_nistp_64_gcc_128 no-gost no-md2 no-rc5 no-rdrand no-rfc3779 \
     no-sctp no-shared no-ssl-trace no-tests no-unit-test no-weak-ssl-ciphers no-zlib no-zlib-dynamic \
     && sed -i 's/CNF_EX_LIBS=-ldl -pthread//g;s/BIN_CFLAGS=-pie $(CNF_CFLAGS) $(CFLAGS)//g' Makefile \
     && ANDROID_NDK_HOME=${ANDROID_NDK_ROOT} make -j${THREADS} build_libs \

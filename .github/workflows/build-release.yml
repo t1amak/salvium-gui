@@ -22,7 +22,7 @@ jobs:
 
   build-macos-app:
     name: 1. Download Daemon & Build GUI App
-    runs-on: macos-latest
+    runs-on: macos-15
     env:
       QT_TAG: v5.15.17-lts-lgpl
       QT_PREFIX: ${{ github.workspace }}/qt-install
@@ -173,7 +173,7 @@ jobs:
 
   bundle-macos-release:
     name: 2. Create Final macOS DMG
-    runs-on: macos-latest
+    runs-on: macos-15
     needs: build-macos-app
 
     steps:

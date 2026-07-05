@@ -16,7 +16,7 @@ on:
 jobs:
   build-macos-app:
     name: 1. Download Daemon & Build GUI App
-    runs-on: macos-latest
+    runs-on: macos-15
     outputs:
       daemon_path: ${{ steps.upload_daemon_artifact.outputs.artifact_path }}/salviumd
     
@@ -190,7 +190,7 @@ jobs:
 
   bundle-macos-release:
     name: 2. Create Final macOS DMG
-    runs-on: macos-latest
+    runs-on: macos-15
     needs: build-macos-app
 
     steps:
