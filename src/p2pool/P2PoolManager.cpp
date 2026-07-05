@@ -55,7 +55,7 @@ namespace
 {
     const QString P2POOL_PROJECT_ID = "80288850";
     const QString P2POOL_PACKAGE = "p2pool-salvium";
-    const QString P2POOL_DEFAULT_VERSION = "v4.24";
+    const QString P2POOL_DEFAULT_VERSION = "v4.27";
 
     QString p2poolArchiveSuffix()
     {
@@ -353,15 +353,27 @@ bool P2PoolManager::start(const QString &flags, const QString &address, const QS
 
     QMutexLocker locker(&m_p2poolMutex);
 
-    m_p2poold.reset(new QProcess());
+    if (m_p2poold && m_p2poold->state() != QProcess::NotRunning) {
+        return true;
+    }
+
+    m_p2poold.reset(new QProcess(this));
+    connect(m_p2poold.get(), qOverload<int, QProcess::ExitStatus>(&QProcess::finished),
+            this, [this](int, QProcess::ExitStatus) {
+                started = false;
+                emit p2poolStatus(false, 0);
+            });
 
     // Set program parameters
     m_p2poold->setProgram(m_p2pool);
     m_p2poold->setArguments(arguments);
     m_p2poold->setWorkingDirectory(m_p2poolPath);
+    m_p2poold->setStandardOutputFile(QProcess::nullDevice());
+    m_p2poold->setStandardErrorFile(QProcess::nullDevice());
 
     // Start p2pool
-    started = m_p2poold->startDetached();
+    m_p2poold->start();
+    started = m_p2poold->waitForStarted(5000);
 
     if (!started) {
         qDebug() << "P2Pool start error: " + m_p2poold->errorString();
@@ -375,17 +387,32 @@ bool P2PoolManager::start(const QString &flags, const QString &address, const QS
 void P2PoolManager::exit()
 {
     qDebug("P2PoolManager: exit()");
-    if (started) {
-    #ifdef Q_OS_WIN
-        QProcess::execute("taskkill",  {"/F", "/IM", "p2pool-salvium.exe"});
-    #else
-        QProcess::execute("pkill", {"p2pool-salvium"});
-    #endif
+    {
+        QMutexLocker locker(&m_p2poolMutex);
+        if (m_p2poold && m_p2poold->state() != QProcess::NotRunning) {
+            m_p2poold->terminate();
+            if (!m_p2poold->waitForFinished(5000)) {
+                m_p2poold->kill();
+                m_p2poold->waitForFinished(5000);
+            }
+        }
+
+        if (started) {
+        #ifdef Q_OS_WIN
+            QProcess::execute("taskkill",  {"/F", "/IM", QFileInfo(m_p2pool).fileName()});
+        #else
+            QProcess::execute("pkill", {"-f", m_p2pool});
+        #endif
+        }
+
         started = false;
-        QString dirName = m_p2poolPath + "/stats/";
-        QDir dir(dirName);
-        dir.removeRecursively();
+        m_p2poold.reset();
     }
+
+    QString dirName = m_p2poolPath + "/stats/";
+    QDir dir(dirName);
+    dir.removeRecursively();
+    emit p2poolStatus(false, 0);
 }
 
 P2PoolManager::P2PoolManager(QObject *parent)

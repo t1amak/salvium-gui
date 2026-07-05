@@ -44,6 +44,7 @@ Rectangle {
     property alias stopMiningEnabled: stopSoloMinerButton.enabled
     property string args: ""
     property bool p2poolUpdateInProgress: false
+    property bool restartP2PoolAfterUpdate: false
     ColumnLayout {
         id: mainLayout
         Layout.fillWidth: true
@@ -358,7 +359,7 @@ Rectangle {
                         small: true
                         primary: false
                         text: qsTr("Update") + translationManager.emptyString
-                        enabled: !p2poolUpdateInProgress && !appWindow.isMining
+                        enabled: !p2poolUpdateInProgress
                         onClicked: {
                             p2poolUpdateInProgress = true;
                             statusMessageText.text = qsTr("Checking P2Pool updates...") + translationManager.emptyString;
@@ -582,8 +583,8 @@ Rectangle {
         }
         appWindow.isMining = isMining;
         updateStatusText(hashrate)
-        startSoloMinerButton.enabled = !appWindow.isMining && daemonReady
-        stopSoloMinerButton.enabled = !startSoloMinerButton.enabled && daemonReady
+        startSoloMinerButton.enabled = !appWindow.isMining && daemonReady && !p2poolUpdateInProgress
+        stopSoloMinerButton.enabled = appWindow.isMining && daemonReady && !p2poolUpdateInProgress
     }
 
     function update() {
@@ -680,6 +681,8 @@ allArgs = allArgs.filter( ( el ) => !defaultArgs.includes( el.split(" ")[0] ) )
         var wasUpdating = p2poolUpdateInProgress
         p2poolUpdateInProgress = false
         statusMessage.visible = false
+        var shouldRestart = wasUpdating && restartP2PoolAfterUpdate
+        restartP2PoolAfterUpdate = false
         errorPopup.title = wasUpdating ? qsTr("P2Pool Update Failed") + translationManager.emptyString : qsTr("P2Pool Installation Failed") + translationManager.emptyString;
         switch (errorCode) {
             case P2PoolManager.HashVerificationFailed:
@@ -699,18 +702,30 @@ allArgs = allArgs.filter( ( el ) => !defaultArgs.includes( el.split(" ")[0] ) )
         }
         errorPopup.icon = StandardIcon.Critical
         errorPopup.open()
-        update()
+        if (shouldRestart && p2poolManager.isInstalled()) {
+            startP2Pool()
+        }
+        else {
+            update()
+        }
     }
 
     function p2poolDownloadSucceeded() {
         var wasUpdating = p2poolUpdateInProgress
         p2poolUpdateInProgress = false
         statusMessage.visible = false
+        var shouldRestart = wasUpdating && restartP2PoolAfterUpdate
+        restartP2PoolAfterUpdate = false
         informationPopup.title  = wasUpdating ? qsTr("P2Pool Update Succeeded") + translationManager.emptyString : qsTr("P2Pool Installation Succeeded") + translationManager.emptyString;
         informationPopup.text = wasUpdating ? qsTr("P2Pool has successfully updated.") + translationManager.emptyString : qsTr("P2Pool has successfully installed.") + translationManager.emptyString;
         informationPopup.icon = StandardIcon.Information
         informationPopup.open()
-        update()
+        if (shouldRestart) {
+            startP2Pool()
+        }
+        else {
+            update()
+        }
     }
 
     function p2poolUpdateAvailable(currentVersion, latestVersion) {
@@ -723,11 +738,17 @@ allArgs = allArgs.filter( ( el ) => !defaultArgs.includes( el.split(" ")[0] ) )
         confirmationDialog.okText = qsTr("Update") + translationManager.emptyString;
         confirmationDialog.onAcceptedCallback = function() {
             p2poolUpdateInProgress = true;
+            restartP2PoolAfterUpdate = appWindow.isMining && persistentSettings.allow_p2pool_mining;
             statusMessageText.text = qsTr("Updating P2Pool...") + translationManager.emptyString;
             statusMessage.visible = true;
+            if (restartP2PoolAfterUpdate) {
+                p2poolManager.exit();
+            }
             p2poolManager.update();
         }
-        confirmationDialog.onRejectedCallback = null;
+        confirmationDialog.onRejectedCallback = function() {
+            restartP2PoolAfterUpdate = false;
+        };
         confirmationDialog.open();
     }
 
