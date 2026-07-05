@@ -411,7 +411,7 @@ void P2PoolManager::exit()
         #ifdef Q_OS_WIN
             QProcess::execute("taskkill",  {"/F", "/IM", QFileInfo(m_p2pool).fileName()});
         #else
-            QProcess::execute("pkill", {"-f", m_p2pool});
+            QProcess::execute("pkill", {"-x", QFileInfo(m_p2pool).fileName()});
         #endif
         }
 
