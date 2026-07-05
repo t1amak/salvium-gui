@@ -80,6 +80,7 @@ private:
 
     std::unique_ptr<QProcess> m_p2poold;
     QMutex m_p2poolMutex;
+    QMutex m_latestVersionMutex;
     QString m_p2pool;
     QString m_p2poolPath;
     QString m_latestVersion;

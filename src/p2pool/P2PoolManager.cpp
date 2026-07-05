@@ -120,7 +120,13 @@ void P2PoolManager::download() {
 }
 
 void P2PoolManager::update() {
-    const QString version = m_latestVersion.isEmpty() ? P2POOL_DEFAULT_VERSION : m_latestVersion;
+    QString latestVersion;
+    {
+        QMutexLocker locker(&m_latestVersionMutex);
+        latestVersion = m_latestVersion;
+    }
+
+    const QString version = latestVersion.isEmpty() ? P2POOL_DEFAULT_VERSION : latestVersion;
     downloadVersion(version);
 }
 
@@ -236,7 +242,11 @@ void P2PoolManager::checkForUpdates() {
             return;
         }
 
-        m_latestVersion = latestVersion;
+        {
+            QMutexLocker locker(&m_latestVersionMutex);
+            m_latestVersion = latestVersion;
+        }
+
         const QString installedVersion = currentVersion();
         if (installedVersion != latestVersion) {
             emit p2poolUpdateAvailable(installedVersion, latestVersion);
